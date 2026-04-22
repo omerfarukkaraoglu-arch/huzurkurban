@@ -2,7 +2,6 @@
 
 import { useActionState } from 'react'
 import { updateSettings } from '@/app/actions/settings'
-import MenuManager from './MenuManager'
 
 const initialState = {
   success: false,
@@ -63,7 +62,6 @@ export default function SettingsForm({ initialData }: { initialData: any }) {
           <p className="text-xs text-slate-500 mt-2">NOT: Buraya yeni fotoğraf seçip eklerseniz, eski slider fotoğraflarınızın tümü silinir ve yenileriyle değiştirilir. Hiçbir şey seçmezseniz eski görseller kalmaya devam eder.</p>
         </div>
 
-        <MenuManager initialConfig={initialData?.menuConfig} />
 
 
 

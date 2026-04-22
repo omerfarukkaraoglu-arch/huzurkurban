@@ -11,10 +11,15 @@ export default function Navbar({ settings }: { settings: any }) {
   const [isAppointmentOpen, setIsAppointmentOpen] = useState(false)
   const router = useRouter()
 
-  let actions = []
-  try {
-    actions = settings.menuConfig ? JSON.parse(settings.menuConfig) : []
-  } catch(e) {}
+  const cleanWhatsapp = (settings.whatsapp || settings.phone)?.replace(/\s+/g, '').replace(/^0/, '90') || '905513431888'
+  const actions = [
+    { id: 'kayit', title: 'Hisse Kaydı', icon: 'Tractor', target: '#kayit-formu' },
+    { id: 'bagis', title: 'Bağış Yap', icon: 'HeartHandshake', target: '#kayit-formu' },
+    { id: 'sorgula', title: 'Kurbanını Gör', icon: 'ScanSearch', target: '#kurbanini-gor' },
+    { id: 'teslimat', title: 'Teslimat Sorgula', icon: 'Truck', target: 'external', url: '/teslimat' },
+    { id: 'randevu', title: 'Randevu Al', icon: 'CalendarCheck', target: 'modal' },
+    { id: 'whatsapp', title: 'WhatsApp', icon: 'MessageCircle', target: 'external', url: `https://wa.me/${cleanWhatsapp}` },
+  ]
 
   const handleAction = (item: any) => {
     if (item.target === 'modal') {
@@ -51,8 +56,6 @@ export default function Navbar({ settings }: { settings: any }) {
 
             <div className="hidden lg:flex items-center space-x-6 z-10 transition-all">
               {actions.map((item: any) => {
-                if (item.id === 'anasayfa' || item.id === 'iletisim' || item.id === 'whatsapp') return null; // Skip some generic ones to avoid cluttering header
-                
                 return (
                   <button
                     key={item.id}
