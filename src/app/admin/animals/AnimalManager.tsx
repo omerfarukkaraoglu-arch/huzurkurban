@@ -64,7 +64,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
     if (!draggedItem) return
     setDraggedItem(null)
 
-    const updates = animalsData.map((a, i) => ({ id: a.id, order: i + 1 }))
+    const updates = animalsData.map((a: any, i: number) => ({ id: a.id, order: i + 1 }))
     startTransition(async () => {
       await reorderAnimals(updates)
     })
@@ -82,7 +82,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
     items.splice(newOrder - 1, 0, item)
     setAnimalsData(items)
 
-    const updates = items.map((a, i) => ({ id: a.id, order: i + 1 }))
+    const updates = items.map((a: any, i: number) => ({ id: a.id, order: i + 1 }))
     startTransition(async () => {
       await reorderAnimals(updates)
     })
@@ -97,7 +97,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
     if (selectedIds.length === filteredAnimals.length) {
       setSelectedIds([])
     } else {
-      setSelectedIds(filteredAnimals.map(a => a.id))
+      setSelectedIds(filteredAnimals.map((a: any) => a.id))
     }
   }
 
@@ -280,7 +280,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredAnimals.map((animal, index) => (
+            {filteredAnimals.map((animal: any, index: number) => (
               <div 
                 key={animal.id} 
                 draggable={!isSearchActive}

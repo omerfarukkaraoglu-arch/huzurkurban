@@ -69,7 +69,7 @@ export default function DeliveryTracker() {
       {/* Results */}
       {results && results.length > 0 && (
         <div className="space-y-6">
-          {results.map((item, index) => {
+          {results.map((item: any) => {
              const currentStageIdx = getStageIndex(item.deliveryStatus || 'BEKLEMEDE')
              
              return (
@@ -100,7 +100,7 @@ export default function DeliveryTracker() {
                   ></div>
 
                   <div className="flex justify-between relative z-0">
-                    {STAGES.map((stage, sIdx) => {
+                    {STAGES.map((stage: any, sIdx: number) => {
                       const isCompleted = sIdx <= currentStageIdx
                       const isCurrent = sIdx === currentStageIdx
 

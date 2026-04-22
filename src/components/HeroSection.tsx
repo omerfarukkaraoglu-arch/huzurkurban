@@ -34,7 +34,7 @@ export default function HeroSection({ settings }: { settings: any }) {
     <section className="relative h-screen min-h-[600px] w-full flex items-center justify-center overflow-hidden bg-slate-900">
       
       {/* Background Slider */}
-      {slides.map((slide, index) => (
+      {slides.map((slide: any, index: number) => (
         <div 
           key={slide.id}
           className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0 z-0'}`}
@@ -103,7 +103,7 @@ export default function HeroSection({ settings }: { settings: any }) {
           <ChevronLeft className="w-6 h-6" />
         </button>
         <div className="flex items-center gap-3">
-          {slides.map((_, idx) => (
+          {slides.map((_: any, idx: number) => (
             <button 
               key={idx} 
               onClick={() => setCurrentSlide(idx)}

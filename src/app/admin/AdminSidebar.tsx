@@ -84,7 +84,7 @@ export default function AdminSidebar({
 
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto py-4 px-3 flex flex-col gap-1">
-          {menuItems.map((item) => {
+          {menuItems.map((item: any) => {
             const isActive = pathname === item.href
             return (
               <Link

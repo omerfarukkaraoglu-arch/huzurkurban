@@ -98,7 +98,7 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
         </div>
 
         <div className="py-4 px-3 flex flex-col gap-2">
-          {actions.map((item) => {
+          {actions.map((item: any) => {
             const Icon = (LucideIcons as any)[item.icon] || LucideIcons.CircleDot
             return (
               <button

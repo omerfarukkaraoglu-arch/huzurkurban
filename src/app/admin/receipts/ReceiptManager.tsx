@@ -45,7 +45,7 @@ export default function ReceiptManager({ registrations, settings }: { registrati
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {filteredRegistrations.map(reg => (
+            {filteredRegistrations.map((reg: any) => (
               <tr key={reg.id} className="hover:bg-slate-50 transition-colors">
                 <td className="px-6 py-4">
                   <div className="font-bold text-slate-800">{reg.fullName}</div>

@@ -90,7 +90,7 @@ export default function FAQManager({ initialFAQs }: { initialFAQs: any[] }) {
               Henüz soru eklenmemiş.
             </div>
           ) : (
-            initialFAQs.map((faq, index) => (
+            initialFAQs.map((faq: any, index: number) => (
               <div key={faq.id} className="p-6 hover:bg-slate-50 transition-colors">
                 <div className="flex justify-between items-start gap-4">
                   <div className="flex-1">

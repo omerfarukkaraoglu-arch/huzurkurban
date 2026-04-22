@@ -19,7 +19,7 @@ export default function UserList({ users, currentUserId }: { users: any[], curre
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Liste */}
       <div className="lg:col-span-2 space-y-4">
-        {users.map(user => (
+        {users.map((user: any) => (
           <div key={user.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${user.role === 'SUPERADMIN' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'}`}>
