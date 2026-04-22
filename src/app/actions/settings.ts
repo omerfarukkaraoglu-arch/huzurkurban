@@ -6,6 +6,7 @@ import { put } from '@vercel/blob'
 
 export async function updateSettings(prevState: any, formData: FormData) {
   try {
+    console.log("Settings update started...");
     const data: any = {
       siteTitle: (formData.get('siteTitle') as string) || 'Huzur Kurban',
       heroText: (formData.get('heroText') as string) || '',
@@ -14,14 +15,14 @@ export async function updateSettings(prevState: any, formData: FormData) {
       address: (formData.get('address') as string) || '',
     }
 
-    // Keep existing menuConfig if not provided in form
-    const menuConfig = formData.get('menuConfig') as string
-    if (menuConfig) {
-      data.menuConfig = menuConfig
+    const currentMenuConfig = formData.get('menuConfig') as string
+    if (currentMenuConfig) {
+      data.menuConfig = currentMenuConfig
     }
 
     const sliderFiles = formData.getAll('sliderImages') as File[]
     if (sliderFiles && sliderFiles.length > 0 && sliderFiles[0].size > 0) {
+      console.log(`Processing ${sliderFiles.length} slider images...`);
       const paths: string[] = []
       for (const file of sliderFiles) {
         if (file.size > 0) {
@@ -31,9 +32,10 @@ export async function updateSettings(prevState: any, formData: FormData) {
               token: process.env.BLOB_READ_WRITE_TOKEN,
             })
             paths.push(blob.url)
-          } catch (uploadError) {
-            console.error("Blob upload error:", uploadError)
-            // Continue with other files if one fails
+            console.log("Uploaded blob:", blob.url);
+          } catch (uploadError: any) {
+            console.error("Blob upload error details:", uploadError);
+            throw new Error(`Görsel yüklenemedi: ${uploadError.message || 'Blob hatası'}`);
           }
         }
       }
@@ -42,6 +44,7 @@ export async function updateSettings(prevState: any, formData: FormData) {
       }
     }
 
+    console.log("Upserting settings to database...");
     await prisma.settings.upsert({
       where: { id: 'singleton' },
       update: data,
@@ -51,13 +54,18 @@ export async function updateSettings(prevState: any, formData: FormData) {
       }
     })
 
-    revalidatePath('/')
-    revalidatePath('/admin/settings')
+    try {
+      console.log("Revalidating paths...");
+      revalidatePath('/')
+      revalidatePath('/admin/settings')
+    } catch (revalidateError) {
+      console.error("Revalidation notice (non-fatal):", revalidateError);
+    }
     
     return { success: true, message: 'Ayarlar başarıyla güncellendi.', error: '' }
   } catch (error: any) {
-    console.error("Settings update error:", error)
-    return { success: false, error: `Hata: ${error.message || 'Bilinmeyen bir hata oluştu.'}`, message: '' }
+    console.error("CRITICAL Settings update error:", error)
+    return { success: false, error: `Sunucu Hatası: ${error.message || 'Bilinmeyen bir hata oluştu.'}`, message: '' }
   }
 }
 
