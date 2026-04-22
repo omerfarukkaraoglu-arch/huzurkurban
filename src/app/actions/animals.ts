@@ -24,10 +24,15 @@ export async function createAnimal(prevState: any, formData: FormData) {
 
     let imageUrl = null
     if (imageFile && imageFile.size > 0) {
-      const blob = await put(`animals/${Date.now()}-${imageFile.name.replace(/\s+/g, '-')}`, imageFile, {
-        access: 'public',
-      })
-      imageUrl = blob.url
+      try {
+        const blob = await put(`animals/${Date.now()}-${imageFile.name.replace(/\s+/g, '-')}`, imageFile, {
+          access: 'public',
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+        })
+        imageUrl = blob.url
+      } catch (uploadError) {
+        console.error("Animal image upload error:", uploadError)
+      }
     }
 
     await prisma.animal.create({
@@ -73,10 +78,15 @@ export async function updateAnimal(prevState: any, formData: FormData) {
 
     let imageUrl = animal.imageUrl
     if (imageFile && imageFile.size > 0) {
-      const blob = await put(`animals/${Date.now()}-${imageFile.name.replace(/\s+/g, '-')}`, imageFile, {
-        access: 'public',
-      })
-      imageUrl = blob.url
+      try {
+        const blob = await put(`animals/${Date.now()}-${imageFile.name.replace(/\s+/g, '-')}`, imageFile, {
+          access: 'public',
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+        })
+        imageUrl = blob.url
+      } catch (uploadError) {
+        console.error("Animal image update error:", uploadError)
+      }
     }
 
     await prisma.animal.update({

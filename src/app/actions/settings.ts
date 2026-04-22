@@ -7,12 +7,17 @@ import { put } from '@vercel/blob'
 export async function updateSettings(prevState: any, formData: FormData) {
   try {
     const data: any = {
-      siteTitle: formData.get('siteTitle') as string,
-      heroText: formData.get('heroText') as string,
-      phone: formData.get('phone') as string,
-      whatsapp: formData.get('whatsapp') as string,
-      menuConfig: formData.get('menuConfig') as string,
-      address: formData.get('address') as string,
+      siteTitle: (formData.get('siteTitle') as string) || 'Huzur Kurban',
+      heroText: (formData.get('heroText') as string) || '',
+      phone: (formData.get('phone') as string) || '',
+      whatsapp: (formData.get('whatsapp') as string) || '',
+      address: (formData.get('address') as string) || '',
+    }
+
+    // Keep existing menuConfig if not provided in form
+    const menuConfig = formData.get('menuConfig') as string
+    if (menuConfig) {
+      data.menuConfig = menuConfig
     }
 
     const sliderFiles = formData.getAll('sliderImages') as File[]
@@ -20,10 +25,16 @@ export async function updateSettings(prevState: any, formData: FormData) {
       const paths: string[] = []
       for (const file of sliderFiles) {
         if (file.size > 0) {
-          const blob = await put(`slider/${Date.now()}-${file.name.replace(/\s+/g, '-')}`, file, {
-            access: 'public',
-          })
-          paths.push(blob.url)
+          try {
+            const blob = await put(`slider/${Date.now()}-${file.name.replace(/\s+/g, '-')}`, file, {
+              access: 'public',
+              token: process.env.BLOB_READ_WRITE_TOKEN,
+            })
+            paths.push(blob.url)
+          } catch (uploadError) {
+            console.error("Blob upload error:", uploadError)
+            // Continue with other files if one fails
+          }
         }
       }
       if (paths.length > 0) {
@@ -44,9 +55,9 @@ export async function updateSettings(prevState: any, formData: FormData) {
     revalidatePath('/admin/settings')
     
     return { success: true, message: 'Ayarlar başarıyla güncellendi.', error: '' }
-  } catch (error) {
-    console.error(error)
-    return { success: false, error: 'Ayarlar güncellenirken bir hata oluştu.', message: '' }
+  } catch (error: any) {
+    console.error("Settings update error:", error)
+    return { success: false, error: `Hata: ${error.message || 'Bilinmeyen bir hata oluştu.'}`, message: '' }
   }
 }
 
