@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Registration {
+  id        String   @id @default(cuid())
+  fullName  String
+  phone     String
+  address   String
+  group     String
+  share     String?
+  status    String   @default("BEKLEMEDE")
+  isDonation Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  animalShares AnimalShareholder[]
+}
+
+model Settings {
+  id          String   @id @default("singleton")
+  siteTitle   String   @default("Huzur Kurban")
+  heroText    String   @default("Kurbanınız Emin Ellerde")
+  phone       String   @default("0551 343 18 88")
+  whatsapp    String   @default("0551 343 18 88")
+  address     String   @default("İstanbul, Türkiye")
+  sliderImages String? @default("[\"/slider/slide_1.png\", \"/slider/slide_2.png\", \"/slider/slide_3.png\"]")
+  menuConfig  String?  @default("[{\"id\":\"kayit\",\"title\":\"Hisse Kaydı\",\"icon\":\"🐄\",\"target\":\"#kayit-formu\",\"color\":\"hover:bg-emerald-50 text-emerald-700\"},{\"id\":\"bagis\",\"title\":\"Bağış Hisse\",\"icon\":\"💖\",\"target\":\"#kayit-formu\",\"color\":\"hover:bg-amber-50 text-amber-700\"},{\"id\":\"sorgula\",\"title\":\"Kurbanını Gör\",\"icon\":\"🔍\",\"target\":\"#kurbanini-gor\",\"color\":\"hover:bg-blue-50 text-blue-700\"},{\"id\":\"teslimat\",\"title\":\"Teslimat Sorgula\",\"icon\":\"🚚\",\"target\":\"external\",\"url\":\"/teslimat\",\"color\":\"hover:bg-teal-50 text-teal-700\"},{\"id\":\"randevu\",\"title\":\"Randevu Al\",\"icon\":\"📅\",\"target\":\"modal\",\"color\":\"hover:bg-purple-50 text-purple-700\"},{\"id\":\"whatsapp\",\"title\":\"WhatsApp İletişim\",\"icon\":\"💬\",\"target\":\"external\",\"url\":\"https://wa.me/905513431888\",\"color\":\"hover:bg-[#25D366]/10 text-[#25D366]\"},{\"id\":\"sss\",\"title\":\"Sıkça Sorulan Sorular\",\"icon\":\"❓\",\"target\":\"#sss\",\"color\":\"hover:bg-slate-50 text-slate-700\"},{\"id\":\"iletisim\",\"title\":\"İletişim\",\"icon\":\"📞\",\"target\":\"#footer\",\"color\":\"hover:bg-rose-50 text-rose-700\"}]")
+  updatedAt   DateTime @updatedAt
+}
+
+model KurbanGroup {
+  id          String   @id @default(cuid())
+  name        String
+  price       String
+  isDonation  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  maxSlots    Int?     
+  createdAt   DateTime @default(now())
+}
+
+model Animal {
+  id          String   @id @default(cuid())
+  earTag      String   @unique
+  weight      Float?
+  groupName   String?
+  imageUrl    String?
+  note        String?
+  order       Int      @default(0)
+  deliveryStatus String @default("BEKLEMEDE")
+  shareholders AnimalShareholder[]
+  createdAt   DateTime @default(now())
+}
+
+
+model AnimalShareholder {
+  id             String       @id @default(cuid())
+  animal         Animal       @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  animalId       String
+  registration   Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  registrationId String
+  createdAt      DateTime     @default(now())
+
+  @@unique([animalId, registrationId])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  fullName     String?
+  role         String   @default("OPERATOR") // SUPERADMIN, OPERATOR
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Appointment {
+  id        String   @id @default(cuid())
+  fullName  String
+  phone     String
+  date      String
+  timeSlot  String
+  status    String   @default("BEKLEMEDE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
