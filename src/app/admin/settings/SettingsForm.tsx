@@ -15,9 +15,22 @@ export default function SettingsForm({ initialData }: { initialData: any }) {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <div className="p-6 border-b border-slate-200">
-        <h3 className="text-lg font-bold text-slate-800">Site Ayarları</h3>
-        <p className="text-sm text-slate-500">Ziyaretçi sitesindeki fiyatları ve metinleri buradan değiştirebilirsiniz.</p>
+      <div className="p-6 border-b border-slate-200 flex justify-between items-center">
+        <div>
+          <h3 className="text-lg font-bold text-slate-800">Site Ayarları</h3>
+          <p className="text-sm text-slate-500">Ziyaretçi sitesindeki fiyatları ve metinleri buradan değiştirebilirsiniz.</p>
+        </div>
+        <button 
+          onClick={() => (document.getElementById('save-settings-btn') as HTMLButtonElement)?.click()}
+          type="button"
+          disabled={isPending}
+          className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold transition-all shadow-md shadow-emerald-100 disabled:opacity-70 flex items-center gap-2"
+        >
+          {isPending ? (
+            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          ) : '✓'}
+          Kaydet
+        </button>
       </div>
 
       <form action={formAction} className="p-6 space-y-8">
@@ -58,7 +71,12 @@ export default function SettingsForm({ initialData }: { initialData: any }) {
         {state?.success && <div className="p-3 bg-emerald-50 text-emerald-700 rounded-lg text-sm">{state.message}</div>}
 
         <div className="flex justify-end">
-          <button type="submit" disabled={isPending} className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors disabled:opacity-70">
+          <button 
+            id="save-settings-btn"
+            type="submit" 
+            disabled={isPending} 
+            className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors disabled:opacity-70"
+          >
             {isPending ? 'Kaydediliyor...' : 'Ayarları Kaydet'}
           </button>
         </div>
