@@ -47,15 +47,15 @@ export default function Navbar({ settings }: { settings: any }) {
       <nav className="fixed w-full z-[100] bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
-            <Link href="/" className="flex items-center gap-2 group transition-all">
-              <div className="relative h-12 w-12 transition-transform group-hover:scale-110">
+            <Link href="/" className="flex items-center gap-3 group transition-all">
+              <div className="relative h-14 w-14 transition-transform group-hover:scale-110">
                 <img 
                   src="/logo-icon.png" 
                   alt={settings.siteTitle} 
-                  className="h-full w-full object-contain mix-blend-multiply"
+                  className="h-full w-full object-contain"
                 />
               </div>
-              <span className="font-bold text-xl tracking-tight text-slate-900 group-hover:text-emerald-700 transition-colors uppercase">
+              <span className="font-extrabold text-2xl tracking-tighter text-slate-900 group-hover:text-emerald-700 transition-colors uppercase">
                 {settings.siteTitle}
               </span>
             </Link>
