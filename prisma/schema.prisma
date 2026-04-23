@@ -29,12 +29,34 @@ model Registration {
 model Settings {
   id          String   @id @default("singleton")
   siteTitle   String   @default("Huzur Kurban")
-  heroText    String   @default("Kurbanınız Emin Ellerde")
+  
+  // Hero Content
+  heroTitle   String   @default("Kurbanınız Emin Ellerde")
+  heroSubText String   @default("İslami usullere uygun, hijyenik tesislerde, veteriner hekim kontrolünde güvenilir bir kurban ibadeti için Hizmetinizdeyiz. Hissenizi hemen ayırtın, huzurla bayramı yaşayın.")
+  heroAccent  String   @default("2026 Kurban Kayıtlarımız Başladı")
+  
+  // Shared Sections
+  aboutTitle  String   @default("İbadetinizi Birlikte Edelim")
+  aboutText   String   @default("Talebelerimiz ve muhtaçlar için \"Bağış Hisse\" seçeneğimiz bulunmaktadır. Hizmetimiz 20 yıldır kaliteden ödün vermeden sürmektedir.")
+  
+  featuresTitle String @default("Neden Huzur Kurban?")
+  featuresSub   String @default("İbadetinizi en doğru, şeffaf ve güvenilir şekilde yerine getirmeniz için tüm süreci titizlikle yönetiyoruz.")
+  
+  // Feature Cards
+  f1Title     String   @default("Güvenli ve Şeffaf")
+  f1Text      String   @default("Kurbanlıklarımız veteriner hekim kontrolünde seçilir. Tüm süreçte sizinle şeffaf bir iletişim kurulur.")
+  
+  f2Title     String   @default("İslami Usul Kesim")
+  f2Text      String   @default("Tekbirlerle, İslami kaidelere tam riayet edilerek, işin ehli kasaplarımız tarafından kesim yapılır.")
+  
+  f3Title     String   @default("Eşit Paylama & Teslim")
+  f3Text      String   @default("Etleriniz hassas terazilerde eşit olarak pay edilir, özel ambalajlarında ilk gün teslim edilir.")
+
   phone       String   @default("0551 343 18 88")
   whatsapp    String   @default("0551 343 18 88")
   address     String   @default("İstanbul, Türkiye")
   sliderImages String? @default("[\"/slider/slide_1.png\", \"/slider/slide_2.png\", \"/slider/slide_3.png\"]")
-  menuConfig  String?  @default("[{\"id\":\"kayit\",\"title\":\"Hisse Kaydı\",\"icon\":\"🐄\",\"target\":\"#kayit-formu\",\"color\":\"hover:bg-emerald-50 text-emerald-700\"},{\"id\":\"bagis\",\"title\":\"Bağış Hisse\",\"icon\":\"💖\",\"target\":\"#kayit-formu\",\"color\":\"hover:bg-amber-50 text-amber-700\"},{\"id\":\"sorgula\",\"title\":\"Kurbanını Gör\",\"icon\":\"🔍\",\"target\":\"#kurbanini-gor\",\"color\":\"hover:bg-blue-50 text-blue-700\"},{\"id\":\"teslimat\",\"title\":\"Teslimat Sorgula\",\"icon\":\"🚚\",\"target\":\"external\",\"url\":\"/teslimat\",\"color\":\"hover:bg-teal-50 text-teal-700\"},{\"id\":\"randevu\",\"title\":\"Randevu Al\",\"icon\":\"📅\",\"target\":\"modal\",\"color\":\"hover:bg-purple-50 text-purple-700\"},{\"id\":\"whatsapp\",\"title\":\"WhatsApp İletişim\",\"icon\":\"💬\",\"target\":\"external\",\"url\":\"https://wa.me/905513431888\",\"color\":\"hover:bg-[#25D366]/10 text-[#25D366]\"},{\"id\":\"sss\",\"title\":\"Sıkça Sorulan Sorular\",\"icon\":\"❓\",\"target\":\"#sss\",\"color\":\"hover:bg-slate-50 text-slate-700\"},{\"id\":\"iletisim\",\"title\":\"İletişim\",\"icon\":\"📞\",\"target\":\"#footer\",\"color\":\"hover:bg-rose-50 text-rose-700\"}]")
+  menuConfig  String?  @default("[{\"id\":\"kayit\",\"title\":\"Hisse Kaydı\",\"icon\":\"🐄\",\"target\":\"#kayit-formu\",\"color\":\"hover:bg-emerald-50 text-emerald-700\"},{\"id\":\"bagis\",\"title\":\"Bağış Hisse\",\"icon\":\"💖\",\"target\":\"#kayit-formu\",\"color\":\"hover:bg-amber-50 text-amber-700\"},{\"id\":\"sorgula\",\"title\":\"Kurbanını Gör\",\"icon\":\"🔍\",\"target\":\"#kurbanini-gor\",\"color\":\"hover:bg-blue-50 text-blue-700\"},{\"id\":\"teslimat\",\"title\":\"Teslimat Sorgula\",\"icon\":\"\uD83D\uDE9A\",\"target\":\"external\",\"url\":\"/teslimat\",\"color\":\"hover:bg-teal-50 text-teal-700\"},{\"id\":\"randevu\",\"title\":\"Randevu Al\",\"icon\":\"\uD83D\uDCC5\",\"target\":\"modal\",\"color\":\"hover:bg-purple-50 text-purple-700\"},{\"id\":\"whatsapp\",\"title\":\"WhatsApp İletişim\",\"icon\":\"\uD83D\uDCAC\",\"target\":\"external\",\"url\":\"https://wa.me/905513431888\",\"color\":\"hover:bg-[#25D366]/10 text-[#25D366]\"},{\"id\":\"sss\",\"title\":\"Sıkça Sorulan Sorular\",\"icon\":\"❓\",\"target\":\"#sss\",\"color\":\"hover:bg-slate-50 text-slate-700\"},{\"id\":\"iletisim\",\"title\":\"İletişim\",\"icon\":\"\uD83D\uDCDE\",\"target\":\"#footer\",\"color\":\"hover:bg-rose-50 text-rose-700\"}]")
   updatedAt   DateTime @updatedAt
 }
 

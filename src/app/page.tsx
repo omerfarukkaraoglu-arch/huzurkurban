@@ -47,8 +47,8 @@ export default async function Home() {
       <section id="nasil-calisir" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Neden Huzur Kurban?</h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">İbadetinizi en doğru, şeffaf ve güvenilir şekilde yerine getirmeniz için tüm süreci titizlikle yönetiyoruz.</p>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">{settings.featuresTitle || 'Neden Huzur Kurban?'}</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">{settings.featuresSub || 'İbadetinizi en doğru, şeffaf ve güvenilir şekilde yerine getirmeniz için tüm süreci titizlikle yönetiyoruz.'}</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -56,22 +56,22 @@ export default async function Home() {
               <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
                 <ShieldCheck className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-semibold mb-3 text-slate-900">Güvenli ve Şeffaf</h3>
-              <p className="text-slate-600 leading-relaxed">Kurbanlıklarımız veteriner hekim kontrolünde seçilir. Tüm süreçte sizinle şeffaf bir iletişim kurulur.</p>
+              <h3 className="text-xl font-semibold mb-3 text-slate-900">{settings.f1Title || 'Güvenli ve Şeffaf'}</h3>
+              <p className="text-slate-600 leading-relaxed">{settings.f1Text || 'Kurbanlıklarımız veteriner hekim kontrolünde seçilir. Tüm süreçte sizinle şeffaf bir iletişim kurulur.'}</p>
             </div>
             <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-md transition-shadow">
               <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
                 <Scale className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-semibold mb-3 text-slate-900">İslami Usul Kesim</h3>
-              <p className="text-slate-600 leading-relaxed">Tekbirlerle, İslami kaidelere tam riayet edilerek, işin ehli kasaplarımız tarafından kesim yapılır.</p>
+              <h3 className="text-xl font-semibold mb-3 text-slate-900">{settings.f2Title || 'İslami Usul Kesim'}</h3>
+              <p className="text-slate-600 leading-relaxed">{settings.f2Text || 'Tekbirlerle, İslami kaidelere tam riayet edilerek, işin ehli kasaplarımız tarafından kesim yapılır.'}</p>
             </div>
             <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-md transition-shadow">
               <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
                 <Beef className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-semibold mb-3 text-slate-900">Eşit Paylama & Teslim</h3>
-              <p className="text-slate-600 leading-relaxed">Etleriniz hassas terazilerde eşit olarak pay edilir, özel ambalajlarında ilk gün teslim edilir.</p>
+              <h3 className="text-xl font-semibold mb-3 text-slate-900">{settings.f3Title || 'Eşit Paylama & Teslim'}</h3>
+              <p className="text-slate-600 leading-relaxed">{settings.f3Text || 'Etleriniz hassas terazilerde eşit olarak pay edilir, özel ambalajlarında ilk gün teslim edilir.'}</p>
             </div>
           </div>
         </div>
@@ -164,8 +164,8 @@ export default async function Home() {
       {/* Footer / CTA padding */}
       <div className="py-20 bg-slate-800 text-white text-center">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-6">İbadetinizi Birlikte Edelim</h2>
-          <p className="text-slate-300 mb-8 max-w-2xl mx-auto">Talebelerimiz ve muhtaçlar için "Bağış Hisse" seçeneğimiz bulunmaktadır. Hizmetimiz 20 yıldır kaliteden ödün vermeden sürmektedir.</p>
+          <h2 className="text-3xl font-bold mb-6">{settings.aboutTitle || 'İbadetinizi Birlikte Edelim'}</h2>
+          <p className="text-slate-300 mb-8 max-w-2xl mx-auto">{settings.aboutText || 'Talebelerimiz ve muhtaçlar için "Bağış Hisse" seçeneğimiz bulunmaktadır. Hizmetimiz 20 yıldır kaliteden ödün vermeden sürmektedir.'}</p>
           
           {donationGroups.length > 0 && (
             <div className="mb-12 flex justify-center flex-wrap gap-4">

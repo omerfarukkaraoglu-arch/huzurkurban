@@ -59,15 +59,15 @@ export default function HeroSection({ settings }: { settings: any }) {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
             </span>
-            2026 Kurban Kayıtlarımız Başladı
+            {settings.heroAccent || '2026 Kurban Kayıtlarımız Başladı'}
           </div>
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight drop-shadow-2xl">
-            {settings.heroText || 'Kurbanınız Emin Ellerde'}
+            {settings.heroTitle || 'Kurbanınız Emin Ellerde'}
           </h1>
           
           <p className="text-lg md:text-2xl text-slate-200 mb-10 leading-relaxed font-light drop-shadow-lg max-w-3xl mx-auto">
-            İslami usullere uygun, hijyenik tesislerde, veteriner hekim kontrolünde güvenilir bir kurban ibadeti için Hizmetinizdeyiz. Hissenizi hemen ayırtın, huzurla bayramı yaşayın.
+            {settings.heroSubText || 'İslami usullere uygun, hijyenik tesislerde, veteriner hekim kontrolünde güvenilir bir kurban ibadeti için Hizmetinizdeyiz. Hissenizi hemen ayırtın, huzurla bayramı yaşayın.'}
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center flex-wrap gap-4 mt-8">
