@@ -62,18 +62,18 @@ export default function HeroSection({ settings }: { settings: any }) {
             {settings.heroAccent || '2026 Kurban Kayıtlarımız Başladı'}
           </div>
           
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight drop-shadow-2xl">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-4 sm:mb-6 leading-tight drop-shadow-2xl">
             {settings.heroTitle || 'Kurbanınız Emin Ellerde'}
           </h1>
           
-          <p className="text-lg md:text-2xl text-slate-200 mb-10 leading-relaxed font-light drop-shadow-lg max-w-3xl mx-auto">
-            {settings.heroSubText || 'İslami usullere uygun, hijyenik tesislerde, veteriner hekim kontrolünde güvenilir bir kurban ibadeti için Hizmetinizdeyiz. Hissenizi hemen ayırtın, huzurla bayramı yaşayın.'}
+          <p className="text-base sm:text-lg md:text-2xl text-slate-200 mb-6 sm:mb-10 leading-relaxed font-light drop-shadow-lg max-w-3xl mx-auto px-4">
+            {settings.heroSubText || 'İslami usullere uygun, hijyenik tesislerde, veteriner hekim kontrolünde güvenilir bir kurban ibadeti için Hizmetinizdeyiz.'}
           </p>
           
-          <div className="flex flex-col sm:flex-row justify-center flex-wrap gap-4 mt-8">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 mt-4 sm:mt-8 px-4">
             <a 
               href="#kayit-formu" 
-              className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-lg hover:shadow-emerald-500/30 group"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all shadow-lg hover:shadow-emerald-500/30 group"
             >
               <CheckCircle2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
               Hemen Kayıt Ol
@@ -81,14 +81,14 @@ export default function HeroSection({ settings }: { settings: any }) {
             <a 
               href="#kayit-formu"
               onClick={() => window.dispatchEvent(new CustomEvent('change-form-mode', { detail: 'bagis' }))}
-              className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all border border-white/30 group"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all border border-white/30 group"
             >
               <HeartHandshake className="w-5 h-5 group-hover:scale-110 transition-transform text-amber-300" />
               Bağış Hisse
             </a>
             <a 
               href="/teslimat"
-              className="flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-900 px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-lg group"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-900 px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all shadow-lg group"
             >
               <Truck className="w-5 h-5 group-hover:translate-x-1 transition-transform text-teal-600" />
               Teslimat Sorgula
@@ -98,20 +98,20 @@ export default function HeroSection({ settings }: { settings: any }) {
       </div>
 
       {/* Slider Controls */}
-      <div className="absolute inset-x-0 bottom-10 flex justify-center gap-4 z-20">
-        <button onClick={prevSlide} className="w-12 h-12 rounded-full border border-white/20 bg-black/20 hover:bg-white/10 backdrop-blur-sm flex items-center justify-center text-white transition-colors">
+      <div className="absolute inset-x-0 bottom-6 sm:bottom-10 flex justify-center gap-4 z-20">
+        <button onClick={prevSlide} className="hidden sm:flex w-12 h-12 rounded-full border border-white/20 bg-black/20 hover:bg-white/10 backdrop-blur-sm items-center justify-center text-white transition-colors">
           <ChevronLeft className="w-6 h-6" />
         </button>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
           {slides.map((_: any, idx: number) => (
             <button 
               key={idx} 
               onClick={() => setCurrentSlide(idx)}
-              className={`transition-all rounded-full ${currentSlide === idx ? 'w-8 h-2 bg-emerald-500' : 'w-2 h-2 bg-white/50 hover:bg-white'}`}
+              className={`transition-all rounded-full ${currentSlide === idx ? 'w-6 sm:w-8 h-1.5 sm:h-2 bg-emerald-500' : 'w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white/50 hover:bg-white'}`}
             />
           ))}
         </div>
-        <button onClick={nextSlide} className="w-12 h-12 rounded-full border border-white/20 bg-black/20 hover:bg-white/10 backdrop-blur-sm flex items-center justify-center text-white transition-colors">
+        <button onClick={nextSlide} className="hidden sm:flex w-12 h-12 rounded-full border border-white/20 bg-black/20 hover:bg-white/10 backdrop-blur-sm items-center justify-center text-white transition-colors">
           <ChevronRight className="w-6 h-6" />
         </button>
       </div>
