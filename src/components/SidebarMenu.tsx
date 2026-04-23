@@ -72,7 +72,7 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
 
       {/* Drawer */}
       <div 
-        className={`fixed top-0 right-0 h-full w-[300px] bg-white z-[160] shadow-2xl transition-transform duration-300 ease-in-out transform ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 right-0 h-full w-[300px] bg-white z-[160] shadow-2xl transition-transform duration-300 ease-in-out transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} overflow-y-auto`}
       >
         <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
           <div className="flex items-center gap-2">
