@@ -26,3 +26,30 @@ export async function bookAppointment(prevState: any, formData: FormData) {
     return { success: false, error: 'Randevu alınırken bir hata oluştu.', message: '' }
   }
 }
+
+export async function updateAppointmentStatus(id: string, status: string) {
+  try {
+    await prisma.appointment.update({
+      where: { id },
+      data: { status }
+    })
+    revalidatePath('/admin/appointments')
+    return { success: true }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: 'Durum güncellenirken hata oluştu.' }
+  }
+}
+
+export async function deleteAppointment(id: string) {
+  try {
+    await prisma.appointment.delete({
+      where: { id }
+    })
+    revalidatePath('/admin/appointments')
+    return { success: true }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: 'Silinirken hata oluştu.' }
+  }
+}
