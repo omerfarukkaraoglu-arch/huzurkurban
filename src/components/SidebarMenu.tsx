@@ -3,10 +3,12 @@
 import { useEffect, useState } from 'react'
 import * as LucideIcons from 'lucide-react'
 
-export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsapp, menuConfig }: { isOpen: boolean, onClose: () => void, onOpenAppointment: () => void, whatsapp: string, menuConfig?: string }) {
+export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsapp, phone, menuConfig }: { isOpen: boolean, onClose: () => void, onOpenAppointment: () => void, whatsapp: string, phone?: string, menuConfig?: string }) {
   const [mounted, setMounted] = useState(false)
   
   const cleanWhatsapp = whatsapp?.replace(/\s+/g, '').replace(/^0/, '90') || '905513431888'
+  const displayPhone = phone || '0551 343 18 88'
+  const telLink = displayPhone.replace(/\s+/g, '')
 
   const actions = [
     { id: 'kayit', title: 'Hisse Kaydı', icon: 'Tractor', target: '#kayit-formu', color: 'hover:bg-emerald-50 text-emerald-700' },
@@ -36,15 +38,12 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
     if (item.target === 'modal') {
       setTimeout(() => onOpenAppointment(), 300)
     } else if (item.target === 'external') {
-      // Internal links (start with /) should navigate in same tab
-      // External links (start with http) should open in new tab
       if (item.url?.startsWith('/')) {
         window.location.href = item.url
       } else {
         window.open(item.url, '_blank')
       }
     } else {
-      // Anchor target like #kayit-formu
       const el = document.querySelector(item.target)
       if (el) {
         setTimeout(() => {
@@ -56,7 +55,6 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
           }
         }, 300)
       } else {
-        // Element not found on current page, navigate to homepage with anchor
         window.location.href = '/' + item.target
       }
     }
@@ -76,7 +74,7 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
       >
         <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
           <div className="flex items-center gap-2">
-            <img src="/logo-icon.png" alt="Menü" className="h-14 w-14 object-contain" />
+            <img src="/logo-icon.png" alt="Menü" className="h-10 w-10 object-contain mix-blend-multiply" />
             <span className="font-bold text-lg text-slate-800 tracking-tight">Menü</span>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-3xl leading-none">&times;</button>
@@ -98,9 +96,9 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
           })}
         </div>
 
-        <div className="absolute bottom-0 left-0 w-full p-6 border-t border-slate-100 text-center">
+        <div className="p-6 border-t border-slate-100 text-center bg-slate-50 mt-auto">
             <p className="text-xs text-slate-400 uppercase tracking-widest font-bold mb-4">Müşteri Destek</p>
-            <a href="tel:05513431888" className="text-emerald-600 font-bold text-lg">0551 343 18 88</a>
+            <a href={`tel:${telLink}`} className="text-emerald-600 font-bold text-lg">{displayPhone}</a>
         </div>
       </div>
     </>

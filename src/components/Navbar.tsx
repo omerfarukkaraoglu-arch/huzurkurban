@@ -98,6 +98,7 @@ export default function Navbar({ settings }: { settings: any }) {
         onClose={() => setIsMenuOpen(false)} 
         onOpenAppointment={() => setIsAppointmentOpen(true)}
         whatsapp={settings.whatsapp || settings.phone}
+        phone={settings.phone}
         menuConfig={settings.menuConfig}
       />
 
