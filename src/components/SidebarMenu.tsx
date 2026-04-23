@@ -76,7 +76,7 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
       >
         <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Menü" className="h-8 object-contain" />
+            <img src="/logo.png" alt="Menü" className="h-12 object-contain mix-blend-multiply" />
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-3xl leading-none">&times;</button>
         </div>

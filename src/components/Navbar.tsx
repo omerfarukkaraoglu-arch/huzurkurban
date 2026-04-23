@@ -48,11 +48,11 @@ export default function Navbar({ settings }: { settings: any }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             <Link href="/" className="flex items-center gap-3 group transition-all">
-              <div className="relative h-12 w-48 transition-transform group-hover:scale-105">
+              <div className="relative h-16 w-56 transition-transform group-hover:scale-105">
                 <img 
                   src="/logo.png" 
                   alt={settings.siteTitle} 
-                  className="h-full w-full object-contain"
+                  className="h-full w-full object-contain mix-blend-multiply"
                 />
               </div>
             </Link>
