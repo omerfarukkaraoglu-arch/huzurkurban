@@ -63,11 +63,9 @@ export default function AdminSidebar({
         {/* Header */}
         <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200">
-              <span className="text-white font-bold text-xl leading-none">H</span>
-            </div>
+            <img src="/logo.png" alt="Admin" className="h-10 object-contain" />
             <div className="flex flex-col">
-                <span className="font-bold text-slate-800 leading-tight">Admin</span>
+                <span className="font-bold text-slate-800 leading-tight">Panel</span>
                 <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">{role}</span>
             </div>
           </div>
