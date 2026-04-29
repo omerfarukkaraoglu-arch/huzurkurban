@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Huzur Kurban",
   description: "Huzur Kurban - Güvenilir Kurban İbadeti",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({
