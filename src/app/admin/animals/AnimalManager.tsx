@@ -3,6 +3,7 @@
 import React, { useActionState, useTransition, useState } from 'react'
 import { createAnimal, updateAnimal, deleteAnimal, deleteAnimals, addShareholder, removeShareholder, bulkImportAnimals, reorderAnimals } from '@/app/actions/animals'
 import * as XLSX from 'xlsx'
+import imageCompression from 'browser-image-compression'
 
 const initialState = { success: false, message: '', error: '' }
 
@@ -21,6 +22,8 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
   
   const [animalsData, setAnimalsData] = useState<any[]>(initialAnimals)
   const [draggedItem, setDraggedItem] = useState<any | null>(null)
+  
+  const [existingImages, setExistingImages] = useState<string[]>([])
 
   React.useEffect(() => {
     setAnimalsData(initialAnimals)
@@ -167,6 +170,62 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
       .filter(r => r.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || r.phone.includes(searchTerm))
   }
 
+  const handleCreateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
+    const imageInputs = form.querySelector('input[type="file"]') as HTMLInputElement;
+    const files = imageInputs?.files;
+    
+    if (files && files.length > 0) {
+      formData.delete('images');
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        try {
+           const compressedFile = await imageCompression(file, { maxSizeMB: 0.3, maxWidthOrHeight: 1200, useWebWorker: true });
+           formData.append('images', compressedFile, compressedFile.name);
+        } catch (err) {
+           console.error('Compression error:', err);
+           formData.append('images', file, file.name);
+        }
+      }
+    }
+    
+    startTransition(() => {
+      formAction(formData);
+    });
+  }
+
+  const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
+    formData.append('existingImages', JSON.stringify(existingImages));
+    
+    const imageInputs = form.querySelector('input[type="file"]') as HTMLInputElement;
+    const files = imageInputs?.files;
+    
+    if (files && files.length > 0) {
+      formData.delete('images');
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        try {
+           const compressedFile = await imageCompression(file, { maxSizeMB: 0.3, maxWidthOrHeight: 1200, useWebWorker: true });
+           formData.append('images', compressedFile, compressedFile.name);
+        } catch (err) {
+           console.error('Compression error:', err);
+           formData.append('images', file, file.name);
+        }
+      }
+    }
+    
+    startTransition(() => {
+      editFormAction(formData);
+    });
+  }
+
   return (
     <div className="space-y-8">
       {/* Yeni Hayvan Ekleme Formu */}
@@ -195,7 +254,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
             <div className="text-sm mt-1">{importResult.message}</div>
           </div>
         )}
-        <form action={formAction} className="p-6 space-y-4">
+        <form onSubmit={handleCreateSubmit} className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Küpe Numarası *</label>
@@ -215,8 +274,8 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
             <input type="text" name="note" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Hayvan hakkında ek bilgi" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Hayvan Görseli</label>
-            <input type="file" name="image" accept="image/*" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
+            <label className="block text-sm font-medium text-slate-700 mb-1">Hayvan Görseli <span className="text-slate-400 font-normal">(Birden fazla seçebilirsiniz, otomatik sıkıştırılır)</span></label>
+            <input type="file" name="images" multiple accept="image/*" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
           </div>
 
           {state?.error && <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm">{state.error}</div>}
@@ -321,13 +380,20 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                             />
                         </div>
                     )}
-                    {animal.imageUrl ? (
-                      <img src={animal.imageUrl} alt={animal.earTag} className="w-12 h-12 rounded-xl object-cover border border-slate-200" />
-                    ) : (
-                      <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center text-xl font-bold">
-                        🐄
-                      </div>
-                    )}
+                    {(() => {
+                      const firstImg = animal.imageUrls && animal.imageUrls.length > 0 ? animal.imageUrls[0] : animal.imageUrl;
+                      const extraCount = animal.imageUrls ? Math.max(0, animal.imageUrls.length - 1) : 0;
+                      return firstImg ? (
+                        <div className="relative">
+                          <img src={firstImg} alt={animal.earTag} className="w-12 h-12 rounded-xl object-cover border border-slate-200" />
+                          {extraCount > 0 && <span className="absolute -bottom-2 -right-2 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-emerald-200">+{extraCount}</span>}
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center text-xl font-bold">
+                          🐄
+                        </div>
+                      )
+                    })()}
                     <div>
                       <div className="font-bold text-slate-800 text-lg">{animal.earTag}</div>
                       <div className="text-sm text-slate-500">
@@ -345,7 +411,10 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                       {expandedAnimal === animal.id ? 'Kapat' : `Hissedar Yönet (${animal.shareholders?.length || 0}/7)`}
                     </button>
                     <button
-                      onClick={() => setEditingAnimal(animal)}
+                      onClick={() => {
+                         setEditingAnimal(animal);
+                         setExistingImages(animal.imageUrls && animal.imageUrls.length > 0 ? animal.imageUrls : (animal.imageUrl ? [animal.imageUrl] : []));
+                      }}
                       className="text-blue-600 hover:bg-blue-50 font-medium text-sm px-3 py-2 rounded-lg border border-blue-100 transition-colors"
                     >
                       Düzenle
@@ -440,7 +509,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                 <button onClick={() => setEditingAnimal(null)} className="text-slate-400 hover:text-slate-600 bg-white p-2 rounded-full border border-slate-200">✕</button>
             </div>
             
-            <form action={editFormAction} className="p-6 space-y-4">
+            <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
               <input type="hidden" name="id" value={editingAnimal.id} />
               <div className="grid grid-cols-1 gap-4">
                 <div>
@@ -462,12 +531,26 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                   <input type="text" name="note" defaultValue={editingAnimal.note || ''} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Hayvan Görseli <span className="text-slate-400 font-normal">(Değiştirmek için dosya seçin)</span></label>
-                  <input type="file" name="image" accept="image/*" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-                  {editingAnimal.imageUrl && (
-                      <div className="mt-2 flex items-center gap-2">
-                          <img src={editingAnimal.imageUrl} alt="preview" className="w-10 h-10 rounded border border-slate-200 object-cover" />
-                          <span className="text-xs text-slate-500">Mevcut görsel sistemde yüklü.</span>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Hayvan Görseli Ekle <span className="text-slate-400 font-normal">(Birden fazla seçilebilir)</span></label>
+                  <input type="file" name="images" multiple accept="image/*" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                  
+                  {existingImages.length > 0 && (
+                      <div className="mt-3">
+                          <label className="block text-xs font-bold text-slate-500 mb-2">Mevcut Görseller:</label>
+                          <div className="flex gap-2 flex-wrap">
+                              {existingImages.map((url, i) => (
+                                  <div key={i} className="relative group">
+                                      <img src={url} alt="preview" className="w-16 h-16 rounded border border-slate-200 object-cover" />
+                                      <button 
+                                        type="button" 
+                                        onClick={() => setExistingImages(prev => prev.filter((_, idx) => idx !== i))}
+                                        className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity"
+                                      >
+                                        ✕
+                                      </button>
+                                  </div>
+                              ))}
+                          </div>
                       </div>
                   )}
                 </div>

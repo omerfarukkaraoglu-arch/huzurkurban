@@ -8,11 +8,13 @@ export default function AnimalInquiry() {
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setResult(null)
+    setCurrentImageIndex(0)
 
     startTransition(async () => {
       const res = await findAnimalByInquiry(query)
@@ -61,20 +63,68 @@ export default function AnimalInquiry() {
           {result && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                {/* Görsel */}
-                <div className="relative group">
-                  {result.imageUrl ? (
-                    <div className="aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
-                      <img src={result.imageUrl} alt={result.earTag} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                    </div>
-                  ) : (
-                    <div className="aspect-square bg-slate-50 rounded-3xl flex flex-col items-center justify-center text-slate-300 border-4 border-dashed border-slate-200">
-                      <span className="text-8xl mb-4">🐄</span>
-                      <p className="font-bold uppercase tracking-widest text-sm">Görsel Hazırlanıyor</p>
-                    </div>
-                  )}
-                  <div className="absolute -top-4 -right-4 bg-amber-400 text-white px-6 py-2 rounded-2xl font-black shadow-lg transform rotate-6">
-                    HİSSELİ
+                {/* Görsel Galerisi */}
+                <div className="space-y-3">
+                  <div className="relative group">
+                    {(() => {
+                        const images = result.imageUrls && result.imageUrls.length > 0 ? result.imageUrls : (result.imageUrl ? [result.imageUrl] : []);
+                        if (images.length > 0) {
+                            return (
+                                <>
+                                  <div className="aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white relative">
+                                    <img src={images[currentImageIndex] || images[0]} alt={result.earTag} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                    
+                                    {images.length > 1 && (
+                                        <>
+                                            <button 
+                                              type="button"
+                                              onClick={() => setCurrentImageIndex(prev => prev > 0 ? prev - 1 : images.length - 1)}
+                                              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-800 w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"
+                                            >
+                                              {'<'}
+                                            </button>
+                                            <button 
+                                              type="button"
+                                              onClick={() => setCurrentImageIndex(prev => prev < images.length - 1 ? prev + 1 : 0)}
+                                              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-800 w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg"
+                                            >
+                                              {'>'}
+                                            </button>
+                                        </>
+                                    )}
+                                  </div>
+                                  <div className="absolute -top-4 -right-4 bg-amber-400 text-white px-6 py-2 rounded-2xl font-black shadow-lg transform rotate-6 z-10">
+                                    HİSSELİ
+                                  </div>
+                                  
+                                  {images.length > 1 && (
+                                    <div className="flex gap-2 mt-3 overflow-x-auto pb-2 custom-scrollbar">
+                                      {images.map((url: string, idx: number) => (
+                                        <button 
+                                          key={idx} 
+                                          type="button"
+                                          onClick={() => setCurrentImageIndex(idx)}
+                                          className={`w-16 h-16 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${currentImageIndex === idx ? 'border-emerald-500 scale-105 shadow-md' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                                        >
+                                          <img src={url} className="w-full h-full object-cover" />
+                                        </button>
+                                      ))}
+                                    </div>
+                                  )}
+                                </>
+                            )
+                        } else {
+                            return (
+                                <div className="aspect-square bg-slate-50 rounded-3xl flex flex-col items-center justify-center text-slate-300 border-4 border-dashed border-slate-200 relative">
+                                  <span className="text-8xl mb-4">🐄</span>
+                                  <p className="font-bold uppercase tracking-widest text-sm">Görsel Hazırlanıyor</p>
+                                  <div className="absolute -top-4 -right-4 bg-amber-400 text-white px-6 py-2 rounded-2xl font-black shadow-lg transform rotate-6 z-10">
+                                    HİSSELİ
+                                  </div>
+                                </div>
+                            )
+                        }
+                    })()}
                   </div>
                 </div>
 

@@ -11,7 +11,8 @@ export async function createAnimal(prevState: any, formData: FormData) {
     const weightRaw = formData.get('weight') as string
     const groupName = formData.get('groupName') as string
     const note = formData.get('note') as string
-    const imageFile = formData.get('image') as File | null
+    const imageFiles = formData.getAll('images') as File[]
+    const validImages = imageFiles.filter(f => f && f.size > 0)
 
     if (!earTag) {
       return { success: false, error: 'Küpe numarası zorunludur.', message: '' }
@@ -22,25 +23,29 @@ export async function createAnimal(prevState: any, formData: FormData) {
       return { success: false, error: 'Bu küpe numarası zaten kayıtlı.', message: '' }
     }
 
-    let imageUrl = null
-    if (imageFile && imageFile.size > 0) {
+    let imageUrls: string[] = []
+    for (const imageFile of validImages) {
       try {
         const blob = await put(`animals/${Date.now()}-${imageFile.name.replace(/\s+/g, '-')}`, imageFile, {
           access: 'public',
           token: process.env.BLOB_READ_WRITE_TOKEN,
         })
-        imageUrl = blob.url
+        imageUrls.push(blob.url)
       } catch (uploadError) {
         console.error("Animal image upload error:", uploadError)
       }
     }
+
+    // Geriye dönük uyumluluk için ilk fotoğrafı imageUrl olarak da kaydediyoruz
+    const firstImageUrl = imageUrls.length > 0 ? imageUrls[0] : null
 
     await prisma.animal.create({
       data: {
         earTag,
         weight: weightRaw ? parseFloat(weightRaw) : null,
         groupName: groupName || null,
-        imageUrl,
+        imageUrl: firstImageUrl,
+        imageUrls,
         note: note || null,
       }
     })
@@ -59,7 +64,15 @@ export async function updateAnimal(prevState: any, formData: FormData) {
     const weightRaw = formData.get('weight') as string
     const groupName = formData.get('groupName') as string
     const note = formData.get('note') as string
-    const imageFile = formData.get('image') as File | null
+    const imageFiles = formData.getAll('images') as File[]
+    const validImages = imageFiles.filter(f => f && f.size > 0)
+    const existingImagesRaw = formData.get('existingImages') as string
+    let existingImages: string[] = []
+    if (existingImagesRaw) {
+       try {
+           existingImages = JSON.parse(existingImagesRaw)
+       } catch(e) {}
+    }
 
     if (!id || !earTag) {
       return { success: false, error: 'ID ve Küpe numarası zorunludur.', message: '' }
@@ -76,18 +89,20 @@ export async function updateAnimal(prevState: any, formData: FormData) {
       }
     }
 
-    let imageUrl = animal.imageUrl
-    if (imageFile && imageFile.size > 0) {
+    let imageUrls: string[] = [...existingImages]
+    for (const imageFile of validImages) {
       try {
         const blob = await put(`animals/${Date.now()}-${imageFile.name.replace(/\s+/g, '-')}`, imageFile, {
           access: 'public',
           token: process.env.BLOB_READ_WRITE_TOKEN,
         })
-        imageUrl = blob.url
+        imageUrls.push(blob.url)
       } catch (uploadError) {
         console.error("Animal image update error:", uploadError)
       }
     }
+    
+    const firstImageUrl = imageUrls.length > 0 ? imageUrls[0] : null
 
     await prisma.animal.update({
       where: { id },
@@ -95,7 +110,8 @@ export async function updateAnimal(prevState: any, formData: FormData) {
         earTag,
         weight: weightRaw ? parseFloat(weightRaw) : null,
         groupName: groupName || null,
-        imageUrl,
+        imageUrl: firstImageUrl,
+        imageUrls,
         note: note || null,
       }
     })

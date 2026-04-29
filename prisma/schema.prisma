@@ -76,6 +76,7 @@ model Animal {
   weight      Float?
   groupName   String?
   imageUrl    String?
+  imageUrls   String[] @default([])
   note        String?
   order       Int      @default(0)
   deliveryStatus String @default("BEKLEMEDE")
