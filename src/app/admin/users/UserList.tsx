@@ -34,6 +34,12 @@ export default function UserList({ users, currentUserId }: { users: any[], curre
                   <span>@{user.username}</span>
                   <span>•</span>
                   <span className={`font-medium ${user.role === 'SUPERADMIN' ? 'text-amber-600' : 'text-slate-600'}`}>{user.role}</span>
+                  {user.station && (
+                    <>
+                      <span>•</span>
+                      <span className="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">{user.station}</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -73,6 +79,18 @@ export default function UserList({ users, currentUserId }: { users: any[], curre
             <select name="role" required className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none">
               <option value="OPERATOR">Operatör</option>
               <option value="SUPERADMIN">Süper Admin</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Görev Bölümü</label>
+            <select name="station" className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+              <option value="">Seçiniz (Opsiyonel)</option>
+              <option value="KESIMHANE">Kesimhane (Kesim Başladı)</option>
+              <option value="PARCALAMA">Parçalama</option>
+              <option value="TARTI">Tartı / Paketleme</option>
+              <option value="SEVKIYAT">Sevkiyat / Yükleme</option>
+              <option value="TESLIMAT">Teslimat / Kurye</option>
+              <option value="ADMIN">Genel Yönetim</option>
             </select>
           </div>
 

@@ -261,3 +261,33 @@ export async function bulkImportAnimals(formData: FormData) {
     return { success: false, error: 'Dosya işlenirken bir hata oluştu.', message: 'Dosya işlenirken bir hata oluştu.' }
   }
 }
+
+export async function updateAnimalStatus(animalId: string, nextStatus: string) {
+  try {
+    await prisma.animal.update({
+      where: { id: animalId },
+      data: { deliveryStatus: nextStatus }
+    })
+    
+    // Hayvan durumuna göre bağlı tüm kayıtları (hissedarları) da güncelle
+    const animal = await prisma.animal.findUnique({
+      where: { id: animalId },
+      include: { shareholders: true }
+    })
+
+    if (animal && animal.shareholders.length > 0) {
+      const registrationIds = animal.shareholders.map(s => s.registrationId)
+      await prisma.registration.updateMany({
+        where: { id: { in: registrationIds } },
+        data: { status: nextStatus }
+      })
+    }
+
+    revalidatePath('/admin/animals')
+    revalidatePath('/teslimat')
+    revalidatePath('/')
+    return { success: true, message: `Durum '${nextStatus}' olarak güncellendi.` }
+  } catch (error) {
+    return { success: false, error: 'Durum güncellenirken hata oluştu.' }
+  }
+}

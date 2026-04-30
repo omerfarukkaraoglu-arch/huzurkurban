@@ -38,6 +38,7 @@ export default function AdminSidebar({
     { title: 'Randevular', href: '/admin/appointments', icon: '📅' },
     { title: 'Makbuzlar', href: '/admin/receipts', icon: '🧾' },
     { title: 'Teslimat', href: '/admin/delivery', icon: '🚚' },
+    { title: 'Karekod Okut', href: '/admin/scan', icon: '🔍' },
   ]
 
   if (role === 'SUPERADMIN') {

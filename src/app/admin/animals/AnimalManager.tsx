@@ -307,11 +307,17 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                           {selectedIds.length} Seçili
                         </span>
                         <button 
+                          onClick={() => window.open(`/admin/animals/print-labels?ids=${selectedIds.join(',')}`, '_blank')}
+                          className="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-4 py-1.5 rounded-lg text-sm font-bold border border-blue-100 transition-all whitespace-nowrap"
+                        >
+                          🖨️ Karekodları Yazdır
+                        </button>
+                        <button 
                           onClick={handleBulkDelete}
                           disabled={isWorking}
                           className="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-1.5 rounded-lg text-sm font-bold border border-red-100 transition-all whitespace-nowrap"
                         >
-                          {isWorking ? 'Siliniyor...' : '🗑\uFE0F Seçilenleri Sil'}
+                          {isWorking ? 'Siliniyor...' : '🗑️ Seçilenleri Sil'}
                         </button>
                     </div>
                 )}

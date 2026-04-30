@@ -102,6 +102,7 @@ model User {
   passwordHash String
   fullName     String?
   role         String   @default("OPERATOR") // SUPERADMIN, OPERATOR
+  station      String?  // PARCALAMA, TARTI, SEVKIYAT, TESLIMAT, ADMIN
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

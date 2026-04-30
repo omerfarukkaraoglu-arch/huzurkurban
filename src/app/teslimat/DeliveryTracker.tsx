@@ -4,11 +4,11 @@ import { useState, useTransition } from 'react'
 import { getDeliveryStatusByPhone } from '@/app/actions/delivery'
 
 const STAGES = [
-  { id: 'BEKLEMEDE', label: 'Beklemede', icon: '⏳' },
-  { id: 'SIRADA', label: 'Kesim Sırasında', icon: '🐄' },
-  { id: 'KESILDI', label: 'Kesildi / Paylanıyor', icon: '⚖️' },
-  { id: 'YUKLENDI', label: 'Araca Yüklendi', icon: '📦' },
-  { id: 'TESLIMAT_ADRESINDE', label: 'Teslimat Adresinde', icon: '🚚' },
+  { id: 'BEKLEMEDE', label: 'Sıra Bekliyor', icon: '⏳' },
+  { id: 'KESILDI', label: 'Kesildi', icon: '🐄' },
+  { id: 'PARCALAMADA', label: 'Parçalanıyor', icon: '🔪' },
+  { id: 'TARTIDA', label: 'Tartılıyor', icon: '⚖️' },
+  { id: 'DAGITIMDA', label: 'Dağıtımda', icon: '🚚' },
   { id: 'TESLIM_EDILDI', label: 'Teslim Edildi', icon: '✅' },
 ]
 
