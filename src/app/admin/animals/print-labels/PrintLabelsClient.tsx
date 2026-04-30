@@ -33,7 +33,7 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
       <div className="mb-8 no-print flex flex-col md:flex-row justify-between items-center bg-slate-50 p-6 rounded-2xl border border-slate-200 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Etiket Yazdırma Merkezi</h1>
-          <p className="text-sm text-slate-700 font-medium">Yazdırılacak etiket tipini seçin ve yazdır butonuna basın.</p>
+          <p className="text-sm text-slate-700 font-medium">Yazdırılacak etiket tipini seçin. Toplam {labelType === 'animal' ? animals.length * 4 : animals.reduce((acc, a) => acc + (a.shareholders?.length || 0), 0)} etiket hazırlandı.</p>
         </div>
         
         <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
