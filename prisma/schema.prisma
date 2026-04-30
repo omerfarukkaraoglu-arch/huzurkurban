@@ -102,9 +102,19 @@ model User {
   passwordHash String
   fullName     String?
   role         String   @default("OPERATOR") // SUPERADMIN, OPERATOR
-  station      String?  // PARCALAMA, TARTI, SEVKIYAT, TESLIMAT, ADMIN
+  stationId    String?
+  station      Station? @relation(fields: [stationId], references: [id])
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Station {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  status    String   // The status this station sets, e.g. "PARCALAMADA"
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  users     User[]
 }
 
 model Appointment {

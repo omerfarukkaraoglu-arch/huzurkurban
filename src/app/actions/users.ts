@@ -15,7 +15,7 @@ export async function createUser(prevState: any, formData: FormData) {
   const password = formData.get('password') as string
   const fullName = formData.get('fullName') as string
   const role = formData.get('role') as string
-  const station = formData.get('station') as string
+  const stationId = formData.get('stationId') as string
 
   if (!username || !password || !role) {
     return { error: 'Lütfen tüm zorunlu alanları doldurun.' }
@@ -33,7 +33,7 @@ export async function createUser(prevState: any, formData: FormData) {
         passwordHash,
         fullName,
         role,
-        station
+        stationId: stationId || null
       }
     })
 

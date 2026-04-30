@@ -96,9 +96,17 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
           })}
         </div>
 
-        <div className="p-6 border-t border-slate-100 text-center bg-slate-50 mt-auto">
-            <p className="text-xs text-slate-400 uppercase tracking-widest font-bold mb-4">Müşteri Destek</p>
-            <a href={`tel:${telLink}`} className="text-emerald-600 font-bold text-lg">{displayPhone}</a>
+        <div className="p-6 border-t border-slate-100 text-center bg-slate-50 mt-auto flex flex-col gap-4">
+            <div>
+              <p className="text-xs text-slate-400 uppercase tracking-widest font-bold mb-2">Müşteri Destek</p>
+              <a href={`tel:${telLink}`} className="text-emerald-600 font-bold text-lg">{displayPhone}</a>
+            </div>
+            <a 
+              href="/admin/login" 
+              className="text-xs font-bold text-slate-500 hover:text-emerald-600 transition-colors pt-2 border-t border-slate-200"
+            >
+              Personel / Yönetici Girişi
+            </a>
         </div>
       </div>
     </>

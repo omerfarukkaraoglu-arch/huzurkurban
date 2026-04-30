@@ -35,12 +35,16 @@ export async function loginAction(prevState: any, formData: FormData) {
       role: user.role
     })
 
-  } catch (error) {
+    if (user.role === 'SUPERADMIN') {
+      redirect('/admin')
+    } else {
+      redirect('/admin/scan')
+    }
+  } catch (error: any) {
+    if (error.message === 'NEXT_REDIRECT') throw error
     console.error('Login error:', error)
     return { error: 'Giriş yapılırken bir hata oluştu.' }
   }
-
-  redirect('/admin')
 }
 
 export async function logoutAction() {

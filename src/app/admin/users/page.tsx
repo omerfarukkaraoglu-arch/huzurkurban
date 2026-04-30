@@ -23,8 +23,14 @@ export default async function UsersPage() {
       username: true,
       fullName: true,
       role: true,
+      station: true,
+      stationId: true,
       createdAt: true
     }
+  })
+
+  const stations = await prisma.station.findMany({
+    orderBy: { order: 'asc' }
   })
 
   return (
@@ -36,7 +42,11 @@ export default async function UsersPage() {
         </div>
       </div>
 
-      <UserList users={JSON.parse(JSON.stringify(users))} currentUserId={session.user.id} />
+      <UserList 
+        users={JSON.parse(JSON.stringify(users))} 
+        stations={stations}
+        currentUserId={session.user.id} 
+      />
     </div>
   )
 }

@@ -31,22 +31,24 @@ export default function AdminSidebar({
 
   if (!mounted) return null
 
-  const menuItems = [
-    { title: 'Kayıtlar', href: '/admin', icon: '📝' },
-    { title: 'Hayvanlar', href: '/admin/animals', icon: '🐄' },
-    { title: 'Bağışlar', href: '/admin/donations', icon: '💖' },
-    { title: 'Randevular', href: '/admin/appointments', icon: '📅' },
-    { title: 'Makbuzlar', href: '/admin/receipts', icon: '🧾' },
-    { title: 'Teslimat', href: '/admin/delivery', icon: '🚚' },
+  let menuItems = [
     { title: 'Karekod Okut', href: '/admin/scan', icon: '🔍' },
   ]
-
+ 
   if (role === 'SUPERADMIN') {
-    menuItems.push(
+    menuItems = [
+      { title: 'Kayıtlar', href: '/admin', icon: '📝' },
+      { title: 'Hayvanlar', href: '/admin/animals', icon: '🐄' },
+      { title: 'Bağışlar', href: '/admin/donations', icon: '💖' },
+      { title: 'Randevular', href: '/admin/appointments', icon: '📅' },
+      { title: 'Makbuzlar', href: '/admin/receipts', icon: '🧾' },
+      { title: 'Teslimat', href: '/admin/delivery', icon: '🚚' },
+      { title: 'Karekod Okut', href: '/admin/scan', icon: '🔍' },
+      { title: 'İstasyonlar', href: '/admin/stations', icon: '📍' },
       { title: 'SSS', href: '/admin/faqs', icon: '❓' },
       { title: 'Kullanıcılar', href: '/admin/users', icon: '👤' },
       { title: 'Ayarlar', href: '/admin/settings', icon: '⚙️' }
-    )
+    ]
   }
 
   return (

@@ -4,16 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Html5QrcodeScanner } from 'html5-qrcode'
 import { updateAnimalStatus } from '@/app/actions/animals'
 
-const STATION_MAP: { [key: string]: string } = {
-  'KESIMHANE': 'KESILDI',
-  'PARCALAMA': 'PARCALAMADA',
-  'TARTI': 'TARTIDA',
-  'SEVKIYAT': 'DAGITIMDA',
-  'TESLIMAT': 'TESLIM_EDILDI',
-  'ADMIN': 'GUNCELLE' // Admin will see a picker if I add it
-}
-
-export default function ScanClient({ userStation }: { userStation: string }) {
+export default function ScanClient({ userStation, stationName }: { userStation: string, stationName: string }) {
   const [result, setResult] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -76,12 +67,11 @@ export default function ScanClient({ userStation }: { userStation: string }) {
 
   async function handleUpdate(id: string) {
     setLoading(true)
-    const nextStatus = STATION_MAP[userStation]
+    const nextStatus = userStation
     
-    if (!nextStatus || nextStatus === 'GUNCELLE') {
-        // Handle admin or unmapped station
+    if (!nextStatus) {
         setLoading(false)
-        setError("Bu istasyon için otomatik durum güncelleme tanımlanmamış.")
+        setError("Bu istasyon için durum tanımlanmamış.")
         return
     }
 

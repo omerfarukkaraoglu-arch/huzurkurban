@@ -3,7 +3,7 @@
 import { useActionState, useTransition } from 'react'
 import { createUser, deleteUser } from '@/app/actions/users'
 
-export default function UserList({ users, currentUserId }: { users: any[], currentUserId: string }) {
+export default function UserList({ users, stations, currentUserId }: { users: any[], stations: any[], currentUserId: string }) {
   const [state, formAction, isPending] = useActionState(createUser, { error: '' } as any)
   const [isDeleting, startTransition] = useTransition()
 
@@ -37,7 +37,7 @@ export default function UserList({ users, currentUserId }: { users: any[], curre
                   {user.station && (
                     <>
                       <span>•</span>
-                      <span className="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">{user.station}</span>
+                      <span className="bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">{user.station.name}</span>
                     </>
                   )}
                 </div>
@@ -46,7 +46,7 @@ export default function UserList({ users, currentUserId }: { users: any[], curre
             <button
               onClick={() => handleDelete(user.id)}
               disabled={isDeleting || user.id === currentUserId}
-              className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors disabled:opacity-30"
+              className="text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors disabled:opacity-30"
               title={user.id === currentUserId ? 'Kendi hesabınızı silemezsiniz' : 'Sil'}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -82,16 +82,14 @@ export default function UserList({ users, currentUserId }: { users: any[], curre
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Görev Bölümü</label>
-            <select name="station" className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none">
-              <option value="">Seçiniz (Opsiyonel)</option>
-              <option value="KESIMHANE">Kesimhane (Kesim Başladı)</option>
-              <option value="PARCALAMA">Parçalama</option>
-              <option value="TARTI">Tartı / Paketleme</option>
-              <option value="SEVKIYAT">Sevkiyat / Yükleme</option>
-              <option value="TESLIMAT">Teslimat / Kurye</option>
-              <option value="ADMIN">Genel Yönetim</option>
+            <label className="block text-sm font-medium text-slate-700 mb-1">İstasyon Ataması</label>
+            <select name="stationId" className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+              <option value="">İstasyon Seçin (Opsiyonel)</option>
+              {stations.map((st) => (
+                <option key={st.id} value={st.id}>{st.name}</option>
+              ))}
             </select>
+            <p className="text-[10px] text-slate-400 mt-1">Operatörlerin giriş yaptıklarında yönlendirileceği bölüm.</p>
           </div>
 
           {(state as any)?.error && <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg">{(state as any).error}</div>}
