@@ -131,8 +131,8 @@ export default function ScanClient({ userStation, stationName }: { userStation: 
       )}
 
       <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <h4 className="font-bold text-slate-800 text-sm mb-2">Nasıl Kullanılır?</h4>
-          <ul className="text-xs text-slate-500 space-y-1 list-disc pl-4">
+          <h4 className="font-bold text-slate-900 text-sm mb-2">Nasıl Kullanılır?</h4>
+          <ul className="text-xs text-slate-700 space-y-1 list-disc pl-4">
               <li>Cihazınızın kamerasına erişim izni verin.</li>
               <li>Karekodu karenin içine ortalayın.</li>
               <li>Okuma yapıldığında sistem otomatik olarak ilgili istasyonun durumuna güncelleyecektir.</li>

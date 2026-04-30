@@ -17,8 +17,8 @@ export default async function ScanPage() {
   return (
     <div className="p-4 sm:p-8 max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-800">Karekod Okuma İstasyonu</h1>
-        <p className="text-slate-500">Hayvan veya hisse üzerindeki karekodu okutarak durumu güncelleyin.</p>
+        <h1 className="text-2xl font-bold text-slate-900">Karekod Okuma İstasyonu</h1>
+        <p className="text-slate-700">Hayvan veya hisse üzerindeki karekodu okutarak durumu güncelleyin.</p>
       </div>
 
       <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl mb-8 flex items-center justify-between">
