@@ -61,19 +61,19 @@ export default function SettingsForm({ initialData }: { initialData: any }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-1">Site Başlığı (Tarayıcıda Görünür)</label>
-              <input type="text" name="siteTitle" defaultValue={initialData?.siteTitle} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              <input type="text" name="siteTitle" defaultValue={initialData?.siteTitle} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" />
             </div>
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-1">İletişim Telefonu</label>
-              <input type="text" name="phone" defaultValue={initialData?.phone} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              <input type="text" name="phone" defaultValue={initialData?.phone} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" />
             </div>
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-1">WhatsApp Numarası</label>
-              <input type="text" name="whatsapp" defaultValue={initialData?.whatsapp} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              <input type="text" name="whatsapp" defaultValue={initialData?.whatsapp} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" />
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-bold text-slate-700 mb-1">Adres Bilgisi</label>
-              <input type="text" name="address" defaultValue={initialData?.address} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              <input type="text" name="address" defaultValue={initialData?.address} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" />
             </div>
           </div>
           
@@ -88,15 +88,15 @@ export default function SettingsForm({ initialData }: { initialData: any }) {
         <div className={activeTab === 'hero' ? 'space-y-6' : 'hidden'}>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1">Hero Ana Başlık</label>
-            <input type="text" name="heroTitle" defaultValue={initialData?.heroTitle} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none font-bold" />
+            <input type="text" name="heroTitle" defaultValue={initialData?.heroTitle} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none font-bold text-slate-900 bg-white" />
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1">Hero Alt Metni</label>
-            <textarea name="heroSubText" rows={3} defaultValue={initialData?.heroSubText} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
+            <textarea name="heroSubText" rows={3} defaultValue={initialData?.heroSubText} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" />
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1">Hero Vurgu Metni (Kayıtlar Başladı vb.)</label>
-            <input type="text" name="heroAccent" defaultValue={initialData?.heroAccent} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-orange-600 font-semibold" />
+            <input type="text" name="heroAccent" defaultValue={initialData?.heroAccent} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-orange-600 font-semibold bg-white" />
           </div>
         </div>
 
@@ -104,11 +104,11 @@ export default function SettingsForm({ initialData }: { initialData: any }) {
         <div className={activeTab === 'about' ? 'space-y-6' : 'hidden'}>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1">Hakkımızda/İbadet Bölümü Başlığı</label>
-            <input type="text" name="aboutTitle" defaultValue={initialData?.aboutTitle} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
+            <input type="text" name="aboutTitle" defaultValue={initialData?.aboutTitle} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" />
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-1">Hakkımızda/İbadet Bölümü Metni</label>
-            <textarea name="aboutText" rows={3} defaultValue={initialData?.aboutText} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
+            <textarea name="aboutText" rows={3} defaultValue={initialData?.aboutText} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" />
           </div>
         </div>
 
@@ -117,29 +117,29 @@ export default function SettingsForm({ initialData }: { initialData: any }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-slate-100">
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-1">Neden Biz? Başlığı</label>
-              <input type="text" name="featuresTitle" defaultValue={initialData?.featuresTitle} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              <input type="text" name="featuresTitle" defaultValue={initialData?.featuresTitle} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" />
             </div>
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-1">Neden Biz? Alt Açıklama</label>
-              <input type="text" name="featuresSub" defaultValue={initialData?.featuresSub} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
+              <input type="text" name="featuresSub" defaultValue={initialData?.featuresSub} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-4 bg-emerald-50/30 rounded-lg border border-emerald-100">
               <label className="block text-xs font-black text-emerald-800 uppercase mb-2">1. Özellik Kartı</label>
-              <input type="text" name="f1Title" defaultValue={initialData?.f1Title} className="w-full px-3 py-2 text-sm rounded border border-emerald-200 mb-2 font-bold" />
-              <textarea name="f1Text" rows={3} defaultValue={initialData?.f1Text} className="w-full px-3 py-2 text-sm rounded border border-emerald-200" />
+              <input type="text" name="f1Title" defaultValue={initialData?.f1Title} className="w-full px-3 py-2 text-sm rounded border border-emerald-200 mb-2 font-bold text-slate-900 bg-white" />
+              <textarea name="f1Text" rows={3} defaultValue={initialData?.f1Text} className="w-full px-3 py-2 text-sm rounded border border-emerald-200 text-slate-900 bg-white" />
             </div>
             <div className="p-4 bg-blue-50/30 rounded-lg border border-blue-100">
               <label className="block text-xs font-black text-blue-800 uppercase mb-2">2. Özellik Kartı</label>
-              <input type="text" name="f2Title" defaultValue={initialData?.f2Title} className="w-full px-3 py-2 text-sm rounded border border-blue-200 mb-2 font-bold" />
-              <textarea name="f2Text" rows={3} defaultValue={initialData?.f2Text} className="w-full px-3 py-2 text-sm rounded border border-blue-200" />
+              <input type="text" name="f2Title" defaultValue={initialData?.f2Title} className="w-full px-3 py-2 text-sm rounded border border-blue-200 mb-2 font-bold text-slate-900 bg-white" />
+              <textarea name="f2Text" rows={3} defaultValue={initialData?.f2Text} className="w-full px-3 py-2 text-sm rounded border border-blue-200 text-slate-900 bg-white" />
             </div>
             <div className="p-4 bg-teal-50/30 rounded-lg border border-teal-100">
               <label className="block text-xs font-black text-teal-800 uppercase mb-2">3. Özellik Kartı</label>
-              <input type="text" name="f3Title" defaultValue={initialData?.f3Title} className="w-full px-3 py-2 text-sm rounded border border-teal-200 mb-2 font-bold" />
-              <textarea name="f3Text" rows={3} defaultValue={initialData?.f3Text} className="w-full px-3 py-2 text-sm rounded border border-teal-200" />
+              <input type="text" name="f3Title" defaultValue={initialData?.f3Title} className="w-full px-3 py-2 text-sm rounded border border-teal-200 mb-2 font-bold text-slate-900 bg-white" />
+              <textarea name="f3Text" rows={3} defaultValue={initialData?.f3Text} className="w-full px-3 py-2 text-sm rounded border border-teal-200 text-slate-900 bg-white" />
             </div>
           </div>
         </div>

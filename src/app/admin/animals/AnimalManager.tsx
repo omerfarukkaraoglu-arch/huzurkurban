@@ -258,20 +258,20 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Küpe Numarası *</label>
-              <input type="text" name="earTag" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Örn: TR-12345678" />
+              <input type="text" name="earTag" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" placeholder="Örn: TR-12345678" />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Ağırlık (kg) <span className="text-slate-400 font-normal">(Opsiyonel)</span></label>
-              <input type="number" name="weight" step="0.1" min="0" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Örn: 450" />
+              <input type="number" name="weight" step="0.1" min="0" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" placeholder="Örn: 450" />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Grup <span className="text-slate-400 font-normal">(Opsiyonel)</span></label>
-              <input type="text" name="groupName" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Örn: Büyükbaş 1. Grup" />
+              <input type="text" name="groupName" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" placeholder="Örn: Büyükbaş 1. Grup" />
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Not <span className="text-slate-400 font-normal">(Opsiyonel)</span></label>
-            <input type="text" name="note" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Hayvan hakkında ek bilgi" />
+            <input type="text" name="note" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" placeholder="Hayvan hakkında ek bilgi" />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Hayvan Görseli <span className="text-slate-400 font-normal">(Birden fazla seçebilirsiniz, otomatik sıkıştırılır)</span></label>
@@ -323,7 +323,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                     placeholder="Küpe no, grup veya not ile ara..."
                     value={mainSearchTerm}
                     onChange={(e) => setMainSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
+                    className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm text-slate-900 bg-white"
                   />
                   <div className="absolute left-3 top-2.5 text-slate-400 text-sm">
                     🔍
@@ -464,7 +464,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                           placeholder="İsim veya telefon ile arayın..."
                           value={searchTerm}
                           onChange={e => setSearchTerm(e.target.value)}
-                          className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm mb-2"
+                          className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm mb-2 text-slate-900 bg-white"
                         />
                         <div className="max-h-48 overflow-y-auto bg-white rounded-lg border border-slate-200 divide-y divide-slate-100">
                           {filteredRegistrations(animal.id).length === 0 ? (

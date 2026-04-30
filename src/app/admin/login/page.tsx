@@ -24,7 +24,7 @@ export default function LoginPage() {
               type="text"
               name="username"
               required
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-slate-900 bg-white placeholder:text-slate-400"
               placeholder="admin"
             />
           </div>
@@ -35,7 +35,7 @@ export default function LoginPage() {
               type="password"
               name="password"
               required
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-slate-900 bg-white placeholder:text-slate-400"
               placeholder="••••••••"
             />
           </div>
