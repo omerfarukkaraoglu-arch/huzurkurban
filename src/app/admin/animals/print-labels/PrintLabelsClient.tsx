@@ -171,26 +171,34 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
         }
 
         @media print {
-          body { background: white; padding: 0; margin: 0; }
+          body { background: white; padding: 0 !important; margin: 0 !important; }
           .no-print { display: none !important; }
-          .print-container { display: block; }
+          main { padding: 0 !important; margin: 0 !important; max-width: none !important; }
+          .print-container { 
+            display: block !important; 
+            width: 210mm;
+            height: 297mm;
+          }
           .label-card {
             float: left;
-            border: 1px dashed #ccc !important;
+            border: 1px dashed #000 !important;
             box-sizing: border-box;
             page-break-inside: avoid;
+            background: white !important;
           }
           .animal-label {
-            width: 50%;
-            height: 14.85cm;
-            padding: 1cm !important;
+            width: 105mm;
+            height: 148mm;
+            padding: 10mm !important;
           }
           .sh-label {
-            width: 50%;
-            height: 5.94cm; /* 29.7 / 5 = 5.94. So 10 labels per page (2x5) */
-            padding: 0.5cm !important;
+            width: 105mm;
+            height: 59.4mm;
+            padding: 5mm !important;
           }
+          /* Ensure 4 per page for animals */
           .animal-label:nth-child(4n) { page-break-after: always; }
+          /* Ensure 10 per page for shareholders */
           .sh-label:nth-child(10n) { page-break-after: always; }
         }
 
