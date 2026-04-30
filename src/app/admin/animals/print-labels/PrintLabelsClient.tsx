@@ -61,58 +61,60 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
 
       <div className={`print-container ${labelType}-mode`}>
         {labelType === 'animal' ? (
-          animals.map((animal, index) => (
-            <div key={animal.id} className="label-card animal-label border-2 border-slate-300 relative overflow-hidden flex flex-col p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <div className="text-6xl font-black text-slate-900 leading-none">#{animal.order || index + 1}</div>
-                  <div className="text-xl font-black text-slate-700 mt-2 uppercase tracking-widest">{animal.groupName || 'GENEL GRUP'}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm font-black text-slate-600 uppercase tracking-tighter">Küpe Numarası</div>
-                  <div className="text-2xl font-black text-slate-900">{animal.earTag}</div>
-                </div>
-              </div>
-
-              <div className="flex flex-1 gap-8 items-center justify-center">
-                <div className="flex flex-col items-center gap-2">
-                  {qrCodes[animal.id] ? (
-                    <img src={qrCodes[animal.id]} alt="QR Code" className="w-48 h-48 border-4 border-white shadow-sm" />
-                  ) : (
-                    <div className="w-48 h-48 bg-slate-100 animate-pulse rounded-lg"></div>
-                  )}
-                  <span className="text-[10px] font-mono text-slate-400">{animal.id.slice(-8)}</span>
-                </div>
-                
-                <div className="flex-1 space-y-3">
-                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
-                      <div className="text-xs font-black text-slate-700 uppercase mb-1">Ağırlık</div>
-                      <div className="text-xl font-bold text-slate-900">{animal.weight ? `${animal.weight} KG` : 'TARTILACAK'}</div>
-                  </div>
+          animals.flatMap((animal, animalIndex) => 
+            Array.from({ length: 4 }).map((_, copyIndex) => (
+              <div key={`${animal.id}-${copyIndex}`} className="label-card animal-label border-2 border-slate-300 relative overflow-hidden flex flex-col p-6">
+                <div className="flex justify-between items-start mb-4">
                   <div>
-                     <div className="text-xs font-bold text-slate-400 uppercase mb-2">Hissedarlar ({animal.shareholders?.length || 0}/7)</div>
-                     <div className="grid grid-cols-1 gap-1">
-                        {animal.shareholders?.map((sh: any, i: number) => (
-                          <div key={sh.id} className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-1">
-                            {i+1}. {sh.registration.fullName}
-                          </div>
-                        ))}
-                        {Array.from({ length: 7 - (animal.shareholders?.length || 0) }).map((_, i) => (
-                          <div key={i} className="text-sm text-slate-300 border-b border-slate-50 pb-1 italic">
-                            {animal.shareholders?.length + i + 1}. Boş Hisse
-                          </div>
-                        ))}
-                     </div>
+                    <div className="text-6xl font-black text-slate-900 leading-none">#{animal.order || animalIndex + 1}</div>
+                    <div className="text-xl font-black text-slate-700 mt-2 uppercase tracking-widest">{animal.groupName || 'GENEL GRUP'}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-black text-slate-600 uppercase tracking-tighter">Küpe Numarası</div>
+                    <div className="text-2xl font-black text-slate-900">{animal.earTag}</div>
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-6 pt-4 border-t-2 border-dashed border-slate-200 flex justify-between items-end">
-                  <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Huzur Kurban - 2026 Organizasyonu</div>
-                  <div className="text-xs font-black text-slate-900 border-2 border-black px-2 py-1 uppercase">Kesim No: {animal.order || index + 1}</div>
+                <div className="flex flex-1 gap-8 items-center justify-center">
+                  <div className="flex flex-col items-center gap-2">
+                    {qrCodes[animal.id] ? (
+                      <img src={qrCodes[animal.id]} alt="QR Code" className="w-48 h-48 border-4 border-white shadow-sm" />
+                    ) : (
+                      <div className="w-48 h-48 bg-slate-100 animate-pulse rounded-lg"></div>
+                    )}
+                    <span className="text-[10px] font-mono text-slate-400">{animal.id.slice(-8)}</span>
+                  </div>
+                  
+                  <div className="flex-1 space-y-3">
+                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                        <div className="text-xs font-black text-slate-700 uppercase mb-1">Ağırlık</div>
+                        <div className="text-xl font-bold text-slate-900">{animal.weight ? `${animal.weight} KG` : 'TARTILACAK'}</div>
+                    </div>
+                    <div>
+                       <div className="text-xs font-bold text-slate-400 uppercase mb-2">Hissedarlar ({animal.shareholders?.length || 0}/7)</div>
+                       <div className="grid grid-cols-1 gap-1">
+                          {animal.shareholders?.map((sh: any, i: number) => (
+                            <div key={sh.id} className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-1">
+                              {i+1}. {sh.registration.fullName}
+                            </div>
+                          ))}
+                          {Array.from({ length: 7 - (animal.shareholders?.length || 0) }).map((_, i) => (
+                            <div key={i} className="text-sm text-slate-300 border-b border-slate-50 pb-1 italic">
+                              {animal.shareholders?.length + i + 1}. Boş Hisse
+                            </div>
+                          ))}
+                       </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t-2 border-dashed border-slate-200 flex justify-between items-end">
+                    <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Huzur Kurban - 2026 Organizasyonu</div>
+                    <div className="text-xs font-black text-slate-900 border-2 border-black px-2 py-1 uppercase">Kesim No: {animal.order || animalIndex + 1}</div>
+                </div>
               </div>
-            </div>
-          ))
+            ))
+          )
         ) : (
           animals.flatMap((animal, aIdx) => 
             animal.shareholders.map((sh: any, sIdx: number) => (
