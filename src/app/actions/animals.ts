@@ -286,8 +286,21 @@ export async function updateAnimalStatus(animalId: string, nextStatus: string) {
     revalidatePath('/admin/animals')
     revalidatePath('/teslimat')
     revalidatePath('/')
-    return { success: true, message: `Durum '${nextStatus}' olarak güncellendi.` }
+    return { success: true, message: `Durum '${nextStatus}' olarak güncellendi.`, earTag: animal?.earTag }
   } catch (error) {
     return { success: false, error: 'Durum güncellenirken hata oluştu.' }
+  }
+}
+
+export async function getAnimalsByStatus(status: string) {
+  try {
+    const animals = await prisma.animal.findMany({
+      where: { deliveryStatus: status },
+      orderBy: { updatedAt: 'desc' },
+      take: 20
+    })
+    return { success: true, animals }
+  } catch (error) {
+    return { success: false, error: 'Hayvanlar çekilirken hata oluştu.' }
   }
 }
