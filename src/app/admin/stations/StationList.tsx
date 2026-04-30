@@ -47,18 +47,18 @@ export default function StationList({ initialStations }: { initialStations: any[
         </h3>
         <form onSubmit={handleAdd} className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-xs font-bold text-slate-600 uppercase mb-1">İstasyon Adı</label>
-            <input name="name" required placeholder="Örn: Parçalama" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
+            <label className="block text-xs font-bold text-slate-900 uppercase mb-1">İstasyon Adı</label>
+            <input name="name" required placeholder="Örn: Parçalama" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder:text-slate-400 font-medium" />
           </div>
           <div>
-            <label className="block text-xs font-bold text-slate-600 uppercase mb-1">Güncellenecek Durum</label>
-            <select name="status" required className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+            <label className="block text-xs font-bold text-slate-900 uppercase mb-1">Güncellenecek Durum</label>
+            <select name="status" required className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium">
                 {PREDEFINED_STATUSES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-bold text-slate-600 uppercase mb-1">Sıralama</label>
-            <input name="order" type="number" defaultValue="0" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
+            <label className="block text-xs font-bold text-slate-900 uppercase mb-1">Sıralama</label>
+            <input name="order" type="number" defaultValue="0" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium" />
           </div>
           <div className="flex items-end">
             <button disabled={loading} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition-all disabled:opacity-50">
@@ -74,16 +74,16 @@ export default function StationList({ initialStations }: { initialStations: any[
         <table className="w-full text-left">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
-              <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase">Sıra</th>
-              <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase">İstasyon Adı</th>
-              <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase">Ayarlandığı Durum</th>
-              <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase text-right">İşlemler</th>
+              <th className="px-6 py-4 text-xs font-bold text-slate-900 uppercase">Sıra</th>
+              <th className="px-6 py-4 text-xs font-bold text-slate-900 uppercase">İstasyon Adı</th>
+              <th className="px-6 py-4 text-xs font-bold text-slate-900 uppercase">Ayarlandığı Durum</th>
+              <th className="px-6 py-4 text-xs font-bold text-slate-900 uppercase text-right">İşlemler</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {initialStations.map((st) => (
               <tr key={st.id} className="hover:bg-slate-50 transition-colors">
-                <td className="px-6 py-4 font-mono text-sm text-slate-600">#{st.order}</td>
+                <td className="px-6 py-4 font-mono text-sm text-slate-800">#{st.order}</td>
                 <td className="px-6 py-4">
                   <div className="font-bold text-slate-900">{st.name}</div>
                 </td>
