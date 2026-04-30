@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { deleteRegistrations } from '@/app/actions/register'
+import { deleteRegistrations, bulkImportRegistrations } from '@/app/actions/register'
+import * as XLSX from 'xlsx'
 
 interface RegistrationTableProps {
   initialRegistrations: any[]
@@ -12,6 +13,33 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [isWorking, startTransition] = useTransition()
+  const [importResult, setImportResult] = useState<{ success: boolean, message: string, stats?: any } | null>(null)
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('isDonation', String(type === 'donation'))
+
+    startTransition(async () => {
+      const res = await bulkImportRegistrations(formData)
+      setImportResult(res)
+      setTimeout(() => setImportResult(null), 10000)
+    })
+  }
+
+  const downloadSampleTemplate = () => {
+    const data = type === 'standard' 
+      ? [{ 'Ad Soyad': 'Örnek Kullanıcı', 'Telefon': '05551234567', 'Adres': 'İstanbul', 'Grup': 'Büyükbaş 1. Grup', 'Hisse': '1/7' }]
+      : [{ 'Ad Soyad': 'Bağışçı Adı', 'Telefon': '05559876543', 'Adres': 'Ankara', 'Bağış Türü': 'Talebe Bağışı', 'Not': 'Zekat niyetine' }]
+    
+    const worksheet = XLSX.utils.json_to_sheet(data)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Kayıtlar')
+    XLSX.writeFile(workbook, `HuzurKurban_${type === 'standard' ? 'Kayit' : 'Bagis'}_Import_Sablon.xlsx`)
+  }
 
   const filteredRegistrations = initialRegistrations.filter(reg => 
     reg.fullName.toLocaleLowerCase('tr-TR').includes(searchTerm.toLocaleLowerCase('tr-TR')) ||
@@ -61,21 +89,45 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
             🔍
           </div>
         </div>
-        {selectedIds.length > 0 && (
-          <div className="flex items-center gap-3 animate-in fade-in slide-in-from-left-2 duration-200">
-            <span className="text-sm font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-              {selectedIds.length} Seçili
-            </span>
+        
+        <div className="flex items-center gap-2">
             <button 
-              onClick={handleBulkDelete}
-              disabled={isWorking}
-              className="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-1.5 rounded-lg text-sm font-bold border border-red-100 transition-all flex items-center gap-2"
+              onClick={downloadSampleTemplate}
+              className="bg-white hover:bg-slate-50 text-slate-600 px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 transition-colors flex items-center gap-2"
             >
-              {isWorking ? 'Siliniyor...' : '🗑️ Seçilenleri Sil'}
+              📄 Şablon
             </button>
-          </div>
-        )}
+            <label className="cursor-pointer bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-4 py-2 rounded-lg text-sm font-bold border border-emerald-200 transition-colors flex items-center gap-2">
+              📥 İçe Aktar
+              <input type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleImport} disabled={isWorking} />
+            </label>
+
+            {selectedIds.length > 0 && (
+              <div className="flex items-center gap-3 animate-in fade-in slide-in-from-left-2 duration-200 ml-2">
+                <span className="text-sm font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+                  {selectedIds.length}
+                </span>
+                <button 
+                  onClick={handleBulkDelete}
+                  disabled={isWorking}
+                  className="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-3 py-2 rounded-lg text-sm font-bold border border-red-100 transition-all flex items-center gap-2"
+                  title="Seçilenleri Sil"
+                >
+                  {isWorking ? '...' : '🗑️'}
+                </button>
+              </div>
+            )}
+        </div>
       </div>
+
+      {importResult && (
+        <div className={`p-4 rounded-xl border animate-in fade-in slide-in-from-top-2 duration-200 ${importResult.success ? 'bg-emerald-50 border-emerald-100 text-emerald-800' : 'bg-red-50 border-red-100 text-red-800'}`}>
+          <div className="font-bold flex items-center gap-2 text-sm">
+            {importResult.success ? '✅ İşlem Başarılı' : '❌ Hata Oluştu'}
+          </div>
+          <div className="text-xs mt-1">{importResult.message}</div>
+        </div>
+      )}
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="overflow-x-auto">
