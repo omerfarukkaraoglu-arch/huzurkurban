@@ -101,8 +101,8 @@ export default async function Home() {
                   <div className="absolute top-0 right-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">Çok Tercih Edilen</div>
                 ) : null}
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">{group.name}</h3>
-                <div className={`text-4xl font-extrabold mb-6 border-b border-slate-100 pb-6 ${group.isActive ? 'text-emerald-600' : 'text-slate-400'}`}>
-                  {group.price} <span className="text-lg text-slate-500 font-normal">TL / Hisse</span>
+                <div className={`text-4xl font-extrabold mb-6 border-b border-slate-100 pb-6 ${group.isActive ? 'text-emerald-600' : 'text-slate-600'}`}>
+                  {group.price} <span className="text-lg text-slate-700 font-normal">TL / Hisse</span>
                 </div>
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-center text-slate-600">
@@ -126,7 +126,7 @@ export default async function Home() {
                 )}
               </div>
             )) : (
-              <div className="col-span-full py-12 text-center text-slate-500 border-2 border-dashed border-slate-200 rounded-3xl">
+              <div className="col-span-full py-12 text-center text-slate-700 border-2 border-dashed border-slate-200 rounded-3xl">
                 Henüz kurban grubu eklenmedi.
               </div>
             )}
@@ -153,7 +153,7 @@ export default async function Home() {
                 <p className="text-slate-600">{faq.answer}</p>
               </div>
             )) : (
-              <div className="text-center py-8 text-slate-500 italic">
+              <div className="text-center py-8 text-slate-700 italic font-medium">
                 Sıkça sorulan sorular henüz eklenmedi.
               </div>
             )}
@@ -177,8 +177,8 @@ export default async function Home() {
             </div>
           )}
 
-          <div className="text-lg font-medium text-emerald-400">
-            İletişim: {settings.phone} <span className="text-slate-500 mx-3">|</span> {settings.address || 'İstanbul, Türkiye'} 
+          <div className="text-lg font-bold text-emerald-300">
+            İletişim: {settings.phone} <span className="text-slate-300 mx-3">|</span> {settings.address || 'İstanbul, Türkiye'} 
           </div>
         </div>
       </div>

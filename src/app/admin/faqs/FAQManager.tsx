@@ -56,21 +56,21 @@ export default function FAQManager({ initialFAQs }: { initialFAQs: any[] }) {
       {isAdding && (
         <div className="bg-white border-2 border-emerald-100 rounded-2xl p-6 shadow-sm animate-in fade-in slide-in-from-top-4 duration-200">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-bold text-slate-800">Yeni Soru Ekle</h3>
-            <button onClick={() => setIsAdding(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+            <h3 className="text-lg font-bold text-slate-900">Yeni Soru Ekle</h3>
+            <button onClick={() => setIsAdding(false)} className="text-slate-600 hover:text-slate-900">✕</button>
           </div>
           <form action={formAction} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Soru</label>
-              <input type="text" name="question" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Örn: Kesim nerede yapılıyor?" />
+              <label className="block text-sm font-bold text-slate-900 mb-1">Soru</label>
+              <input type="text" name="question" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder:text-slate-500 font-medium" placeholder="Örn: Kesim nerede yapılıyor?" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Cevap</label>
-              <textarea name="answer" required rows={3} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Cevap metni..."></textarea>
+              <label className="block text-sm font-bold text-slate-900 mb-1">Cevap</label>
+              <textarea name="answer" required rows={3} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 placeholder:text-slate-500 font-medium" placeholder="Cevap metni..."></textarea>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Sıralama (Opsiyonel)</label>
-              <input type="number" name="order" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" defaultValue={initialFAQs.length} />
+              <label className="block text-sm font-bold text-slate-900 mb-1">Sıralama (Opsiyonel)</label>
+              <input type="number" name="order" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium" defaultValue={initialFAQs.length} />
             </div>
             {state?.error && <p className="text-red-500 text-sm">{state.error}</p>}
             <div className="flex justify-end gap-3 pt-2">
@@ -86,7 +86,7 @@ export default function FAQManager({ initialFAQs }: { initialFAQs: any[] }) {
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
         <div className="divide-y divide-slate-100">
           {initialFAQs.length === 0 ? (
-            <div className="p-12 text-center text-slate-500 italic">
+            <div className="p-12 text-center text-slate-700 italic font-medium">
               Henüz soru eklenmemiş.
             </div>
           ) : (
@@ -102,12 +102,12 @@ export default function FAQManager({ initialFAQs }: { initialFAQs: any[] }) {
                         <button 
                             disabled={index === 0 || isWorking}
                             onClick={() => handleMove(faq.id, faq.order, 'up')}
-                            className="p-1 text-slate-400 hover:text-emerald-600 disabled:opacity-20 translate-y-1"
+                            className="p-1 text-slate-600 hover:text-emerald-700 disabled:opacity-20 translate-y-1 font-bold"
                         >▲</button>
                         <button 
                             disabled={index === initialFAQs.length - 1 || isWorking}
                             onClick={() => handleMove(faq.id, faq.order, 'down')}
-                            className="p-1 text-slate-400 hover:text-emerald-600 disabled:opacity-20 -translate-y-1"
+                            className="p-1 text-slate-600 hover:text-emerald-700 disabled:opacity-20 -translate-y-1 font-bold"
                         >▼</button>
                     </div>
                     <button 

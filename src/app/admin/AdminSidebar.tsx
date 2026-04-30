@@ -73,14 +73,14 @@ export default function AdminSidebar({
                 <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">{role}</span>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-200 transition-colors text-slate-400 hover:text-slate-600">
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-200 transition-colors text-slate-600 hover:text-slate-800">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
 
         {/* User Info */}
         <div className="px-6 py-4 bg-emerald-50/50 border-b border-slate-100">
-            <p className="text-xs text-slate-500 font-medium">Aktif Kullanıcı</p>
+            <p className="text-xs text-slate-600 font-bold">Aktif Kullanıcı</p>
             <p className="font-bold text-slate-900">{user?.fullName || user?.username}</p>
         </div>
 
@@ -110,7 +110,7 @@ export default function AdminSidebar({
         {/* Footer */}
         <div className="p-6 border-t border-slate-100 space-y-4 bg-slate-50">
            <LogoutButton />
-           <p className="text-[10px] text-center text-slate-400 font-medium">Huzur Kurban v1.0.0</p>
+           <p className="text-[10px] text-center text-slate-600 font-bold">Huzur Kurban v1.0.0</p>
         </div>
       </div>
     </>

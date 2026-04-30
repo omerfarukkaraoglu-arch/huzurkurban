@@ -20,7 +20,7 @@ export default function SettingsForm({ initialData }: { initialData: any }) {
       className={`px-4 py-3 text-sm font-semibold flex items-center gap-2 border-b-2 transition-all ${
         activeTab === id 
           ? 'border-emerald-600 text-emerald-600 bg-emerald-50/50' 
-          : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+          : 'border-transparent text-slate-700 hover:text-slate-900 hover:bg-slate-50 font-medium'
       }`}
     >
       <span>{icon}</span>
@@ -33,7 +33,7 @@ export default function SettingsForm({ initialData }: { initialData: any }) {
       <div className="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
         <div>
           <h3 className="text-lg font-bold text-slate-800">Site İçerik Yönetimi</h3>
-          <p className="text-sm text-slate-500">Tüm ana sayfa metinlerini ve görsellerini buradan güncelleyebilirsiniz.</p>
+          <p className="text-sm text-slate-700 font-medium">Tüm ana sayfa metinlerini ve görsellerini buradan güncelleyebilirsiniz.</p>
         </div>
         <button 
           onClick={() => (document.getElementById('save-settings-btn') as HTMLButtonElement)?.click()}
@@ -79,8 +79,8 @@ export default function SettingsForm({ initialData }: { initialData: any }) {
           
           <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
             <label className="block text-sm font-bold text-slate-700 mb-1">Slider Görselleri (Toplu Değiştirme)</label>
-            <input type="file" name="sliderImages" accept="image/*" multiple className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
-            <p className="text-xs text-slate-500 mt-2 italic">Not: Yeni seçim yapmazsanız mevcut görseller korunur.</p>
+            <input type="file" name="sliderImages" accept="image/*" multiple className="w-full text-sm text-slate-700 font-bold file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
+            <p className="text-xs text-slate-700 mt-2 italic font-bold">Not: Yeni seçim yapmazsanız mevcut görseller korunur.</p>
           </div>
         </div>
 

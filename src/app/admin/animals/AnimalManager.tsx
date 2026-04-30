@@ -257,16 +257,16 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
         <form onSubmit={handleCreateSubmit} className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Küpe Numarası *</label>
-              <input type="text" name="earTag" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" placeholder="Örn: TR-12345678" />
+              <label className="block text-sm font-bold text-slate-900 mb-1">Küpe Numarası *</label>
+              <input type="text" name="earTag" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white placeholder:text-slate-500 font-medium" placeholder="Örn: TR-12345678" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Ağırlık (kg) <span className="text-slate-400 font-normal">(Opsiyonel)</span></label>
-              <input type="number" name="weight" step="0.1" min="0" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" placeholder="Örn: 450" />
+              <label className="block text-sm font-bold text-slate-900 mb-1">Ağırlık (kg) <span className="text-slate-700 font-normal">(Opsiyonel)</span></label>
+              <input type="number" name="weight" step="0.1" min="0" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white placeholder:text-slate-500 font-medium" placeholder="Örn: 450" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Grup <span className="text-slate-400 font-normal">(Opsiyonel)</span></label>
-              <input type="text" name="groupName" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white" placeholder="Örn: Büyükbaş 1. Grup" />
+              <label className="block text-sm font-bold text-slate-900 mb-1">Grup <span className="text-slate-700 font-normal">(Opsiyonel)</span></label>
+              <input type="text" name="groupName" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white placeholder:text-slate-500 font-medium" placeholder="Örn: Büyükbaş 1. Grup" />
             </div>
           </div>
           <div>
@@ -340,7 +340,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
         </div>
 
         {filteredAnimals.length === 0 ? (
-          <div className="bg-white rounded-xl p-12 text-center text-slate-500 border-2 border-dashed border-slate-200">
+          <div className="bg-white rounded-xl p-12 text-center text-slate-700 font-bold border-2 border-dashed border-slate-200">
             {mainSearchTerm ? 'Aranan kritere uygun hayvan bulunamadı.' : 'Henüz hayvan kaydedilmemiş.'}
           </div>
         ) : (
@@ -402,7 +402,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                     })()}
                     <div>
                       <div className="font-bold text-slate-800 text-lg">{animal.earTag}</div>
-                      <div className="text-sm text-slate-500">
+                      <div className="text-sm text-slate-700 font-bold">
                         {animal.weight && <span>{animal.weight} kg</span>}
                         {animal.groupName && <span className="ml-2">• {animal.groupName}</span>}
                         <span className="ml-2">• {animal.shareholders?.length || 0}/7 Hissedar</span>

@@ -32,14 +32,14 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
     <div className="min-h-screen bg-white p-4">
       <div className="mb-8 no-print flex flex-col md:flex-row justify-between items-center bg-slate-50 p-6 rounded-2xl border border-slate-200 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Etiket Yazdırma Merkezi</h1>
-          <p className="text-sm text-slate-500">Yazdırılacak etiket tipini seçin ve yazdır butonuna basın.</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Etiket Yazdırma Merkezi</h1>
+          <p className="text-sm text-slate-700 font-medium">Yazdırılacak etiket tipini seçin ve yazdır butonuna basın.</p>
         </div>
         
         <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
             <button 
                 onClick={() => setLabelType('animal')}
-                className={`px-6 py-2 rounded-lg font-bold text-sm transition-all ${labelType === 'animal' ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}
+                className={`px-6 py-2 rounded-lg font-bold text-sm transition-all ${labelType === 'animal' ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-700 hover:bg-slate-50'}`}
             >
                 🐄 Hayvan Etiketleri (4/A4)
             </button>
@@ -66,11 +66,11 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <div className="text-6xl font-black text-slate-900 leading-none">#{animal.order || index + 1}</div>
-                  <div className="text-xl font-bold text-slate-500 mt-2 uppercase tracking-widest">{animal.groupName || 'GENEL GRUP'}</div>
+                  <div className="text-xl font-black text-slate-700 mt-2 uppercase tracking-widest">{animal.groupName || 'GENEL GRUP'}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-bold text-slate-400 uppercase tracking-tighter">Küpe Numarası</div>
-                  <div className="text-2xl font-black text-slate-800">{animal.earTag}</div>
+                  <div className="text-sm font-black text-slate-600 uppercase tracking-tighter">Küpe Numarası</div>
+                  <div className="text-2xl font-black text-slate-900">{animal.earTag}</div>
                 </div>
               </div>
 
@@ -85,9 +85,9 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
                 </div>
                 
                 <div className="flex-1 space-y-3">
-                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                      <div className="text-xs font-bold text-slate-400 uppercase mb-1">Ağırlık</div>
-                      <div className="text-xl font-bold text-slate-700">{animal.weight ? `${animal.weight} KG` : 'TARTILACAK'}</div>
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                      <div className="text-xs font-black text-slate-700 uppercase mb-1">Ağırlık</div>
+                      <div className="text-xl font-bold text-slate-900">{animal.weight ? `${animal.weight} KG` : 'TARTILACAK'}</div>
                   </div>
                   <div>
                      <div className="text-xs font-bold text-slate-400 uppercase mb-2">Hissedarlar ({animal.shareholders?.length || 0}/7)</div>

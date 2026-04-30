@@ -131,7 +131,7 @@ export default function AnimalInquiry() {
                 {/* Bilgiler */}
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-slate-400 text-xs font-black uppercase tracking-widest mb-1">Hayvan Bilgileri</h3>
+                    <h3 className="text-slate-600 text-xs font-black uppercase tracking-widest mb-1">Hayvan Bilgileri</h3>
                     <div className="text-4xl font-black text-slate-800 tracking-tighter uppercase">{result.earTag}</div>
                     <div className="flex gap-2 mt-2">
                        {result.weight && <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-sm font-bold">{result.weight} KG</span>}
@@ -146,11 +146,11 @@ export default function AnimalInquiry() {
                   )}
 
                   <div>
-                    <h3 className="text-slate-400 text-xs font-black uppercase tracking-widest mb-4">Ortak Hissedarlar</h3>
+                    <h3 className="text-slate-600 text-xs font-black uppercase tracking-widest mb-4">Ortak Hissedarlar</h3>
                     <div className="grid grid-cols-1 gap-2">
                       {result.shareholders.map((sh: any) => (
                         <div key={sh.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center font-bold text-slate-400 text-xs shadow-sm">
+                          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center font-bold text-slate-600 text-xs shadow-sm">
                             {sh.shareholderIndex || '👤'}
                           </div>
                           <span className="font-bold text-slate-700">{sh.registration.fullName}</span>

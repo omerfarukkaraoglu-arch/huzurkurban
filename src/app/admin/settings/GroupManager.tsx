@@ -32,7 +32,7 @@ export default function GroupManager({ initialGroups }: { initialGroups: any[] }
         </div>
         <div className="p-0">
           {initialGroups.length === 0 ? (
-            <div className="p-6 text-slate-500 text-center">Henüz eklenmiş bir grup bulunmuyor.</div>
+            <div className="p-6 text-slate-700 font-medium text-center">Henüz eklenmiş bir grup bulunmuyor.</div>
           ) : (
             <ul className="divide-y divide-slate-100">
               {initialGroups.map(group => (
@@ -43,9 +43,9 @@ export default function GroupManager({ initialGroups }: { initialGroups: any[] }
                       {group.isDonation && <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded-full font-medium">Bağış</span>}
                       {!group.isActive && <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full font-medium">DOLDU</span>}
                     </div>
-                    <div className="text-sm text-slate-500 mt-0.5">
+                    <div className="text-sm text-slate-700 mt-0.5 font-medium">
                       {group.price} TL
-                      {group.maxSlots && <span className="ml-2 text-slate-400">• Kontenjan: {group.maxSlots} kişi</span>}
+                      {group.maxSlots && <span className="ml-2 text-slate-600 font-bold">• Kontenjan: {group.maxSlots} kişi</span>}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export default function GroupManager({ initialGroups }: { initialGroups: any[] }
               <input type="text" name="price" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Örn: 28.000" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Kontenjan <span className="text-slate-400 font-normal">(Opsiyonel)</span></label>
+              <label className="block text-sm font-bold text-slate-900 mb-1">Kontenjan <span className="text-slate-600 font-normal">(Opsiyonel)</span></label>
               <input type="number" name="maxSlots" min="1" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="Örn: 50 (boş = sınırsız)" />
             </div>
           </div>

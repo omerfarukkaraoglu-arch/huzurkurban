@@ -38,7 +38,7 @@ export default async function UsersPage() {
       <div className="flex justify-between items-center border-b border-slate-200 pb-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-800">Kullanıcı Yönetimi</h2>
-          <p className="text-sm text-slate-500 mt-1">Sisteme giriş yapabilecek kişileri yönetin.</p>
+          <p className="text-sm text-slate-700 font-medium mt-1">Sisteme giriş yapabilecek kişileri yönetin.</p>
         </div>
       </div>
 

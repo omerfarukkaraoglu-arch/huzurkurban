@@ -80,7 +80,7 @@ export default function DeliveryTracker() {
                     <h3 className="text-xl font-bold text-slate-800">
                       {item.earTag ? `Hayvan: ${item.earTag}` : item.group}
                     </h3>
-                    <p className="text-slate-500 mt-1">Hissedar: <span className="font-medium text-slate-700">{item.fullName}</span></p>
+                    <p className="text-slate-700 mt-1">Hissedar: <span className="font-bold text-slate-900">{item.fullName}</span></p>
                   </div>
                   <div className="text-right">
                     <span className="inline-block bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-bold font-mono border border-slate-200">
@@ -107,11 +107,11 @@ export default function DeliveryTracker() {
                       return (
                         <div key={stage.id} className="flex flex-col items-center group w-1/6">
                           <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl transition-all duration-500 ${
-                            isCompleted ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-slate-100 text-slate-400'
+                            isCompleted ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-slate-200 text-slate-600'
                           } ${isCurrent ? 'ring-4 ring-emerald-100 scale-110' : ''}`}>
                             {stage.icon}
                           </div>
-                          <span className={`text-xs font-bold mt-3 text-center sm:block ${isCurrent ? 'text-emerald-600' : isCompleted ? 'text-slate-700' : 'text-slate-400 hidden group-hover:block'}`}>
+                          <span className={`text-xs font-bold mt-3 text-center sm:block ${isCurrent ? 'text-emerald-600' : isCompleted ? 'text-slate-700' : 'text-slate-600 hidden group-hover:block'}`}>
                             {stage.label}
                           </span>
                         </div>

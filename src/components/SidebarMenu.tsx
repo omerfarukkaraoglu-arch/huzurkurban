@@ -77,7 +77,7 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
             <img src="/logo-icon.png" alt="Menü" className="h-10 w-10 object-contain mix-blend-multiply" />
             <span className="font-bold text-lg text-slate-800 tracking-tight">Menü</span>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-3xl leading-none">&times;</button>
+          <button onClick={onClose} className="text-slate-600 hover:text-slate-800 text-3xl leading-none">&times;</button>
         </div>
 
         <div className="py-4 px-3 flex flex-col gap-2">
@@ -98,12 +98,12 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
 
         <div className="p-6 border-t border-slate-100 text-center bg-slate-50 mt-auto flex flex-col gap-4">
             <div>
-              <p className="text-xs text-slate-400 uppercase tracking-widest font-bold mb-2">Müşteri Destek</p>
+              <p className="text-xs text-slate-600 uppercase tracking-widest font-bold mb-2">Müşteri Destek</p>
               <a href={`tel:${telLink}`} className="text-emerald-600 font-bold text-lg">{displayPhone}</a>
             </div>
             <a 
               href="/admin/login" 
-              className="text-xs font-bold text-slate-500 hover:text-emerald-600 transition-colors pt-2 border-t border-slate-200"
+              className="text-xs font-bold text-slate-700 hover:text-emerald-600 transition-colors pt-2 border-t border-slate-200"
             >
               Personel / Yönetici Girişi
             </a>

@@ -24,7 +24,7 @@ export default function LoginPage() {
               type="text"
               name="username"
               required
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-slate-900 bg-white placeholder:text-slate-400"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-slate-900 bg-white placeholder:text-slate-500 font-medium"
               placeholder="admin"
             />
           </div>
@@ -35,7 +35,7 @@ export default function LoginPage() {
               type="password"
               name="password"
               required
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-slate-900 bg-white placeholder:text-slate-400"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-slate-900 bg-white placeholder:text-slate-500 font-medium"
               placeholder="••••••••"
             />
           </div>
@@ -55,7 +55,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="p-4 bg-slate-50 text-center text-xs text-slate-400 border-t border-slate-100">
+        <div className="p-4 bg-slate-50 text-center text-xs text-slate-600 font-bold border-t border-slate-100">>
           © 2026 Huzur Kurban Yönetim Paneli
         </div>
       </div>

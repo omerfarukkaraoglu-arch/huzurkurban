@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { deleteRegistrations, bulkImportRegistrations } from '@/app/actions/register'
+import * as LucideIcons from 'lucide-react'
 import * as XLSX from 'xlsx'
 
 interface RegistrationTableProps {
@@ -85,8 +86,8 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-slate-900 bg-white"
           />
-          <div className="absolute left-3 top-2.5 text-slate-400">
-            🔍
+          <div className="absolute left-3 top-2.5 text-slate-700">
+            <LucideIcons.Search className="w-5 h-5" />
           </div>
         </div>
         
@@ -154,7 +155,7 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
             <tbody className="divide-y divide-slate-200 text-sm">
               {filteredRegistrations.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-slate-500">
+                  <td colSpan={8} className="p-8 text-center text-slate-700 font-medium italic">
                     {searchTerm ? 'Aranan kritere uygun kayıt bulunamadı.' : 'Henüz kayıt bulunmamaktadır.'}
                   </td>
                 </tr>

@@ -75,7 +75,7 @@ export default function Navbar({ settings }: { settings: any }) {
             </div>
 
             <div className="flex items-center gap-4">
-              <Link href="/admin/login" className="text-sm font-semibold text-slate-500 hover:text-emerald-600 hidden lg:block transition-colors">
+              <Link href="/admin/login" className="text-sm font-semibold text-slate-700 hover:text-emerald-600 hidden lg:block transition-colors">
                 Yönetici Girişi
               </Link>
               <button 

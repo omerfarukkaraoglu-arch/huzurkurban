@@ -44,13 +44,13 @@ export default function RegistrationForm({ settings, groups = [] }: { settings: 
       <div className="flex p-1 bg-slate-100 rounded-2xl mb-8">
         <button 
           onClick={() => setMode('hisse')}
-          className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${mode === 'hisse' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${mode === 'hisse' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-700 hover:text-slate-900'}`}
         >
           <CheckCircle2 className="w-4 h-4" /> Hisse Kaydı
         </button>
         <button 
           onClick={() => setMode('bagis')}
-          className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${mode === 'bagis' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${mode === 'bagis' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-700 hover:text-slate-900'}`}
         >
           <HeartHandshake className="w-4 h-4" /> Bağış Hisse
         </button>
@@ -60,7 +60,7 @@ export default function RegistrationForm({ settings, groups = [] }: { settings: 
         <h2 className="text-3xl font-bold text-slate-800 mb-2">
           {mode === 'hisse' ? 'Kurban Kayıt Formu' : 'Bağış Hisse Formu'}
         </h2>
-        <p className="text-slate-500">
+        <p className="text-slate-700 font-medium">
           {mode === 'hisse' 
             ? 'Hissenizi ayırtmak için lütfen aşağıdaki bilgileri eksiksiz doldurun.' 
             : 'Bağış hisse kaydı için lütfen bilgilerinizi doldurun.'}
