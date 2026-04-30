@@ -2,7 +2,8 @@
 
 export default function WhatsAppButton({ phone }: { phone: string }) {
   const cleanPhone = phone.replace(/\s+/g, '').replace(/^0/, '90')
-  const whatsappUrl = `https://wa.me/${cleanPhone}`
+  const message = encodeURIComponent("Merhaba, kurban ile alakalı bilgi almak istiyorum.")
+  const whatsappUrl = `https://wa.me/${cleanPhone}?text=${message}`
 
   return (
     <a

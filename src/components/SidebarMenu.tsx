@@ -18,7 +18,7 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
     { id: 'hakkimizda', title: 'Hakkımızda', icon: 'Info', target: '#nasil-calisir', color: 'hover:bg-slate-100 text-slate-800' },
     { id: 'sss', title: 'Sıkça Sorulan Sorular', icon: 'HelpCircle', target: '#sss', color: 'hover:bg-slate-50 text-slate-700' },
     { id: 'randevu', title: 'Randevu Oluştur', icon: 'CalendarCheck', target: 'modal', color: 'hover:bg-purple-50 text-purple-700' },
-    { id: 'whatsapp', title: 'WhatsApp İletişimi', icon: 'MessageCircle', target: 'external', url: `https://wa.me/${cleanWhatsapp}`, color: 'hover:bg-[#25D366]/10 text-[#25D366]' },
+    { id: 'whatsapp', title: 'WhatsApp İletişimi', icon: 'MessageCircle', target: 'external', url: `https://wa.me/${cleanWhatsapp}?text=${encodeURIComponent("Merhaba, kurban ile alakalı bilgi almak istiyorum.")}`, color: 'hover:bg-[#25D366]/10 text-[#25D366]' },
   ]
 
   useEffect(() => {

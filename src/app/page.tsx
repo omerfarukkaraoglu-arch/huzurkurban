@@ -17,7 +17,7 @@ export default async function Home() {
     { id: 'sorgula', title: 'Kurbanını Gör', icon: 'ScanSearch', target: '#kurbanini-gor', color: 'hover:bg-blue-50 text-blue-700' },
     { id: 'teslimat', title: 'Teslimat Sorgula', icon: 'Truck', target: 'external', url: '/teslimat', color: 'hover:bg-teal-50 text-teal-700' },
     { id: 'randevu', title: 'Randevu Al', icon: 'CalendarCheck', target: 'modal', color: 'hover:bg-purple-50 text-purple-700' },
-    { id: 'whatsapp', title: 'WhatsApp İletişim', icon: 'MessageCircle', target: 'external', url: 'https://wa.me/905513431888', color: 'hover:bg-[#25D366]/10 text-[#25D366]' },
+    { id: 'whatsapp', title: 'WhatsApp İletişim', icon: 'MessageCircle', target: 'external', url: 'https://wa.me/905513431888?text=Merhaba%2C%20kurban%20ile%20alakalı%20bilgi%20almak%20istiyorum.', color: 'hover:bg-[#25D366]/10 text-[#25D366]' },
     { id: 'sss', title: 'Sıkça Sorulan Sorular', icon: 'HelpCircle', target: '#sss', color: 'hover:bg-slate-50 text-slate-700' },
     { id: 'iletisim', title: 'İletişim', icon: 'Phone', target: '#footer', color: 'hover:bg-rose-50 text-rose-700' }
   ])
