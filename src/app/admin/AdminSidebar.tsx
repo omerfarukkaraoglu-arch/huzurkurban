@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import * as LucideIcons from 'lucide-react'
 import LogoutButton from './LogoutButton'
 
 export default function AdminSidebar({ 
@@ -32,22 +33,22 @@ export default function AdminSidebar({
   if (!mounted) return null
 
   let menuItems = [
-    { title: 'Karekod Okut', href: '/admin/scan', icon: '🔍' },
+    { title: 'Karekod Okut', href: '/admin/scan', icon: 'QrCode' },
   ]
  
   if (role === 'SUPERADMIN') {
     menuItems = [
-      { title: 'Kayıtlar', href: '/admin', icon: '📝' },
-      { title: 'Hayvanlar', href: '/admin/animals', icon: '🐄' },
-      { title: 'Bağışlar', href: '/admin/donations', icon: '💖' },
-      { title: 'Randevular', href: '/admin/appointments', icon: '📅' },
-      { title: 'Makbuzlar', href: '/admin/receipts', icon: '🧾' },
-      { title: 'Teslimat', href: '/admin/delivery', icon: '🚚' },
-      { title: 'Karekod Okut', href: '/admin/scan', icon: '🔍' },
-      { title: 'İstasyonlar', href: '/admin/stations', icon: '📍' },
-      { title: 'SSS', href: '/admin/faqs', icon: '❓' },
-      { title: 'Kullanıcılar', href: '/admin/users', icon: '👤' },
-      { title: 'Ayarlar', href: '/admin/settings', icon: '⚙️' }
+      { title: 'Kayıtlar', href: '/admin', icon: 'ClipboardList' },
+      { title: 'Hayvanlar', href: '/admin/animals', icon: 'Beef' },
+      { title: 'Bağışlar', href: '/admin/donations', icon: 'HeartHandshake' },
+      { title: 'Randevular', href: '/admin/appointments', icon: 'CalendarDays' },
+      { title: 'Makbuzlar', href: '/admin/receipts', icon: 'FileText' },
+      { title: 'Teslimat', href: '/admin/delivery', icon: 'Truck' },
+      { title: 'Karekod Okut', href: '/admin/scan', icon: 'QrCode' },
+      { title: 'İstasyonlar', href: '/admin/stations', icon: 'MapPin' },
+      { title: 'SSS', href: '/admin/faqs', icon: 'HelpCircle' },
+      { title: 'Kullanıcılar', href: '/admin/users', icon: 'Users' },
+      { title: 'Ayarlar', href: '/admin/settings', icon: 'Settings' }
     ]
   }
 
@@ -68,7 +69,7 @@ export default function AdminSidebar({
           <div className="flex items-center gap-2">
             <img src="/logo-icon.png" alt="Menü" className="h-14 w-14 object-contain" />
             <div className="flex flex-col">
-                <span className="font-extrabold text-slate-800 leading-tight">Yönetim Paneli</span>
+                <span className="font-extrabold text-slate-800 leading-tight uppercase tracking-tighter">Huzur Kurban</span>
                 <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">{role}</span>
             </div>
           </div>
@@ -79,14 +80,15 @@ export default function AdminSidebar({
 
         {/* User Info */}
         <div className="px-6 py-4 bg-emerald-50/50 border-b border-slate-100">
-            <p className="text-xs text-slate-500 font-medium">Giriş Yapan Panelist</p>
-            <p className="font-bold text-slate-700">{user?.fullName || user?.username}</p>
+            <p className="text-xs text-slate-500 font-medium">Aktif Kullanıcı</p>
+            <p className="font-bold text-slate-900">{user?.fullName || user?.username}</p>
         </div>
 
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto py-4 px-3 flex flex-col gap-1">
           {menuItems.map((item: any) => {
             const isActive = pathname === item.href
+            const Icon = (LucideIcons as any)[item.icon] || LucideIcons.CircleDot
             return (
               <Link
                 key={item.href}
@@ -98,7 +100,7 @@ export default function AdminSidebar({
                     : 'text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'
                 }`}
               >
-                <span className="text-xl">{item.icon}</span>
+                <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-emerald-600'}`} />
                 <span className="text-sm tracking-tight">{item.title}</span>
               </Link>
             )
