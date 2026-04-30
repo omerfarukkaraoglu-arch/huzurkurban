@@ -21,19 +21,28 @@ export default function ScanClient({ userStation }: { userStation: string }) {
   const scannerRef = useRef<Html5QrcodeScanner | null>(null)
 
   useEffect(() => {
-    scannerRef.current = new Html5QrcodeScanner(
+    // Prevent multiple initializations
+    if (scannerRef.current) return;
+
+    const scanner = new Html5QrcodeScanner(
       "reader",
-      { fps: 10, qrbox: { width: 250, height: 250 } },
+      { 
+        fps: 10, 
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1.0
+      },
       /* verbose= */ false
     )
 
-    scannerRef.current.render(onScanSuccess, onScanFailure)
+    scanner.render(onScanSuccess, onScanFailure)
+    scannerRef.current = scanner
 
     return () => {
       if (scannerRef.current) {
         scannerRef.current.clear().catch(error => {
           console.error("Scanner cleanup error:", error)
         })
+        scannerRef.current = null
       }
     }
   }, [])
@@ -99,7 +108,10 @@ export default function ScanClient({ userStation }: { userStation: string }) {
 
   return (
     <div className="space-y-6">
-      <div id="reader" className="overflow-hidden rounded-2xl border-2 border-slate-200 shadow-inner bg-slate-50"></div>
+      <div 
+        id="reader" 
+        className="overflow-hidden rounded-2xl border-2 border-slate-200 shadow-inner bg-slate-50 min-h-[300px]"
+      ></div>
       
       {loading && (
         <div className="flex items-center justify-center p-4 bg-blue-50 text-blue-700 rounded-xl animate-pulse font-bold">
