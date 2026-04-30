@@ -104,3 +104,34 @@ export async function bulkImportRegistrations(formData: FormData) {
     return { success: false, error: 'Dosya işlenirken bir hata oluştu.', message: 'Dosya işlenirken bir hata oluştu.' }
   }
 }
+
+export async function updateRegistration(formData: FormData) {
+  try {
+    const id = formData.get('id') as string
+    const data = {
+      fullName: formData.get('fullName') as string,
+      phone: formData.get('phone') as string,
+      address: formData.get('address') as string,
+      group: formData.get('group') as string,
+      share: formData.get('share') as string,
+      status: formData.get('status') as string,
+    }
+
+    if (!id || !data.fullName || !data.phone || !data.group) {
+      return { success: false, error: 'Lütfen zorunlu alanları doldurunuz.' }
+    }
+
+    await prisma.registration.update({
+      where: { id },
+      data,
+    })
+
+    revalidatePath('/admin')
+    revalidatePath('/admin/donations')
+    
+    return { success: true, message: 'Kayıt başarıyla güncellendi.' }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: 'Güncelleme sırasında bir hata oluştu.' }
+  }
+}

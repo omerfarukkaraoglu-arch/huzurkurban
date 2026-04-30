@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { deleteRegistrations, bulkImportRegistrations } from '@/app/actions/register'
+import { deleteRegistrations, bulkImportRegistrations, updateRegistration } from '@/app/actions/register'
 import * as LucideIcons from 'lucide-react'
 import * as XLSX from 'xlsx'
 
@@ -15,6 +15,7 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
   const [searchTerm, setSearchTerm] = useState('')
   const [isWorking, startTransition] = useTransition()
   const [importResult, setImportResult] = useState<{ success: boolean, message: string, stats?: any } | null>(null)
+  const [editingReg, setEditingReg] = useState<any | null>(null)
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -73,6 +74,19 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
         }
       })
     }
+  }
+
+  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    startTransition(async () => {
+      const res = await updateRegistration(formData)
+      if (res.success) {
+        setEditingReg(null)
+      } else {
+        alert(res.error)
+      }
+    })
   }
 
   return (
@@ -202,13 +216,21 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
                       )}
                     </td>
                     <td className="p-4 text-right">
-                      <button 
-                        onClick={() => { if(confirm('Bu kaydı silmek istediğinize emin misiniz?')) startTransition(async () => { await deleteRegistrations([reg.id]) }) }}
-                        disabled={isWorking}
-                        className="text-red-500 hover:text-red-700 font-medium text-xs bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded transition-colors disabled:opacity-50"
-                      >
-                        Sil
-                      </button>
+                      <div className="flex justify-end gap-2">
+                        <button 
+                          onClick={() => setEditingReg(reg)}
+                          className="text-blue-600 hover:text-blue-700 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded transition-colors"
+                        >
+                          Düzenle
+                        </button>
+                        <button 
+                          onClick={() => { if(confirm('Bu kaydı silmek istediğinize emin misiniz?')) startTransition(async () => { await deleteRegistrations([reg.id]) }) }}
+                          disabled={isWorking}
+                          className="text-red-500 hover:text-red-700 font-medium text-xs bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded transition-colors disabled:opacity-50"
+                        >
+                          Sil
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -217,6 +239,67 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
           </table>
         </div>
       </div>
+
+      {editingReg && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+              <h3 className="text-xl font-bold text-slate-800">Kaydı Düzenle</h3>
+              <button onClick={() => setEditingReg(null)} className="text-slate-400 hover:text-slate-600">✕</button>
+            </div>
+            <form onSubmit={handleUpdate} className="p-6 space-y-4">
+              <input type="hidden" name="id" value={editingReg.id} />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold text-slate-900 mb-1">Ad Soyad</label>
+                  <input type="text" name="fullName" defaultValue={editingReg.fullName} required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-900 mb-1">Telefon</label>
+                  <input type="text" name="phone" defaultValue={editingReg.phone} required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-slate-900 mb-1">Adres</label>
+                <textarea name="address" defaultValue={editingReg.address} rows={2} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium"></textarea>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold text-slate-900 mb-1">{type === 'standard' ? 'Grup' : 'Bağış Türü'}</label>
+                  <input type="text" name="group" defaultValue={editingReg.group} required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-900 mb-1">{type === 'standard' ? 'Hisse' : 'Not'}</label>
+                  <input type="text" name="share" defaultValue={editingReg.share} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-slate-900 mb-1">Durum</label>
+                <select name="status" defaultValue={editingReg.status} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium bg-white">
+                  <option value="BEKLEMEDE">Beklemede</option>
+                  <option value="ONAYLANDI">Onaylandı</option>
+                  <option value="TARTILDI">Tartıldı</option>
+                  <option value="KESILDI">Kesildi</option>
+                  <option value="PARCALANDI">Parçalandı</option>
+                  <option value="TESLIM_EDILDI">Teslim Edildi</option>
+                  <option value="IPTAL">İptal Edildi</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onClick={() => setEditingReg(null)} className="px-6 py-2 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">Vazgeç</button>
+                <button type="submit" disabled={isWorking} className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-bold disabled:opacity-50 shadow-md transition-all">
+                  {isWorking ? 'Güncelleniyor...' : 'Güncelle'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
