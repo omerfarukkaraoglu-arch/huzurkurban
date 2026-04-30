@@ -55,7 +55,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="p-4 bg-slate-50 text-center text-xs text-slate-600 font-bold border-t border-slate-100">>
+        <div className="p-4 bg-slate-50 text-center text-xs text-slate-600 font-bold border-t border-slate-100">
           © 2026 Huzur Kurban Yönetim Paneli
         </div>
       </div>
