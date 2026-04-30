@@ -187,7 +187,7 @@ export default function ScanClient({ userStation, stationName }: { userStation: 
                      <div>
                         <div className="font-black text-slate-900 leading-none mb-1">{animal.earTag}</div>
                         <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-                           {new Date(animal.updatedAt).toLocaleTimeString('tr-TR')} Güncellendi
+                           {new Date(animal.createdAt).toLocaleTimeString('tr-TR')} Güncellendi
                         </div>
                      </div>
                   </div>

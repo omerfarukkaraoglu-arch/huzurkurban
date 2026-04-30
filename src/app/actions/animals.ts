@@ -296,7 +296,7 @@ export async function getAnimalsByStatus(status: string) {
   try {
     const animals = await prisma.animal.findMany({
       where: { deliveryStatus: status },
-      orderBy: { updatedAt: 'desc' },
+      orderBy: { createdAt: 'desc' },
       take: 20
     })
     return { success: true, animals }
