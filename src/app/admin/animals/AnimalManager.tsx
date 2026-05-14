@@ -9,7 +9,8 @@ const initialState = { success: false, message: '', error: '' }
 
 export default function AnimalManager({ initialAnimals, registrations }: { initialAnimals: any[], registrations: any[] }) {
   const [state, formAction, isPending] = useActionState(createAnimal, initialState)
-  const [editState, editFormAction, isEditPending] = useActionState(updateAnimal, initialState)
+  const [editState, setEditState] = useState<{ success: boolean, message: string, error: string } | null>(null)
+  const [isEditPending, startEditTransition] = useTransition()
   const [isWorking, startTransition] = useTransition()
   
   const [expandedAnimal, setExpandedAnimal] = useState<string | null>(null)
@@ -89,11 +90,6 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
     startTransition(async () => {
       await reorderAnimals(updates)
     })
-  }
-
-  // Close edit modal on success
-  if (editState?.success && editingAnimal) {
-    setEditingAnimal(null)
   }
 
   const toggleSelectAll = () => {
@@ -221,8 +217,14 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
       }
     }
     
-    startTransition(() => {
-      editFormAction(formData);
+    startEditTransition(async () => {
+      const res = await updateAnimal(null, formData);
+      if (res.success) {
+        setEditingAnimal(null);
+        setEditState(null);
+      } else {
+        setEditState({ success: false, message: '', error: res.error || 'Güncelleme başarısız oldu.' });
+      }
     });
   }
 
@@ -419,6 +421,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                     <button
                       onClick={() => {
                          setEditingAnimal(animal);
+                         setEditState(null);
                          setExistingImages(animal.imageUrls && animal.imageUrls.length > 0 ? animal.imageUrls : (animal.imageUrl ? [animal.imageUrl] : []));
                       }}
                       className="text-blue-600 hover:bg-blue-50 font-medium text-sm px-3 py-2 rounded-lg border border-blue-100 transition-colors"
@@ -512,7 +515,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                     <h3 className="text-xl font-bold text-slate-800">Hayvanı Düzenle</h3>
                     <p className="text-sm text-slate-500">{editingAnimal.earTag} küpe numaralı kayıt</p>
                 </div>
-                <button onClick={() => setEditingAnimal(null)} className="text-slate-400 hover:text-slate-600 bg-white p-2 rounded-full border border-slate-200">✕</button>
+                <button onClick={() => { setEditingAnimal(null); setEditState(null); }} className="text-slate-400 hover:text-slate-600 bg-white p-2 rounded-full border border-slate-200">✕</button>
             </div>
             
             <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
@@ -566,7 +569,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
               {editState?.success && <div className="p-3 bg-emerald-50 text-emerald-700 rounded-lg text-sm">{editState.message}</div>}
 
               <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-4">
-                <button type="button" onClick={() => setEditingAnimal(null)} className="px-6 py-2 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors">Vazgeç</button>
+                <button type="button" onClick={() => { setEditingAnimal(null); setEditState(null); }} className="px-6 py-2 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors">Vazgeç</button>
                 <button type="submit" disabled={isEditPending} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-70">
                   {isEditPending ? 'Güncelleniyor...' : 'Değişiklikleri Kaydet'}
                 </button>
