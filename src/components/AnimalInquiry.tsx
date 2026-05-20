@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { findAnimalByInquiry } from '@/app/actions/inquiry'
+import { safeLocaleLowerCase, normalizeSearchString } from '@/lib/utils'
 
 export default function AnimalInquiry() {
   const [query, setQuery] = useState('')
@@ -156,7 +157,7 @@ export default function AnimalInquiry() {
                           <span className="font-bold text-slate-700">{sh.registration.fullName}</span>
                           {sh.registration.id === result.shareholders.find((s:any) => 
                             s.registration.phone.trim() === query.trim() || 
-                            s.registration.fullName.toLocaleLowerCase('tr-TR').trim() === query.toLocaleLowerCase('tr-TR').trim()
+                            normalizeSearchString(s.registration.fullName) === normalizeSearchString(query)
                           )?.registration?.id && (
                              <span className="ml-auto bg-emerald-500 text-white px-2 py-0.5 rounded text-[10px] font-black uppercase">SİZ</span>
                           )}

@@ -4,6 +4,7 @@ import React, { useActionState, useTransition, useState } from 'react'
 import { createAnimal, updateAnimal, deleteAnimal, deleteAnimals, addShareholder, removeShareholder, bulkImportAnimals, reorderAnimals } from '@/app/actions/animals'
 import * as XLSX from 'xlsx'
 import imageCompression from 'browser-image-compression'
+import { safeLocaleLowerCase, normalizeSearchString } from '@/lib/utils'
 
 const initialState = { success: false, message: '', error: '' }
 
@@ -33,9 +34,9 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
   const isSearchActive = mainSearchTerm.length > 0
   const filteredAnimals = isSearchActive 
     ? animalsData.filter(a => 
-        a.earTag.toLocaleLowerCase('tr-TR').includes(mainSearchTerm.toLocaleLowerCase('tr-TR')) ||
-        (a.groupName && a.groupName.toLocaleLowerCase('tr-TR').includes(mainSearchTerm.toLocaleLowerCase('tr-TR'))) ||
-        (a.note && a.note.toLocaleLowerCase('tr-TR').includes(mainSearchTerm.toLocaleLowerCase('tr-TR')))
+        normalizeSearchString(a.earTag).includes(normalizeSearchString(mainSearchTerm)) ||
+        (a.groupName && normalizeSearchString(a.groupName).includes(normalizeSearchString(mainSearchTerm))) ||
+        (a.note && normalizeSearchString(a.note).includes(normalizeSearchString(mainSearchTerm)))
       )
     : animalsData
 
@@ -166,10 +167,21 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
       .filter(r => !existingIds.includes(r.id))
       .filter(r => {
         if (!trimmed) return true
-        // Grup numarası ile arama (tam eşleşme)
-        if (r.group && r.group.trim() === trimmed) return true
-        // İsim veya telefon ile arama
-        return r.fullName.toLowerCase().includes(trimmed.toLowerCase()) || r.phone.includes(trimmed)
+        
+        // Eğer arama terimi 1-3 haneli sadece sayıdan oluşuyorsa, bunu grup numarası araması olarak gör.
+        // Böylece telefon numarasında o sayı geçen alakasız kişiler listelenmez.
+        const isNumericGroupQuery = /^\d{1,3}$/.test(trimmed)
+        if (isNumericGroupQuery) {
+          const groupNumbers = r.group ? r.group.match(/\d+/g) || [] : []
+          return groupNumbers.includes(trimmed)
+        }
+
+        const lowerTrimmed = normalizeSearchString(trimmed)
+        return (
+          (r.group && normalizeSearchString(r.group).includes(lowerTrimmed)) ||
+          normalizeSearchString(r.fullName).includes(lowerTrimmed) ||
+          r.phone.includes(trimmed)
+        )
       })
   }
 

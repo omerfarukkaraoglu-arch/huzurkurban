@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { updateAnimalDeliveryStatus, bulkUpdateAnimalDeliveryStatus } from '@/app/actions/delivery'
+import { safeLocaleLowerCase, normalizeSearchString } from '@/lib/utils'
 
 const DELIVERY_STAGES = [
   { id: 'BEKLEMEDE', label: 'Beklemede', color: 'bg-slate-100 text-slate-700' },
@@ -20,17 +21,17 @@ export default function DeliveryManager({ initialAnimals }: { initialAnimals: an
 
   const filteredAnimals = initialAnimals.filter(animal => {
     // Arama: Küpe No, Grup Adı veya Hissedar Adı
-    const term = searchTerm.toLocaleLowerCase('tr-TR')
+    const term = normalizeSearchString(searchTerm)
     
     // Check if any shareholder matches the search term
     const hasMatchingShareholder = animal.shareholders?.some((s: any) => 
-      s.registration?.fullName.toLocaleLowerCase('tr-TR').includes(term) ||
+      normalizeSearchString(s.registration?.fullName).includes(term) ||
       s.registration?.phone.includes(term)
     )
 
     const matchesSearch = 
-      (animal.earTag && animal.earTag.toLocaleLowerCase('tr-TR').includes(term)) ||
-      (animal.groupName && animal.groupName.toLocaleLowerCase('tr-TR').includes(term)) ||
+      (animal.earTag && normalizeSearchString(animal.earTag).includes(term)) ||
+      (animal.groupName && normalizeSearchString(animal.groupName).includes(term)) ||
       hasMatchingShareholder
       
     const matchesStatus = statusFilter === 'ALL' || animal.deliveryStatus === statusFilter

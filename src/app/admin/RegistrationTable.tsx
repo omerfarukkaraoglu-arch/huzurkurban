@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { deleteRegistrations, bulkImportRegistrations, updateRegistration } from '@/app/actions/register'
 import * as LucideIcons from 'lucide-react'
 import * as XLSX from 'xlsx'
+import { safeLocaleLowerCase, normalizeSearchString } from '@/lib/utils'
 
 interface RegistrationTableProps {
   initialRegistrations: any[]
@@ -44,7 +45,7 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
   }
 
   const filteredRegistrations = initialRegistrations.filter(reg => 
-    reg.fullName.toLocaleLowerCase('tr-TR').includes(searchTerm.toLocaleLowerCase('tr-TR')) ||
+    normalizeSearchString(reg.fullName).includes(normalizeSearchString(searchTerm)) ||
     reg.phone.includes(searchTerm)
   )
 
@@ -157,6 +158,7 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
                     onChange={toggleSelectAll}
                   />
                 </th>
+                <th className="p-4 font-semibold w-12 text-slate-400">#</th>
                 <th className="p-4 font-semibold">Tarih</th>
                 <th className="p-4 font-semibold">Ad Soyad</th>
                 <th className="p-4 font-semibold">Telefon</th>
@@ -169,12 +171,12 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
             <tbody className="divide-y divide-slate-200 text-sm">
               {filteredRegistrations.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-slate-700 font-medium italic">
+                  <td colSpan={9} className="p-8 text-center text-slate-700 font-medium italic">
                     {searchTerm ? 'Aranan kritere uygun kayıt bulunamadı.' : 'Henüz kayıt bulunmamaktadır.'}
                   </td>
                 </tr>
               ) : (
-                filteredRegistrations.map((reg) => (
+                filteredRegistrations.map((reg, idx) => (
                   <tr key={reg.id} className={`hover:bg-slate-50 transition-colors ${selectedIds.includes(reg.id) ? 'bg-emerald-50/30' : ''}`}>
                     <td className="p-4">
                       <input 
@@ -184,6 +186,7 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
                         onChange={() => toggleSelect(reg.id)}
                       />
                     </td>
+                    <td className="p-4 text-slate-500 font-bold whitespace-nowrap">{idx + 1}</td>
                     <td className="p-4 text-slate-600 whitespace-nowrap">
                       {new Date(reg.createdAt).toLocaleDateString('tr-TR')}
                     </td>

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { updateAnimalStatus, bulkUpdateAnimalStatus } from '@/app/actions/animals'
+import { safeLocaleLowerCase, normalizeSearchString } from '@/lib/utils'
 
 const PREDEFINED_STATUS_LABELS: Record<string, string> = {
   BEKLEMEDE: 'Beklemede',
@@ -53,16 +54,16 @@ export default function TrackingManager({
     const status = animal.deliveryStatus || 'BEKLEMEDE'
     const matchesTab = activeTab === 'ALL' || status === activeTab
 
-    const term = searchTerm.toLocaleLowerCase('tr-TR')
+    const term = normalizeSearchString(searchTerm)
     const hasMatchingShareholder = animal.shareholders?.some((s: any) => 
-      s.registration?.fullName.toLocaleLowerCase('tr-TR').includes(term) ||
+      normalizeSearchString(s.registration?.fullName).includes(term) ||
       s.registration?.phone.includes(term)
     )
 
     const matchesSearch = 
       !searchTerm ||
-      (animal.earTag && animal.earTag.toLocaleLowerCase('tr-TR').includes(term)) ||
-      (animal.groupName && animal.groupName.toLocaleLowerCase('tr-TR').includes(term)) ||
+      (animal.earTag && normalizeSearchString(animal.earTag).includes(term)) ||
+      (animal.groupName && normalizeSearchString(animal.groupName).includes(term)) ||
       hasMatchingShareholder
 
     return matchesTab && matchesSearch

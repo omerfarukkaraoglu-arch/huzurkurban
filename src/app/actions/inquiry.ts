@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { normalizeSearchString } from '@/lib/utils'
 
 export async function findAnimalByInquiry(query: string) {
   if (!query || query.length < 3) {
@@ -22,13 +23,9 @@ export async function findAnimalByInquiry(query: string) {
       return { success: true, data: animalByTag }
     }
 
-    const registrations = await prisma.registration.findMany({
-      where: {
-        OR: [
-          { fullName: { contains: query, mode: 'insensitive' } },
-          { phone: { contains: query } }
-        ]
-      },
+    // 2. Fetch all registrations and filter in memory using normalizeSearchString 
+    // to bypass DB collation limits and support Turkish-English character insensitivity
+    const allRegistrations = await prisma.registration.findMany({
       include: {
         animalShares: {
           include: {
@@ -44,11 +41,24 @@ export async function findAnimalByInquiry(query: string) {
       }
     })
 
+    const normalizedQuery = normalizeSearchString(query)
+    const trimmedQuery = query.trim()
+
+    const registrations = allRegistrations.filter(r => {
+      // Check phone match
+      if (r.phone && r.phone.includes(trimmedQuery)) {
+        return true
+      }
+      // Check normalized name match
+      const normalizedName = normalizeSearchString(r.fullName)
+      return normalizedName.includes(normalizedQuery)
+    })
+
     if (registrations.length > 0) {
       // Return the first found animal for these registrations
       const animals = registrations
         .flatMap(r => r.animalShares.map(as => as.animal))
-        .filter((a, index, self) => self.findIndex(t => t.id === a.id) === index)
+        .filter((a, index, self) => a && self.findIndex(t => t && t.id === a.id) === index)
 
       if (animals.length > 0) {
         return { success: true, data: animals[0] } // Simply return the first one for now
