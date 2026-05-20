@@ -18,9 +18,9 @@ export default async function AdminDashboardPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Kayıt Başvuruları</h2>
+          <h2 className="text-2xl font-bold text-slate-800">Hissedarlar (Kayıtlar)</h2>
           <p className="text-sm text-slate-500 mt-1">
-            Toplam {registrations.length} kayıt bulunuyor.
+            Toplam {registrations.length} hissedar kaydı bulunuyor.
           </p>
         </div>
         <ExportButtons data={JSON.parse(JSON.stringify(registrations))} />

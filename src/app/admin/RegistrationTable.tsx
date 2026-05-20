@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { deleteRegistrations, bulkImportRegistrations, updateRegistration } from '@/app/actions/register'
+import { deleteRegistrations, bulkImportRegistrations, updateRegistration, createRegistration } from '@/app/actions/register'
 import * as LucideIcons from 'lucide-react'
 import * as XLSX from 'xlsx'
 import { safeLocaleLowerCase, normalizeSearchString } from '@/lib/utils'
@@ -17,6 +17,7 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
   const [isWorking, startTransition] = useTransition()
   const [importResult, setImportResult] = useState<{ success: boolean, message: string, stats?: any } | null>(null)
   const [editingReg, setEditingReg] = useState<any | null>(null)
+  const [isAddingReg, setIsAddingReg] = useState(false)
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -89,7 +90,20 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
       }
     })
   }
-
+  const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    formData.set('isDonation', String(type === 'donation'))
+    startTransition(async () => {
+      const res = await createRegistration(formData)
+      if (res.success) {
+        setIsAddingReg(false)
+        e.currentTarget.reset()
+      } else {
+        alert(res.error)
+      }
+    })
+  }
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 min-h-[40px]">
@@ -107,6 +121,12 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
         </div>
         
         <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setIsAddingReg(true)}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md transition-colors flex items-center gap-2"
+            >
+              ➕ Yeni Kayıt
+            </button>
             <button 
               onClick={downloadSampleTemplate}
               className="bg-white hover:bg-slate-50 text-slate-600 px-4 py-2 rounded-lg text-sm font-bold border border-slate-200 transition-colors flex items-center gap-2"
@@ -297,6 +317,65 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
                 <button type="button" onClick={() => setEditingReg(null)} className="px-6 py-2 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">Vazgeç</button>
                 <button type="submit" disabled={isWorking} className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-bold disabled:opacity-50 shadow-md transition-all">
                   {isWorking ? 'Güncelleniyor...' : 'Güncelle'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {isAddingReg && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+              <h3 className="text-xl font-bold text-slate-800">Yeni Hissedar Kaydı Ekle</h3>
+              <button onClick={() => setIsAddingReg(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+            </div>
+            <form onSubmit={handleCreate} className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold text-slate-900 mb-1">Ad Soyad</label>
+                  <input type="text" name="fullName" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium bg-white placeholder:text-slate-400" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-900 mb-1">Telefon</label>
+                  <input type="text" name="phone" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium bg-white placeholder:text-slate-400" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-slate-900 mb-1">Adres</label>
+                <textarea name="address" rows={2} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium bg-white placeholder:text-slate-400"></textarea>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold text-slate-900 mb-1">{type === 'standard' ? 'Grup' : 'Bağış Türü'}</label>
+                  <input type="text" name="group" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium bg-white placeholder:text-slate-400" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-900 mb-1">{type === 'standard' ? 'Hisse' : 'Not'}</label>
+                  <input type="text" name="share" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium bg-white placeholder:text-slate-400" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-slate-900 mb-1">Durum</label>
+                <select name="status" defaultValue="ONAYLANDI" className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium bg-white">
+                  <option value="BEKLEMEDE">Beklemede</option>
+                  <option value="ONAYLANDI">Onaylandı</option>
+                  <option value="TARTILDI">Tartıldı</option>
+                  <option value="KESILDI">Kesildi</option>
+                  <option value="PARCALANDI">Parçalandı</option>
+                  <option value="TESLIM_EDILDI">Teslim Edildi</option>
+                  <option value="IPTAL">İptal Edildi</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onClick={() => setIsAddingReg(false)} className="px-6 py-2 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">Vazgeç</button>
+                <button type="submit" disabled={isWorking} className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-bold disabled:opacity-50 shadow-md transition-all">
+                  {isWorking ? 'Ekleniyor...' : 'Kayıt Ekle'}
                 </button>
               </div>
             </form>

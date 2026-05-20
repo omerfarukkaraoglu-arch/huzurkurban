@@ -135,3 +135,33 @@ export async function updateRegistration(formData: FormData) {
     return { success: false, error: 'Güncelleme sırasında bir hata oluştu.' }
   }
 }
+
+export async function createRegistration(formData: FormData) {
+  try {
+    const data = {
+      fullName: formData.get('fullName') as string,
+      phone: formData.get('phone') as string,
+      address: (formData.get('address') as string) || '',
+      group: formData.get('group') as string,
+      share: (formData.get('share') as string) || '',
+      isDonation: formData.get('isDonation') === 'true',
+      status: (formData.get('status') as string) || 'ONAYLANDI'
+    }
+
+    if (!data.fullName || !data.phone || !data.group) {
+      return { success: false, error: 'Lütfen zorunlu alanları (Ad Soyad, Telefon, Grup) doldurunuz.' }
+    }
+
+    await prisma.registration.create({
+      data,
+    })
+
+    revalidatePath('/admin')
+    revalidatePath('/admin/donations')
+    
+    return { success: true, message: 'Kayıt başarıyla eklendi.' }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: 'Kayıt ekleme sırasında bir hata oluştu.' }
+  }
+}

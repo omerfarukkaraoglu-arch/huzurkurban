@@ -20,7 +20,7 @@ export default async function SettingsPage() {
           <h2 className="text-2xl font-bold text-slate-800">Sistem Ayarları</h2>
         </div>
         <Link href="/admin" className="text-emerald-600 hover:text-emerald-700 font-medium">
-          ← Geri Dön (Kayıtlar)
+          ← Geri Dön (Hissedarlar)
         </Link>
       </div>
 

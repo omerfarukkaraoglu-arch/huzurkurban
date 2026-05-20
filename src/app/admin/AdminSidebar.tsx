@@ -38,7 +38,7 @@ export default function AdminSidebar({
  
   if (role === 'SUPERADMIN') {
     menuItems = [
-      { title: 'Kayıtlar', href: '/admin', icon: 'ClipboardList' },
+      { title: 'Hissedarlar', href: '/admin', icon: 'ClipboardList' },
       { title: 'Hayvanlar', href: '/admin/animals', icon: 'Beef' },
       { title: 'Kurban Takip', href: '/admin/tracking', icon: 'Activity' },
       { title: 'Bağışlar', href: '/admin/donations', icon: 'HeartHandshake' },
