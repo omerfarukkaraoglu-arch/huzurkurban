@@ -161,9 +161,30 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
   const filteredRegistrations = (animalId: string) => {
     const animal = initialAnimals.find(a => a.id === animalId)
     const existingIds = animal?.shareholders?.map((s: any) => s.registrationId) || []
+    const isNumericSearch = /^\d+$/.test(searchTerm.trim())
+    const searchNum = isNumericSearch ? parseInt(searchTerm.trim()) : 0
     return registrations
+      .map((r, index) => ({ ...r, _rowNum: index + 1 }))
       .filter(r => !existingIds.includes(r.id))
-      .filter(r => r.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || r.phone.includes(searchTerm))
+      .filter(r => {
+        if (isNumericSearch && searchNum > 0) {
+          return r._rowNum === searchNum
+        }
+        return r.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || r.phone.includes(searchTerm)
+      })
+  }
+
+  const handleAddAllFiltered = (animalId: string) => {
+    const regs = filteredRegistrations(animalId)
+    const animal = initialAnimals.find((a: any) => a.id === animalId)
+    const currentCount = animal?.shareholders?.length || 0
+    const maxToAdd = Math.min(regs.length, 7 - currentCount)
+    if (maxToAdd <= 0) return
+    startTransition(async () => {
+      for (let i = 0; i < maxToAdd; i++) {
+        await addShareholder(animalId, regs[i].id)
+      }
+    })
   }
 
   const handleCreateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -470,26 +491,38 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                         <h4 className="text-sm font-bold text-slate-700 mb-2">Hissedar Ekle</h4>
                         <input
                           type="text"
-                          placeholder="İsim veya telefon ile arayın..."
+                          placeholder="Sıra no, isim veya telefon ile arayın..."
                           value={searchTerm}
                           onChange={e => setSearchTerm(e.target.value)}
                           className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm mb-2 text-slate-900 bg-white"
                         />
+                        {/^\d+$/.test(searchTerm.trim()) && filteredRegistrations(animal.id).length > 0 && (
+                          <button
+                            onClick={() => handleAddAllFiltered(animal.id)}
+                            disabled={isWorking}
+                            className="w-full mb-2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                          >
+                            ✅ Tüm {filteredRegistrations(animal.id).length} Kişiyi Ekle (Sıra #{searchTerm.trim()})
+                          </button>
+                        )}
                         <div className="max-h-48 overflow-y-auto bg-white rounded-lg border border-slate-200 divide-y divide-slate-100">
                           {filteredRegistrations(animal.id).length === 0 ? (
                             <div className="p-3 text-sm text-slate-400 text-center">Eşleşen kayıt bulunamadı.</div>
                           ) : (
                             filteredRegistrations(animal.id).slice(0, 20).map((reg: any) => (
                               <div key={reg.id} className="flex items-center justify-between p-3 hover:bg-slate-50 transition-colors">
-                                <div>
-                                  <span className="font-medium text-slate-800 text-sm">{reg.fullName}</span>
-                                  <span className="text-xs text-slate-500 ml-2">{reg.phone}</span>
-                                  <span className="text-xs text-blue-600 ml-2 bg-blue-50 px-1.5 py-0.5 rounded">{reg.group}</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-600 text-xs font-bold border border-slate-200 shrink-0">{reg._rowNum}</span>
+                                  <div>
+                                    <span className="font-medium text-slate-800 text-sm">{reg.fullName}</span>
+                                    <span className="text-xs text-slate-500 ml-2">{reg.phone}</span>
+                                    <span className="text-xs text-blue-600 ml-2 bg-blue-50 px-1.5 py-0.5 rounded">{reg.group}</span>
+                                  </div>
                                 </div>
                                 <button
                                   onClick={() => handleAddShareholder(animal.id, reg.id)}
                                   disabled={isWorking}
-                                  className="text-emerald-600 hover:bg-emerald-50 text-xs font-bold px-3 py-1 rounded border border-emerald-200 transition-colors disabled:opacity-50"
+                                  className="text-emerald-600 hover:bg-emerald-50 text-xs font-bold px-3 py-1 rounded border border-emerald-200 transition-colors disabled:opacity-50 shrink-0"
                                 >
                                   + Ekle
                                 </button>

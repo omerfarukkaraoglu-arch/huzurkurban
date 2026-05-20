@@ -21,7 +21,7 @@ export default async function AnimalsPage() {
   })
 
   const registrations = await prisma.registration.findMany({
-    orderBy: { fullName: 'asc' }
+    orderBy: { createdAt: 'desc' }
   })
 
   return (
