@@ -304,3 +304,39 @@ export async function getAnimalsByStatus(status: string) {
     return { success: false, error: 'Hayvanlar çekilirken hata oluştu.' }
   }
 }
+
+export async function bulkUpdateAnimalStatus(animalIds: string[], nextStatus: string) {
+  try {
+    await prisma.$transaction(async (tx) => {
+      // 1. Update animals
+      await tx.animal.updateMany({
+        where: { id: { in: animalIds } },
+        data: { deliveryStatus: nextStatus }
+      })
+
+      // 2. Find all registration IDs associated with these animals
+      const shareholders = await tx.animalShareholder.findMany({
+        where: { animalId: { in: animalIds } }
+      })
+      const regIds = shareholders.map(s => s.registrationId)
+
+      // 3. Update registrations
+      if (regIds.length > 0) {
+        await tx.registration.updateMany({
+          where: { id: { in: regIds } },
+          data: { status: nextStatus }
+        })
+      }
+    })
+
+    revalidatePath('/admin/animals')
+    revalidatePath('/admin/tracking')
+    revalidatePath('/teslimat')
+    revalidatePath('/')
+    return { success: true, message: 'Toplu durum güncellendi.' }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: 'Toplu güncelleme başarısız oldu.' }
+  }
+}
+

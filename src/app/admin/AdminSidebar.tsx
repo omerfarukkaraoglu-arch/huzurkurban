@@ -40,6 +40,7 @@ export default function AdminSidebar({
     menuItems = [
       { title: 'Kayıtlar', href: '/admin', icon: 'ClipboardList' },
       { title: 'Hayvanlar', href: '/admin/animals', icon: 'Beef' },
+      { title: 'Kurban Takip', href: '/admin/tracking', icon: 'Activity' },
       { title: 'Bağışlar', href: '/admin/donations', icon: 'HeartHandshake' },
       { title: 'Randevular', href: '/admin/appointments', icon: 'CalendarDays' },
       { title: 'Makbuzlar', href: '/admin/receipts', icon: 'FileText' },
