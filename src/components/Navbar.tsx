@@ -55,9 +55,12 @@ export default function Navbar({ settings }: { settings: any }) {
                   className="h-full w-full object-contain"
                 />
               </div>
-              <span className="font-extrabold text-2xl tracking-tighter text-slate-900 group-hover:text-emerald-700 transition-colors uppercase">
-                {settings.siteTitle}
-              </span>
+              <div className="flex flex-col">
+                <span className="text-[10px] text-emerald-600 font-extrabold tracking-widest uppercase font-serif">GÖREN BESİCİLİK</span>
+                <span className="font-extrabold text-xl tracking-tighter text-slate-900 group-hover:text-emerald-700 transition-colors uppercase -mt-0.5 leading-tight">
+                  {settings.siteTitle}
+                </span>
+              </div>
             </Link>
 
             <div className="hidden lg:flex items-center space-x-6 z-10 transition-all">

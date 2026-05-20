@@ -70,7 +70,8 @@ export default function AdminSidebar({
           <div className="flex items-center gap-2">
             <img src="/logo-icon.png" alt="Menü" className="h-14 w-14 object-contain" />
             <div className="flex flex-col">
-                <span className="font-extrabold text-slate-800 leading-tight uppercase tracking-tighter">Huzur Kurban</span>
+                <span className="text-[9px] text-emerald-600 font-extrabold tracking-widest uppercase font-serif">GÖREN BESİCİLİK</span>
+                <span className="font-extrabold text-slate-800 leading-tight uppercase tracking-tighter -mt-0.5">Huzur Kurban</span>
                 <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">{role}</span>
             </div>
           </div>

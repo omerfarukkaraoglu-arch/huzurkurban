@@ -14,11 +14,12 @@ export default function AdminHeader({ user, role }: { user: any, role: string })
             <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200">
               <span className="text-white font-bold text-xl leading-none">H</span>
             </div>
-            <div>
-                <h1 className="text-lg font-bold text-slate-800 leading-tight">
-                Huzur Kurban <span className="text-emerald-600">Admin</span>
+             <div className="flex flex-col">
+                <span className="text-[9px] text-emerald-600 font-extrabold tracking-widest uppercase font-serif">GÖREN BESİCİLİK</span>
+                <h1 className="text-lg font-extrabold text-slate-800 leading-none -mt-0.5">
+                Huzur Kurban <span className="text-emerald-600 font-bold">Admin</span>
                 </h1>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{role} PANELİ</span>
                 </div>
