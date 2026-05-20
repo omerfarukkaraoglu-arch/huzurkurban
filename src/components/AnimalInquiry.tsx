@@ -10,12 +10,14 @@ export default function AnimalInquiry() {
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false)
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setResult(null)
     setCurrentImageIndex(0)
+    setIsFullscreenOpen(false)
 
     startTransition(async () => {
       const res = await findAnimalByInquiry(query)
@@ -72,8 +74,20 @@ export default function AnimalInquiry() {
                         if (images.length > 0) {
                             return (
                                 <>
-                                  <div className="aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white relative">
+                                  <div className="aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white relative group/img">
                                     <img src={images[currentImageIndex] || images[0]} alt={result.earTag} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                    
+                                    {/* Fullscreen Button */}
+                                    <button
+                                      type="button"
+                                      onClick={() => setIsFullscreenOpen(true)}
+                                      className="absolute top-3 left-3 bg-black/60 hover:bg-black/80 text-white p-2.5 rounded-xl flex items-center justify-center shadow-lg transition-all border border-white/10 hover:scale-105 z-10"
+                                      title="Tam Ekran Göster"
+                                    >
+                                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9m5.25 11.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
+                                      </svg>
+                                    </button>
                                     
                                     {images.length > 1 && (
                                         <>
@@ -180,6 +194,69 @@ export default function AnimalInquiry() {
           )}
         </div>
       </div>
+
+      {isFullscreenOpen && result && (
+        <div 
+          className="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[999] flex flex-col items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setIsFullscreenOpen(false)}
+        >
+          {/* Close button */}
+          <button 
+            type="button"
+            onClick={() => setIsFullscreenOpen(false)}
+            className="absolute top-4 right-4 text-white hover:text-slate-350 bg-white/10 hover:bg-white/20 w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold transition-all z-10"
+            title="Kapat"
+          >
+            ✕
+          </button>
+
+          {/* Fullscreen Image Container */}
+          <div 
+            className="relative max-w-5xl max-h-[85vh] w-full h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {(() => {
+              const images = result.imageUrls && result.imageUrls.length > 0 ? result.imageUrls : (result.imageUrl ? [result.imageUrl] : []);
+              if (images.length > 0) {
+                return (
+                  <>
+                    <img 
+                      src={images[currentImageIndex] || images[0]} 
+                      alt={result.earTag} 
+                      className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl select-none"
+                    />
+
+                    {images.length > 1 && (
+                      <>
+                        <button 
+                          type="button"
+                          onClick={() => setCurrentImageIndex(prev => prev > 0 ? prev - 1 : images.length - 1)}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white hover:scale-105 w-14 h-14 rounded-full flex items-center justify-center font-bold text-2xl shadow-2xl transition-all border border-white/10"
+                        >
+                          {'<'}
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={() => setCurrentImageIndex(prev => prev < images.length - 1 ? prev + 1 : 0)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white hover:scale-105 w-14 h-14 rounded-full flex items-center justify-center font-bold text-2xl shadow-2xl transition-all border border-white/10"
+                        >
+                          {'>'}
+                        </button>
+                      </>
+                    )}
+                  </>
+                )
+              }
+              return null;
+            })()}
+          </div>
+          
+          {/* Caption / Navigation Dots */}
+          <div className="mt-4 text-white/60 text-sm font-semibold">
+            {result.earTag} {result.imageUrls && result.imageUrls.length > 1 && `(${currentImageIndex + 1} / ${result.imageUrls.length})`}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
