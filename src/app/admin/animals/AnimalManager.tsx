@@ -161,16 +161,15 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
   const filteredRegistrations = (animalId: string) => {
     const animal = initialAnimals.find(a => a.id === animalId)
     const existingIds = animal?.shareholders?.map((s: any) => s.registrationId) || []
-    const isNumericSearch = /^\d+$/.test(searchTerm.trim())
-    const searchNum = isNumericSearch ? parseInt(searchTerm.trim()) : 0
+    const trimmed = searchTerm.trim()
     return registrations
-      .map((r, index) => ({ ...r, _rowNum: index + 1 }))
       .filter(r => !existingIds.includes(r.id))
       .filter(r => {
-        if (isNumericSearch && searchNum > 0) {
-          return r._rowNum === searchNum
-        }
-        return r.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || r.phone.includes(searchTerm)
+        if (!trimmed) return true
+        // Grup numarası ile arama (tam eşleşme)
+        if (r.group && r.group.trim() === trimmed) return true
+        // İsim veya telefon ile arama
+        return r.fullName.toLowerCase().includes(trimmed.toLowerCase()) || r.phone.includes(trimmed)
       })
   }
 
@@ -491,18 +490,18 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                         <h4 className="text-sm font-bold text-slate-700 mb-2">Hissedar Ekle</h4>
                         <input
                           type="text"
-                          placeholder="Sıra no, isim veya telefon ile arayın..."
+                          placeholder="Grup no, isim veya telefon ile arayın..."
                           value={searchTerm}
                           onChange={e => setSearchTerm(e.target.value)}
                           className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm mb-2 text-slate-900 bg-white"
                         />
-                        {/^\d+$/.test(searchTerm.trim()) && filteredRegistrations(animal.id).length > 0 && (
+                        {searchTerm.trim() && filteredRegistrations(animal.id).length > 1 && (
                           <button
                             onClick={() => handleAddAllFiltered(animal.id)}
                             disabled={isWorking}
                             className="w-full mb-2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                           >
-                            ✅ Tüm {filteredRegistrations(animal.id).length} Kişiyi Ekle (Sıra #{searchTerm.trim()})
+                            ✅ Tüm {filteredRegistrations(animal.id).length} Kişiyi Ekle (Grup {searchTerm.trim()})
                           </button>
                         )}
                         <div className="max-h-48 overflow-y-auto bg-white rounded-lg border border-slate-200 divide-y divide-slate-100">
@@ -512,7 +511,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                             filteredRegistrations(animal.id).slice(0, 20).map((reg: any) => (
                               <div key={reg.id} className="flex items-center justify-between p-3 hover:bg-slate-50 transition-colors">
                                 <div className="flex items-center gap-2">
-                                  <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-600 text-xs font-bold border border-slate-200 shrink-0">{reg._rowNum}</span>
+                                  <span className="inline-flex items-center justify-center min-w-7 h-7 px-1.5 rounded-full bg-amber-50 text-amber-700 text-xs font-bold border border-amber-200 shrink-0">{reg.group}</span>
                                   <div>
                                     <span className="font-medium text-slate-800 text-sm">{reg.fullName}</span>
                                     <span className="text-xs text-slate-500 ml-2">{reg.phone}</span>
