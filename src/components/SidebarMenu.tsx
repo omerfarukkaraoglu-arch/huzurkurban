@@ -14,7 +14,7 @@ export default function SidebarMenu({ isOpen, onClose, onOpenAppointment, whatsa
     { id: 'kayit', title: 'Hisse Kaydı', icon: 'Tractor', target: '#kayit-formu', color: 'hover:bg-emerald-50 text-emerald-700' },
     { id: 'bagis', title: 'Bağış Yap', icon: 'HeartHandshake', target: '#kayit-formu', color: 'hover:bg-amber-50 text-amber-700' },
     { id: 'sorgula', title: 'Kurbanını Gör', icon: 'ScanSearch', target: '#kurbanini-gor', color: 'hover:bg-blue-50 text-blue-700' },
-    { id: 'teslimat', title: 'Teslimat Sorgula', icon: 'Truck', target: 'external', url: '/teslimat', color: 'hover:bg-teal-50 text-teal-700' },
+    { id: 'teslimat', title: 'Kurbanım Nerede', icon: 'Truck', target: 'external', url: '/teslimat', color: 'hover:bg-teal-50 text-teal-700' },
     { id: 'hakkimizda', title: 'Hakkımızda', icon: 'Info', target: '#nasil-calisir', color: 'hover:bg-slate-100 text-slate-800' },
     { id: 'sss', title: 'Sıkça Sorulan Sorular', icon: 'HelpCircle', target: '#sss', color: 'hover:bg-slate-50 text-slate-700' },
     { id: 'randevu', title: 'Randevu Oluştur', icon: 'CalendarCheck', target: 'modal', color: 'hover:bg-purple-50 text-purple-700' },

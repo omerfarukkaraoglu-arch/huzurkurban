@@ -16,7 +16,7 @@ export default function Navbar({ settings }: { settings: any }) {
     { id: 'kayit', title: 'Hisse Kaydı', icon: 'Tractor', target: '#kayit-formu' },
     { id: 'bagis', title: 'Bağış Yap', icon: 'HeartHandshake', target: '#kayit-formu' },
     { id: 'sorgula', title: 'Kurbanını Gör', icon: 'ScanSearch', target: '#kurbanini-gor' },
-    { id: 'teslimat', title: 'Teslimat Sorgula', icon: 'Truck', target: 'external', url: '/teslimat' },
+    { id: 'teslimat', title: 'Kurbanım Nerede', icon: 'Truck', target: 'external', url: '/teslimat' },
     { id: 'randevu', title: 'Randevu Al', icon: 'CalendarCheck', target: 'modal' },
     { id: 'whatsapp', title: 'WhatsApp', icon: 'MessageCircle', target: 'external', url: `https://wa.me/${cleanWhatsapp}?text=${encodeURIComponent("Merhaba, kurban ile alakalı bilgi almak istiyorum.")}` },
   ]

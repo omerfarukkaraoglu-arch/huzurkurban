@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, CheckCircle2, HeartHandshake, Truck } from 'lucide-react'
+import { ChevronLeft, ChevronRight, CheckCircle2, HeartHandshake, Truck, Search } from 'lucide-react'
 
 export default function HeroSection({ settings }: { settings: any }) {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -70,28 +70,35 @@ export default function HeroSection({ settings }: { settings: any }) {
             {settings.heroSubText || 'İslami usullere uygun, hijyenik tesislerde, veteriner hekim kontrolünde güvenilir bir kurban ibadeti için Hizmetinizdeyiz.'}
           </p>
           
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 mt-4 sm:mt-8 px-4">
+          <div className="grid grid-cols-2 md:flex md:flex-row md:flex-wrap justify-center items-center gap-3 md:gap-4 mt-6 md:mt-8 px-2 sm:px-4">
             <a 
               href="#kayit-formu" 
-              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all shadow-lg hover:shadow-emerald-500/30 group"
+              className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white py-3 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-lg transition-all shadow-lg hover:shadow-emerald-500/30 group"
             >
-              <CheckCircle2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
               Hemen Kayıt Ol
             </a>
             <a 
               href="#kayit-formu"
               onClick={() => window.dispatchEvent(new CustomEvent('change-form-mode', { detail: 'bagis' }))}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all border border-white/30 group"
+              className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white py-3 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-lg transition-all border border-white/30 group"
             >
-              <HeartHandshake className="w-5 h-5 group-hover:scale-110 transition-transform text-amber-300" />
+              <HeartHandshake className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform text-amber-300" />
               Bağış Hisse
             </a>
             <a 
-              href="/teslimat"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-900 px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all shadow-lg group"
+              href="#kurbanini-gor"
+              className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white py-3 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-lg transition-all shadow-lg group"
             >
-              <Truck className="w-5 h-5 group-hover:translate-x-1 transition-transform text-teal-600" />
-              Teslimat Sorgula
+              <Search className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
+              Kurbanını Gör
+            </a>
+            <a 
+              href="/teslimat"
+              className="flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-900 py-3 md:px-8 md:py-4 rounded-xl font-semibold text-sm md:text-lg transition-all shadow-lg group"
+            >
+              <Truck className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform text-teal-600" />
+              Kurbanım Nerede
             </a>
           </div>
         </div>
