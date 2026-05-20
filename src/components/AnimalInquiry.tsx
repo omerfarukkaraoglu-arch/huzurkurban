@@ -154,7 +154,10 @@ export default function AnimalInquiry() {
                             {sh.shareholderIndex || '👤'}
                           </div>
                           <span className="font-bold text-slate-700">{sh.registration.fullName}</span>
-                          {sh.registration.id === result.shareholders.find((s:any) => s.registration.phone === query || s.registration.fullName === query)?.registration?.id && (
+                          {sh.registration.id === result.shareholders.find((s:any) => 
+                            s.registration.phone.trim() === query.trim() || 
+                            s.registration.fullName.toLocaleLowerCase('tr-TR').trim() === query.toLocaleLowerCase('tr-TR').trim()
+                          )?.registration?.id && (
                              <span className="ml-auto bg-emerald-500 text-white px-2 py-0.5 rounded text-[10px] font-black uppercase">SİZ</span>
                           )}
                         </div>

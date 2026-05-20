@@ -22,11 +22,10 @@ export async function findAnimalByInquiry(query: string) {
       return { success: true, data: animalByTag }
     }
 
-    // 2. Try to find by Shareholder Name or Phone
     const registrations = await prisma.registration.findMany({
       where: {
         OR: [
-          { fullName: { contains: query } },
+          { fullName: { contains: query, mode: 'insensitive' } },
           { phone: { contains: query } }
         ]
       },
