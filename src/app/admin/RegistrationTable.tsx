@@ -9,9 +9,10 @@ import { safeLocaleLowerCase, normalizeSearchString } from '@/lib/utils'
 interface RegistrationTableProps {
   initialRegistrations: any[]
   type: 'standard' | 'donation'
+  kurbanGroups?: any[]
 }
 
-export default function RegistrationTable({ initialRegistrations, type }: RegistrationTableProps) {
+export default function RegistrationTable({ initialRegistrations, type, kurbanGroups = [] }: RegistrationTableProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [isWorking, startTransition] = useTransition()
@@ -292,7 +293,24 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-slate-900 mb-1">{type === 'standard' ? 'Grup' : 'Bağış Türü'}</label>
-                  <input type="text" name="group" defaultValue={editingReg.group} required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium" />
+                  {kurbanGroups && kurbanGroups.length > 0 ? (
+                    <select name="group" defaultValue={editingReg.group} required className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium bg-white">
+                      <option value="">Seçiniz...</option>
+                      {editingReg.group && !kurbanGroups.some(g => (type === 'standard' ? `${g.name} (${g.price} TL)` : g.name) === editingReg.group) && (
+                        <option value={editingReg.group}>{editingReg.group}</option>
+                      )}
+                      {kurbanGroups.map(group => {
+                        const val = type === 'standard' ? `${group.name} (${group.price} TL)` : group.name;
+                        return (
+                          <option key={group.id} value={val}>
+                            {type === 'standard' ? `${group.name} (${group.price} TL)` : group.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  ) : (
+                    <input type="text" name="group" defaultValue={editingReg.group} required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium" />
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-slate-900 mb-1">{type === 'standard' ? 'Hisse' : 'Not'}</label>
@@ -351,7 +369,21 @@ export default function RegistrationTable({ initialRegistrations, type }: Regist
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-slate-900 mb-1">{type === 'standard' ? 'Grup' : 'Bağış Türü'}</label>
-                  <input type="text" name="group" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium bg-white placeholder:text-slate-400" />
+                  {kurbanGroups && kurbanGroups.length > 0 ? (
+                    <select name="group" required className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium bg-white">
+                      <option value="">Seçiniz...</option>
+                      {kurbanGroups.map(group => {
+                        const val = type === 'standard' ? `${group.name} (${group.price} TL)` : group.name;
+                        return (
+                          <option key={group.id} value={val}>
+                            {type === 'standard' ? `${group.name} (${group.price} TL)` : group.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  ) : (
+                    <input type="text" name="group" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 font-medium bg-white placeholder:text-slate-400" />
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-slate-900 mb-1">{type === 'standard' ? 'Hisse' : 'Not'}</label>

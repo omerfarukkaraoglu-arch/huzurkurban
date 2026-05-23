@@ -14,6 +14,16 @@ export default async function DonationsPage() {
     }
   })
 
+  const groups = await prisma.kurbanGroup.findMany({
+    where: {
+      isDonation: true,
+      isActive: true
+    },
+    orderBy: {
+      price: 'asc'
+    }
+  })
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -29,6 +39,7 @@ export default async function DonationsPage() {
       <RegistrationTable 
         initialRegistrations={JSON.parse(JSON.stringify(registrations))} 
         type="donation" 
+        kurbanGroups={JSON.parse(JSON.stringify(groups))}
       />
     </div>
   )
