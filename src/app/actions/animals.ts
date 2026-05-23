@@ -13,6 +13,8 @@ export async function createAnimal(prevState: any, formData: FormData) {
     const note = formData.get('note') as string
     const imageFiles = formData.getAll('images') as File[]
     const validImages = imageFiles.filter(f => f && f.size > 0)
+    const orderRaw = formData.get('order') as string
+    const order = orderRaw ? parseInt(orderRaw) : 0
 
     if (!earTag) {
       return { success: false, error: 'Küpe numarası zorunludur.', message: '' }
@@ -47,6 +49,7 @@ export async function createAnimal(prevState: any, formData: FormData) {
         imageUrl: firstImageUrl,
         imageUrls,
         note: note || null,
+        order: isNaN(order) ? 0 : order,
       }
     })
 
@@ -73,6 +76,8 @@ export async function updateAnimal(prevState: any, formData: FormData) {
            existingImages = JSON.parse(existingImagesRaw)
        } catch(e) {}
     }
+    const orderRaw = formData.get('order') as string
+    const order = orderRaw ? parseInt(orderRaw) : undefined
 
     if (!id || !earTag) {
       return { success: false, error: 'ID ve Küpe numarası zorunludur.', message: '' }
@@ -113,6 +118,7 @@ export async function updateAnimal(prevState: any, formData: FormData) {
         imageUrl: firstImageUrl,
         imageUrls,
         note: note || null,
+        order: order !== undefined && !isNaN(order) ? order : undefined,
       }
     })
 
