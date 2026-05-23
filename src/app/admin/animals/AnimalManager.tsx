@@ -482,9 +482,9 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                 onDragEnd={handleDragEnd}
                 className={`bg-white rounded-xl shadow-sm border transition-all overflow-hidden ${selectedIds.includes(animal.id) ? 'border-emerald-500 ring-1 ring-emerald-500 bg-emerald-50/10' : 'border-slate-200'} ${!isSearchActive && 'cursor-move'}`}
               >
-                <div className="p-5 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="flex flex-col items-center gap-2">
+                <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+                    <div className="flex flex-col items-center gap-2 shrink-0">
                         {!isSearchActive && <div className="text-slate-300 hover:text-slate-500 cursor-grab px-1 text-2xl -mt-2 -mb-2" title="Sürükle bırak ile sırala">☰</div>}
                         <input 
                             type="checkbox" 
@@ -494,7 +494,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                         />
                     </div>
                     {!isSearchActive && (
-                        <div className="flex flex-col items-center justify-center mr-2">
+                        <div className="flex flex-col items-center justify-center mr-1 sm:mr-2 shrink-0">
                             <span className="text-[10px] text-slate-400 font-bold mb-0.5">SIRA</span>
                             <input 
                                key={`order-${animal.id}-${index}`}
@@ -518,29 +518,29 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                       const firstImg = animal.imageUrls && animal.imageUrls.length > 0 ? animal.imageUrls[0] : animal.imageUrl;
                       const extraCount = animal.imageUrls ? Math.max(0, animal.imageUrls.length - 1) : 0;
                       return firstImg ? (
-                        <div className="relative">
+                        <div className="relative shrink-0">
                           <img src={firstImg} alt={animal.earTag} className="w-12 h-12 rounded-xl object-cover border border-slate-200" />
                           {extraCount > 0 && <span className="absolute -bottom-2 -right-2 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-emerald-200">+{extraCount}</span>}
                         </div>
                       ) : (
-                        <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center text-xl font-bold">
+                        <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center text-xl font-bold shrink-0">
                           🐄
                         </div>
                       )
                     })()}
-                    <div>
-                      <div className="font-bold text-slate-800 text-lg">{animal.earTag}</div>
-                      <div className="text-sm text-slate-700 font-bold">
+                    <div className="min-w-0">
+                      <div className="font-bold text-slate-800 text-base sm:text-lg truncate">{animal.earTag}</div>
+                      <div className="text-xs sm:text-sm text-slate-700 font-bold flex flex-wrap gap-x-2 gap-y-0.5">
                         {animal.weight && <span>{animal.weight} kg</span>}
-                        {animal.groupName && <span className="ml-2">• {animal.groupName}</span>}
-                        <span className="ml-2">• {animal.shareholders?.length || 0}/7 Hissedar</span>
+                        {animal.groupName && <span>• {animal.groupName}</span>}
+                        <span>• {animal.shareholders?.length || 0}/7 Hissedar</span>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-3 sm:border-t-0 sm:pt-0 w-full sm:w-auto shrink-0 flex-wrap sm:flex-nowrap">
                     <button
                       onClick={() => setExpandedAnimal(expandedAnimal === animal.id ? null : animal.id)}
-                      className={`font-medium text-sm px-4 py-2 rounded-lg border transition-colors ${expandedAnimal === animal.id ? 'bg-emerald-600 text-white border-emerald-600' : 'text-emerald-600 hover:bg-emerald-50 border-emerald-200'}`}
+                      className={`font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg border transition-colors flex-1 sm:flex-initial text-center ${expandedAnimal === animal.id ? 'bg-emerald-600 text-white border-emerald-600' : 'text-emerald-600 hover:bg-emerald-50 border-emerald-200'}`}
                     >
                       {expandedAnimal === animal.id ? 'Kapat' : `Hissedar Yönet (${animal.shareholders?.length || 0}/7)`}
                     </button>
@@ -551,14 +551,14 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                          setExistingImages(animal.imageUrls && animal.imageUrls.length > 0 ? animal.imageUrls : (animal.imageUrl ? [animal.imageUrl] : []));
                          setEditFormNewImages([]);
                       }}
-                      className="text-blue-600 hover:bg-blue-50 font-medium text-sm px-3 py-2 rounded-lg border border-blue-100 transition-colors"
+                      className="text-blue-600 hover:bg-blue-50 font-medium text-xs sm:text-sm px-3 py-2 rounded-lg border border-blue-100 transition-colors text-center"
                     >
                       Düzenle
                     </button>
                     <button
                       onClick={() => handleDelete(animal.id)}
                       disabled={isWorking}
-                      className="text-red-500 hover:bg-red-50 font-medium text-sm px-3 py-2 rounded-lg border border-red-100 transition-colors disabled:opacity-50"
+                      className="text-red-500 hover:bg-red-50 font-medium text-xs sm:text-sm px-3 py-2 rounded-lg border border-red-100 transition-colors disabled:opacity-50 text-center"
                     >
                       Sil
                     </button>
