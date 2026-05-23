@@ -9,9 +9,10 @@ import CameraModal from '@/components/CameraModal'
 
 const initialState = { success: false, message: '', error: '' }
 
-const GROUP_OPTIONS = Array.from({ length: 20 }, (_, i) => `${i + 1}. Grup`)
-
-export default function AnimalManager({ initialAnimals, registrations }: { initialAnimals: any[], registrations: any[] }) {
+export default function AnimalManager({ initialAnimals, registrations, kurbanGroups = [] }: { initialAnimals: any[], registrations: any[], kurbanGroups?: any[] }) {
+  const GROUP_OPTIONS = kurbanGroups && kurbanGroups.length > 0 
+    ? kurbanGroups.map(g => g.name) 
+    : ['30-35k', '35-40k']
   const [state, formAction, isPending] = useActionState(createAnimal, initialState)
   const [editState, setEditState] = useState<{ success: boolean, message: string, error: string } | null>(null)
   const [isEditPending, startEditTransition] = useTransition()
@@ -35,6 +36,7 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
   const [cameraTarget, setCameraTarget] = useState<'create' | 'edit' | null>(null)
   const [createFormImages, setCreateFormImages] = useState<File[]>([])
   const [editFormNewImages, setEditFormNewImages] = useState<File[]>([])
+  const [showOnlyMatchingGroup, setShowOnlyMatchingGroup] = useState(true)
 
   // Reset create form state on success
   React.useEffect(() => {
@@ -201,11 +203,16 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
     const animal = initialAnimals.find(a => a.id === animalId)
     const existingIds = animal?.shareholders?.map((s: any) => s.registrationId) || []
     const trimmed = searchTerm.trim()
-    return registrations
-      .filter(r => !existingIds.includes(r.id))
-      .filter(r => {
-        if (!trimmed) return true
-        
+    
+    let list = registrations.filter(r => !existingIds.includes(r.id))
+    
+    // Yalnızca aynı fiyat grubundaki hissedarları filtrele
+    if (showOnlyMatchingGroup && animal && animal.groupName) {
+      list = list.filter(r => r.group && r.group.includes(animal.groupName))
+    }
+    
+    if (trimmed) {
+      list = list.filter(r => {
         // Eğer arama terimi 1-3 haneli sadece sayıdan oluşuyorsa, bunu grup numarası araması olarak gör.
         // Böylece telefon numarasında o sayı geçen alakasız kişiler listelenmez.
         const isNumericGroupQuery = /^\d{1,3}$/.test(trimmed)
@@ -221,6 +228,18 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
           r.phone.includes(trimmed)
         )
       })
+    }
+    
+    // Fiyat grubuna göre öncelikli sırala (özellikle filtre kaldırıldığında uyuşanlar üstte görünsün)
+    if (animal && animal.groupName) {
+      list.sort((a, b) => {
+        const aMatch = a.group && a.group.includes(animal.groupName) ? 1 : 0
+        const bMatch = b.group && b.group.includes(animal.groupName) ? 1 : 0
+        return bMatch - aMatch
+      })
+    }
+    
+    return list
   }
 
   const handleAddAllFiltered = (animalId: string) => {
@@ -597,11 +616,28 @@ export default function AnimalManager({ initialAnimals, registrations }: { initi
                         <h4 className="text-sm font-bold text-slate-700 mb-2">Hissedar Ekle</h4>
                         <input
                           type="text"
-                          placeholder="Grup no, isim veya telefon ile arayın..."
+                          placeholder="İsim veya telefon ile arayın..."
                           value={searchTerm}
                           onChange={e => setSearchTerm(e.target.value)}
                           className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm mb-2 text-slate-900 bg-white"
                         />
+                        {animal.groupName && (
+                          <div className="flex items-center gap-2 mb-3">
+                            <input
+                              type="checkbox"
+                              id={`matching-group-${animal.id}`}
+                              checked={showOnlyMatchingGroup}
+                              onChange={(e) => setShowOnlyMatchingGroup(e.target.checked)}
+                              className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                            />
+                            <label 
+                              htmlFor={`matching-group-${animal.id}`} 
+                              className="text-xs font-bold text-slate-600 select-none cursor-pointer"
+                            >
+                              Yalnızca bu fiyat grubundaki ({animal.groupName}) hissedarları listele
+                            </label>
+                          </div>
+                        )}
                         {searchTerm.trim() && filteredRegistrations(animal.id).length > 1 && (
                           <button
                             onClick={() => handleAddAllFiltered(animal.id)}

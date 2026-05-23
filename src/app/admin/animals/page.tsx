@@ -24,6 +24,16 @@ export default async function AnimalsPage() {
     orderBy: { createdAt: 'desc' }
   })
 
+  const kurbanGroups = await prisma.kurbanGroup.findMany({
+    where: {
+      isDonation: false,
+      isActive: true
+    },
+    orderBy: {
+      price: 'asc'
+    }
+  })
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
@@ -42,6 +52,7 @@ export default async function AnimalsPage() {
       <AnimalManager
         initialAnimals={JSON.parse(JSON.stringify(animals))}
         registrations={JSON.parse(JSON.stringify(registrations))}
+        kurbanGroups={JSON.parse(JSON.stringify(kurbanGroups))}
       />
     </div>
   )
