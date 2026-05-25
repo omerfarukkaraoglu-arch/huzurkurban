@@ -922,7 +922,7 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
                   <label className="block text-sm font-medium text-slate-700 mb-1">Küpe Numarası *</label>
                   <input type="text" name="earTag" defaultValue={editingAnimal.earTag} required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
                 </div>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-1">Sıra No</label>
                       <input type="number" name="order" min="1" defaultValue={editingAnimal.order || ''} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
