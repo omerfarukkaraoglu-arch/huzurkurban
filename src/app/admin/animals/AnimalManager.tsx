@@ -625,6 +625,7 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
                             {animal.weight && <span>{animal.weight} kg</span>}
                             {animal.groupName && <span>• {animal.groupName}</span>}
                             <span>• {totalShares}/{maxShares} Hissedar</span>
+                            {animal.note && <span className="text-slate-500 font-medium">• Not: {animal.note}</span>}
                           </div>
                         );
                       })()}
