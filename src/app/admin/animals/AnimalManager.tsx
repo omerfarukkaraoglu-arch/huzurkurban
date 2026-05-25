@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useActionState, useTransition, useState, useEffect } from 'react'
-import { createAnimal, updateAnimal, deleteAnimal, deleteAnimals, addShareholder, removeShareholder, bulkImportAnimals, reorderAnimals } from '@/app/actions/animals'
+import { createAnimal, updateAnimal, deleteAnimal, deleteAnimals, addShareholder, removeShareholder, bulkImportAnimals, reorderAnimals, createRegistrationAndAddAsShareholder } from '@/app/actions/animals'
 import * as XLSX from 'xlsx'
 import imageCompression from 'browser-image-compression'
 import { safeLocaleLowerCase, normalizeSearchString } from '@/lib/utils'
@@ -37,6 +37,7 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
   const [createFormImages, setCreateFormImages] = useState<File[]>([])
   const [editFormNewImages, setEditFormNewImages] = useState<File[]>([])
   const [showOnlyMatchingGroup, setShowOnlyMatchingGroup] = useState(true)
+  const [addingNewShareholderToAnimalId, setAddingNewShareholderToAnimalId] = useState<string | null>(null)
 
   // Reset create form state on success
   React.useEffect(() => {
@@ -197,6 +198,33 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
 
   const handleRemoveShareholder = (shareholderId: string) => {
     startTransition(async () => { await removeShareholder(shareholderId) })
+  }
+
+  const handleCreateNewShareholderAndAdd = async (e: React.FormEvent<HTMLFormElement>, animalId: string) => {
+    e.preventDefault()
+    const form = e.currentTarget
+    const formData = new FormData(form)
+    
+    const fullName = formData.get('fullName') as string
+    const phone = formData.get('phone') as string
+    const address = formData.get('address') as string
+    const group = formData.get('group') as string
+    const share = formData.get('share') as string
+    
+    startTransition(async () => {
+      const res = await createRegistrationAndAddAsShareholder(animalId, {
+        fullName,
+        phone,
+        address,
+        group,
+        share
+      })
+      if (res.success) {
+        setAddingNewShareholderToAnimalId(null)
+      } else {
+        alert(res.error || 'Hissedar eklenirken hata oluştu.')
+      }
+    })
   }
 
   const filteredRegistrations = (animalId: string) => {
@@ -613,65 +641,165 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
 
                     {(animal.shareholders?.length || 0) < 7 && (
                       <div>
-                        <h4 className="text-sm font-bold text-slate-700 mb-2">Hissedar Ekle</h4>
-                        <input
-                          type="text"
-                          placeholder="İsim veya telefon ile arayın..."
-                          value={searchTerm}
-                          onChange={e => setSearchTerm(e.target.value)}
-                          className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm mb-2 text-slate-900 bg-white"
-                        />
-                        {animal.groupName && (
-                          <div className="flex items-center gap-2 mb-3">
-                            <input
-                              type="checkbox"
-                              id={`matching-group-${animal.id}`}
-                              checked={showOnlyMatchingGroup}
-                              onChange={(e) => setShowOnlyMatchingGroup(e.target.checked)}
-                              className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
-                            />
-                            <label 
-                              htmlFor={`matching-group-${animal.id}`} 
-                              className="text-xs font-bold text-slate-600 select-none cursor-pointer"
+                        <div className="flex justify-between items-center mb-3">
+                          <h4 className="text-sm font-bold text-slate-700">Hissedar Ekle</h4>
+                          {addingNewShareholderToAnimalId === animal.id ? (
+                            <button
+                              onClick={() => setAddingNewShareholderToAnimalId(null)}
+                              className="text-xs font-bold text-slate-500 hover:text-slate-700"
                             >
-                              Yalnızca bu fiyat grubundaki ({animal.groupName}) hissedarları listele
-                            </label>
-                          </div>
-                        )}
-                        {searchTerm.trim() && filteredRegistrations(animal.id).length > 1 && (
-                          <button
-                            onClick={() => handleAddAllFiltered(animal.id)}
-                            disabled={isWorking}
-                            className="w-full mb-2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                          >
-                            ✅ Tüm {filteredRegistrations(animal.id).length} Kişiyi Ekle (Grup {searchTerm.trim()})
-                          </button>
-                        )}
-                        <div className="max-h-48 overflow-y-auto bg-white rounded-lg border border-slate-200 divide-y divide-slate-100">
-                          {filteredRegistrations(animal.id).length === 0 ? (
-                            <div className="p-3 text-sm text-slate-400 text-center">Eşleşen kayıt bulunamadı.</div>
+                              ← Aramaya Dön
+                            </button>
                           ) : (
-                            filteredRegistrations(animal.id).slice(0, 20).map((reg: any) => (
-                              <div key={reg.id} className="flex items-center justify-between p-3 hover:bg-slate-50 transition-colors">
-                                <div className="flex items-center gap-2">
-                                  <span className="inline-flex items-center justify-center min-w-7 h-7 px-1.5 rounded-full bg-amber-50 text-amber-700 text-xs font-bold border border-amber-200 shrink-0">{reg.group}</span>
-                                  <div>
-                                    <span className="font-medium text-slate-800 text-sm">{reg.fullName}</span>
-                                    <span className="text-xs text-slate-500 ml-2">{reg.phone}</span>
-                                    <span className="text-xs text-blue-600 ml-2 bg-blue-50 px-1.5 py-0.5 rounded">{reg.group}</span>
-                                  </div>
-                                </div>
-                                <button
-                                  onClick={() => handleAddShareholder(animal.id, reg.id)}
-                                  disabled={isWorking}
-                                  className="text-emerald-600 hover:bg-emerald-50 text-xs font-bold px-3 py-1 rounded border border-emerald-200 transition-colors disabled:opacity-50 shrink-0"
-                                >
-                                  + Ekle
-                                </button>
-                              </div>
-                            ))
+                            <button
+                              onClick={() => setAddingNewShareholderToAnimalId(animal.id)}
+                              className="text-xs font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-100 hover:bg-emerald-100 transition-colors"
+                            >
+                              👤 Yeni Hissedar Kaydet ve Ekle
+                            </button>
                           )}
                         </div>
+
+                        {addingNewShareholderToAnimalId === animal.id ? (
+                          <form 
+                            onSubmit={(e) => handleCreateNewShareholderAndAdd(e, animal.id)}
+                            className="bg-white p-4 rounded-xl border border-slate-200 space-y-3"
+                          >
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-xs font-bold text-slate-600 mb-1">Ad Soyad *</label>
+                                <input 
+                                  type="text" 
+                                  name="fullName" 
+                                  required 
+                                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-slate-900 bg-white" 
+                                  placeholder="Ahmet Yılmaz"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-bold text-slate-600 mb-1">Telefon *</label>
+                                <input 
+                                  type="tel" 
+                                  name="phone" 
+                                  required 
+                                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-slate-900 bg-white" 
+                                  placeholder="05XX XXX XX XX"
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-xs font-bold text-slate-600 mb-1">Adres</label>
+                              <textarea 
+                                name="address" 
+                                rows={1} 
+                                className="w-full px-3 py-1.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-slate-900 resize-none bg-white" 
+                                placeholder="Teslimat Adresi"
+                              />
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-xs font-bold text-slate-600 mb-1">Hisse / Not</label>
+                                <input 
+                                  type="text" 
+                                  name="share" 
+                                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-slate-900 bg-white" 
+                                  placeholder="Örn: 1 Hisse"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-bold text-slate-600 mb-1">Grup *</label>
+                                <select 
+                                  name="group" 
+                                  required 
+                                  defaultValue={animal.groupName || ''} 
+                                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-slate-900 bg-white font-medium"
+                                >
+                                  <option value="">Seçiniz...</option>
+                                  {GROUP_OPTIONS.map(g => (
+                                    <option key={g} value={g}>{g}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                              <button 
+                                type="button" 
+                                onClick={() => setAddingNewShareholderToAnimalId(null)}
+                                className="px-4 py-1.5 text-xs font-bold text-slate-600 hover:bg-slate-50 border border-slate-200 rounded-lg"
+                              >
+                                Vazgeç
+                              </button>
+                              <button 
+                                type="submit"
+                                disabled={isWorking}
+                                className="px-4 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 rounded-lg shadow-sm"
+                              >
+                                {isWorking ? 'Kaydediliyor...' : 'Kaydet ve Ekle'}
+                              </button>
+                            </div>
+                          </form>
+                        ) : (
+                          <>
+                            <input
+                              type="text"
+                              placeholder="İsim veya telefon ile arayın..."
+                              value={searchTerm}
+                              onChange={e => setSearchTerm(e.target.value)}
+                              className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-sm mb-2 text-slate-900 bg-white"
+                            />
+                            {animal.groupName && (
+                              <div className="flex items-center gap-2 mb-3">
+                                <input
+                                  type="checkbox"
+                                  id={`matching-group-${animal.id}`}
+                                  checked={showOnlyMatchingGroup}
+                                  onChange={(e) => setShowOnlyMatchingGroup(e.target.checked)}
+                                  className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                                />
+                                <label 
+                                  htmlFor={`matching-group-${animal.id}`} 
+                                  className="text-xs font-bold text-slate-600 select-none cursor-pointer"
+                                >
+                                  Yalnızca bu fiyat grubundaki ({animal.groupName}) hissedarları listele
+                                </label>
+                              </div>
+                            )}
+                            {searchTerm.trim() && filteredRegistrations(animal.id).length > 1 && (
+                              <button
+                                onClick={() => handleAddAllFiltered(animal.id)}
+                                disabled={isWorking}
+                                className="w-full mb-2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                              >
+                                ✅ Tüm {filteredRegistrations(animal.id).length} Kişiyi Ekle (Grup {searchTerm.trim()})
+                              </button>
+                            )}
+                            <div className="max-h-48 overflow-y-auto bg-white rounded-lg border border-slate-200 divide-y divide-slate-100">
+                              {filteredRegistrations(animal.id).length === 0 ? (
+                                <div className="p-3 text-sm text-slate-400 text-center">Eşleşen kayıt bulunamadı.</div>
+                              ) : (
+                                filteredRegistrations(animal.id).slice(0, 20).map((reg: any) => (
+                                  <div key={reg.id} className="flex items-center justify-between p-3 hover:bg-slate-50 transition-colors">
+                                    <div className="flex items-center gap-2">
+                                      <span className="inline-flex items-center justify-center min-w-7 h-7 px-1.5 rounded-full bg-amber-50 text-amber-700 text-xs font-bold border border-amber-200 shrink-0">{reg.group}</span>
+                                      <div>
+                                        <span className="font-medium text-slate-800 text-sm">{reg.fullName}</span>
+                                        <span className="text-xs text-slate-500 ml-2">{reg.phone}</span>
+                                        <span className="text-xs text-blue-600 ml-2 bg-blue-50 px-1.5 py-0.5 rounded">{reg.group}</span>
+                                      </div>
+                                    </div>
+                                    <button
+                                      onClick={() => handleAddShareholder(animal.id, reg.id)}
+                                      disabled={isWorking}
+                                      className="text-emerald-600 hover:bg-emerald-50 text-xs font-bold px-3 py-1 rounded border border-emerald-200 transition-colors disabled:opacity-50 shrink-0"
+                                    >
+                                      + Ekle
+                                    </button>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>

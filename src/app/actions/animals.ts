@@ -346,3 +346,53 @@ export async function bulkUpdateAnimalStatus(animalIds: string[], nextStatus: st
   }
 }
 
+export async function createRegistrationAndAddAsShareholder(animalId: string, registrationData: {
+  fullName: string
+  phone: string
+  address: string
+  group: string
+  share: string
+}) {
+  try {
+    if (!animalId || !registrationData.fullName || !registrationData.phone || !registrationData.group) {
+      return { success: false, error: 'Lütfen zorunlu alanları (Ad Soyad, Telefon, Grup) doldurunuz.', message: '' }
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // 1. Kontenjan kontrolü
+      const count = await tx.animalShareholder.count({ where: { animalId } })
+      if (count >= 7) {
+        throw new Error('Bu hayvana en fazla 7 hissedar eklenebilir.')
+      }
+
+      // 2. Yeni hissedar kaydı oluştur
+      const registration = await tx.registration.create({
+        data: {
+          fullName: registrationData.fullName,
+          phone: registrationData.phone,
+          address: registrationData.address || '',
+          group: registrationData.group,
+          share: registrationData.share || '',
+          isDonation: false,
+          status: 'ONAYLANDI'
+        }
+      })
+
+      // 3. Hayvana bağla
+      await tx.animalShareholder.create({
+        data: {
+          animalId,
+          registrationId: registration.id
+        }
+      })
+    })
+
+    revalidatePath('/admin/animals')
+    revalidatePath('/admin')
+    return { success: true, message: 'Yeni hissedar başarıyla oluşturuldu ve hayvana eklendi!', error: '' }
+  } catch (error: any) {
+    console.error("Create registration and add shareholder error:", error)
+    return { success: false, error: error.message || 'Hissedar eklenirken bir hata oluştu.', message: '' }
+  }
+}
+
