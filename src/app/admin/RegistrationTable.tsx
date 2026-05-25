@@ -185,6 +185,7 @@ export default function RegistrationTable({ initialRegistrations, type, kurbanGr
                 <th className="p-4 font-semibold">Telefon</th>
                 <th className="p-4 font-semibold">{type === 'standard' ? 'Grup' : 'Bağış Türü'}</th>
                 <th className="p-4 font-semibold">{type === 'standard' ? 'Hisse' : 'Not'}</th>
+                <th className="p-4 font-semibold">Atanan Hayvan</th>
                 <th className="p-4 font-semibold">Durum</th>
                 <th className="p-4 font-semibold text-right">İşlem</th>
               </tr>
@@ -192,7 +193,7 @@ export default function RegistrationTable({ initialRegistrations, type, kurbanGr
             <tbody className="divide-y divide-slate-200 text-sm">
               {filteredRegistrations.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="p-8 text-center text-slate-700 font-medium italic">
+                  <td colSpan={10} className="p-8 text-center text-slate-700 font-medium italic">
                     {searchTerm ? 'Aranan kritere uygun kayıt bulunamadı.' : 'Henüz kayıt bulunmamaktadır.'}
                   </td>
                 </tr>
@@ -220,6 +221,19 @@ export default function RegistrationTable({ initialRegistrations, type, kurbanGr
                     </td>
                     <td className="p-4 text-slate-600">
                       {reg.share || '-'}
+                    </td>
+                    <td className="p-4 whitespace-nowrap">
+                      {reg.animalShares && reg.animalShares.length > 0 ? (
+                        <div className="flex flex-col gap-1">
+                          {reg.animalShares.map((sh: any) => (
+                            <div key={sh.id} className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full text-xs font-bold border border-blue-100 w-fit">
+                              🐄 No: #{sh.animal.order} ({sh.animal.earTag})
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-slate-400 text-xs italic font-medium">Atanmadı</span>
+                      )}
                     </td>
                     <td className="p-4">
                       {reg.status === 'BEKLEMEDE' ? (

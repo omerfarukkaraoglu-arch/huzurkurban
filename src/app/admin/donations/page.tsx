@@ -9,6 +9,13 @@ export default async function DonationsPage() {
     where: {
       isDonation: true
     },
+    include: {
+      animalShares: {
+        include: {
+          animal: true
+        }
+      }
+    },
     orderBy: {
       createdAt: 'desc'
     }

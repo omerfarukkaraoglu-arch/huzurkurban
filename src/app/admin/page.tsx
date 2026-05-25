@@ -9,6 +9,13 @@ export default async function AdminDashboardPage() {
     where: {
       isDonation: false
     },
+    include: {
+      animalShares: {
+        include: {
+          animal: true
+        }
+      }
+    },
     orderBy: {
       createdAt: 'desc'
     }
