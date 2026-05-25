@@ -54,7 +54,7 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
       <div className="mb-8 no-print flex flex-col md:flex-row justify-between items-center bg-slate-50 p-6 rounded-2xl border border-slate-200 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Etiket Yazdırma Merkezi</h1>
-          <p className="text-sm text-slate-700 font-medium">Yazdırılacak etiket tipini seçin. Toplam {labelType === 'animal' ? animals.length * 4 : animals.reduce((acc, a) => acc + a.shareholders.reduce((sum: number, sh: any) => sum + parseShareCount(sh.registration?.share), 0), 0)} etiket hazırlandı.</p>
+          <p className="text-sm text-slate-700 font-medium">Yazdırılacak etiket tipini seçin. Toplam {labelType === 'animal' ? animals.length * 4 : animals.reduce((acc, a) => acc + (a.maxShares || 7), 0)} etiket hazırlandı.</p>
         </div>
         
         <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
@@ -150,16 +150,47 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
             ))
           )
         ) : (
-          animals.flatMap((animal, aIdx) => 
-            animal.shareholders.flatMap((sh: any, sIdx: number) => {
-              const copyCount = parseShareCount(sh.registration?.share)
-              return Array.from({ length: copyCount }).map((_, copyIdx) => (
-                <div key={`${sh.id}-${copyIdx}`} className="label-card sh-label border border-slate-300 p-4 flex flex-col justify-between relative overflow-hidden">
+          animals.flatMap((animal, aIdx) => {
+            const maxShares = animal.maxShares || 7;
+            const filledSlots: any[] = [];
+            
+            animal.shareholders.forEach((sh: any) => {
+              const copyCount = parseShareCount(sh.registration?.share);
+              for (let i = 0; i < copyCount; i++) {
+                filledSlots.push({
+                  type: 'filled',
+                  registration: sh.registration,
+                  copyIdx: i,
+                  copyCount,
+                  shId: sh.id
+                });
+              }
+            });
+            
+            const emptyCount = Math.max(0, maxShares - filledSlots.length);
+            const emptySlots = Array.from({ length: emptyCount }).map((_, i) => ({
+              type: 'empty',
+              registration: { fullName: 'BOŞ HİSSE', phone: '' },
+              shId: `empty-${i}`
+            }));
+            
+            const allSlots = [...filledSlots, ...emptySlots];
+            
+            return allSlots.map((slot, sIdx) => {
+              const isFilled = slot.type === 'filled';
+              const name = slot.registration?.fullName || 'BOŞ HİSSE';
+              const phone = slot.registration?.phone || '';
+              const key = isFilled ? `${slot.shId}-${slot.copyIdx}` : `${animal.id}-empty-${sIdx}`;
+              
+              return (
+                <div key={key} className={`label-card sh-label border p-4 flex flex-col justify-between relative overflow-hidden ${isFilled ? 'border-slate-300' : 'border-dashed border-red-300 bg-red-50/5'}`}>
                   <div className="flex justify-between items-start">
                      <div>
-                        <div className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1">Hissedar</div>
-                        <div className="text-2xl font-black text-slate-900 leading-none mb-1">{sh.registration?.fullName || 'Bilinmeyen Hissedar'}</div>
-                        <div className="text-sm font-bold text-emerald-600">{sh.registration?.phone}</div>
+                        <div className={`text-[10px] font-black uppercase tracking-wider mb-1 ${isFilled ? 'text-slate-500' : 'text-red-500'}`}>
+                          {isFilled ? 'Hissedar' : 'BOŞ HİSSE'}
+                        </div>
+                        <div className={`text-2xl font-black leading-none mb-1 ${isFilled ? 'text-slate-900' : 'text-red-600'}`}>{name}</div>
+                        {phone && <div className="text-sm font-bold text-emerald-600">{phone}</div>}
                      </div>
                      <div className="text-right">
                         <div className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Hayvan No</div>
@@ -173,9 +204,13 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
                         <span className="text-emerald-700">{animal.groupName || 'GENEL GRUP'}</span>
                      </div>
                      <div className="flex flex-col items-center">
-                        <img src={qrCodes[animal.id]} alt="QR" className="w-20 h-20" />
+                        {qrCodes[animal.id] ? (
+                          <img src={qrCodes[animal.id]} alt="QR" className="w-20 h-20" />
+                        ) : (
+                          <div className="w-20 h-20 bg-slate-100 animate-pulse rounded"></div>
+                        )}
                         <span className="text-[10px] font-bold text-slate-500 mt-1">
-                          #{sIdx + 1}/7 Hisse {copyCount > 1 ? `(${copyIdx + 1}/${copyCount})` : ''}
+                          #{sIdx + 1}/{maxShares} Hisse {isFilled && slot.copyCount > 1 ? `(${slot.copyIdx + 1}/${slot.copyCount})` : ''}
                         </span>
                      </div>
                   </div>
@@ -183,9 +218,9 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
                   {/* Kesim Çizgisi Simgesi */}
                   <div className="absolute top-0 right-0 w-2 h-2 border-r border-b border-slate-100 no-print"></div>
                 </div>
-              ))
-            })
-          )
+              );
+            });
+          })
         )}
       </div>
 
