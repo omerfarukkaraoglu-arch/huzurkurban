@@ -36,6 +36,8 @@ export async function createAnimal(prevState: any, formData: FormData) {
     const validImages = imageFiles.filter(f => f && f.size > 0)
     const orderRaw = formData.get('order') as string
     const order = orderRaw ? parseInt(orderRaw) : 0
+    const maxSharesRaw = formData.get('maxShares') as string
+    const maxShares = maxSharesRaw ? parseInt(maxSharesRaw) : 7
 
     if (!earTag) {
       return { success: false, error: 'Küpe numarası zorunludur.', message: '' }
@@ -71,6 +73,7 @@ export async function createAnimal(prevState: any, formData: FormData) {
         imageUrls,
         note: note || null,
         order: isNaN(order) ? 0 : order,
+        maxShares: isNaN(maxShares) ? 7 : maxShares,
       }
     })
 
@@ -99,6 +102,8 @@ export async function updateAnimal(prevState: any, formData: FormData) {
     }
     const orderRaw = formData.get('order') as string
     const order = orderRaw ? parseInt(orderRaw) : undefined
+    const maxSharesRaw = formData.get('maxShares') as string
+    const maxShares = maxSharesRaw ? parseInt(maxSharesRaw) : undefined
 
     if (!id || !earTag) {
       return { success: false, error: 'ID ve Küpe numarası zorunludur.', message: '' }
@@ -140,6 +145,7 @@ export async function updateAnimal(prevState: any, formData: FormData) {
         imageUrls,
         note: note || null,
         order: order !== undefined && !isNaN(order) ? order : undefined,
+        maxShares: maxShares !== undefined && !isNaN(maxShares) ? maxShares : undefined,
       }
     })
 

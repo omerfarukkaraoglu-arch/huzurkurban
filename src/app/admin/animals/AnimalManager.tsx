@@ -405,7 +405,7 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
           </div>
         )}
         <form id="create-animal-form" onSubmit={handleCreateSubmit} className="p-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-bold text-slate-900 mb-1">Küpe Numarası *</label>
               <input type="text" name="earTag" required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white placeholder:text-slate-500 font-medium" placeholder="Örn: TR-12345678" />
@@ -424,6 +424,14 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
                 <option value="">Grup Seçilmedi</option>
                 {GROUP_OPTIONS.map(g => (
                   <option key={g} value={g}>{g}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-slate-900 mb-1">Hisse Adedi *</label>
+              <select name="maxShares" required defaultValue="7" className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-900 bg-white placeholder:text-slate-500 font-medium">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                  <option key={n} value={n}>{n} Hisse</option>
                 ))}
               </select>
             </div>
@@ -611,11 +619,12 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
                       <div className="font-bold text-slate-800 text-base sm:text-lg truncate">{animal.earTag}</div>
                       {(() => {
                         const totalShares = animal.shareholders?.reduce((sum: number, sh: any) => sum + parseShareCount(sh.registration?.share), 0) || 0;
+                        const maxShares = animal.maxShares || 7;
                         return (
                           <div className="text-xs sm:text-sm text-slate-700 font-bold flex flex-wrap gap-x-2 gap-y-0.5">
                             {animal.weight && <span>{animal.weight} kg</span>}
                             {animal.groupName && <span>• {animal.groupName}</span>}
-                            <span>• {totalShares}/7 Hissedar</span>
+                            <span>• {totalShares}/{maxShares} Hissedar</span>
                           </div>
                         );
                       })()}
@@ -624,12 +633,13 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
                   <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-3 sm:border-t-0 sm:pt-0 w-full sm:w-auto shrink-0 flex-wrap sm:flex-nowrap">
                     {(() => {
                       const totalShares = animal.shareholders?.reduce((sum: number, sh: any) => sum + parseShareCount(sh.registration?.share), 0) || 0;
+                      const maxShares = animal.maxShares || 7;
                       return (
                         <button
                           onClick={() => setExpandedAnimal(expandedAnimal === animal.id ? null : animal.id)}
                           className={`font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg border transition-colors flex-1 sm:flex-initial text-center ${expandedAnimal === animal.id ? 'bg-emerald-600 text-white border-emerald-600' : 'text-emerald-600 hover:bg-emerald-50 border-emerald-200'}`}
                         >
-                          {expandedAnimal === animal.id ? 'Kapat' : `Hissedar Yönet (${totalShares}/7)`}
+                          {expandedAnimal === animal.id ? 'Kapat' : `Hissedar Yönet (${totalShares}/${maxShares})`}
                         </button>
                       );
                     })()}
@@ -658,37 +668,71 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
                   <div className="border-t border-slate-100 bg-slate-50 p-5 space-y-4">
                     <div>
                       <h4 className="text-sm font-bold text-slate-700 mb-3">Mevcut Hissedarlar</h4>
-                      {animal.shareholders?.length === 0 ? (
-                        <p className="text-sm text-slate-400">Henüz hissedar eklenmemiş.</p>
-                      ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                          {animal.shareholders?.flatMap((sh: any) => {
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {(() => {
+                          const totalShares = animal.shareholders?.reduce((sum: number, sh: any) => sum + parseShareCount(sh.registration?.share), 0) || 0;
+                          const maxShares = animal.maxShares || 7;
+                          const emptyCount = Math.max(0, maxShares - totalShares);
+                          
+                          const filledSlots = animal.shareholders?.flatMap((sh: any) => {
                             const copyCount = parseShareCount(sh.registration?.share)
-                            return Array.from({ length: copyCount }).map((_, i) => (
-                              <div key={`${sh.id}-${i}`} className="flex items-center justify-between bg-white rounded-lg p-3 border border-slate-200">
-                                <div>
-                                  <div className="font-medium text-slate-800 text-sm">
-                                    {sh.registration?.fullName || 'Bilinmeyen Hissedar'} {copyCount > 1 ? `(${i + 1}/${copyCount})` : ''}
+                            return Array.from({ length: copyCount }).map((_, i) => ({
+                              type: 'filled',
+                              sh,
+                              copyIdx: i,
+                              copyCount
+                            }))
+                          }) || [];
+                          
+                          const emptySlots = Array.from({ length: emptyCount }).map((_, i) => ({
+                            type: 'empty',
+                            slotIdx: totalShares + i + 1
+                          }));
+                          
+                          const allSlots = [...filledSlots, ...emptySlots];
+                          
+                          if (allSlots.length === 0) {
+                            return <div className="col-span-full text-sm text-slate-400">Henüz hissedar eklenmemiş.</div>;
+                          }
+                          
+                          return allSlots.map((slot, index) => {
+                            if (slot.type === 'filled') {
+                              const { sh, copyIdx, copyCount } = slot as any;
+                              return (
+                                <div key={`filled-${sh.id}-${copyIdx}`} className="flex items-center justify-between bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+                                  <div>
+                                    <div className="font-bold text-slate-800 text-sm">
+                                      {sh.registration?.fullName || 'Bilinmeyen Hissedar'} {copyCount > 1 ? `(${copyIdx + 1}/${copyCount})` : ''}
+                                    </div>
+                                    <div className="text-xs text-slate-500 font-medium">{sh.registration?.phone}</div>
                                   </div>
-                                  <div className="text-xs text-slate-500">{sh.registration?.phone}</div>
+                                  <button
+                                    onClick={() => handleRemoveShareholder(sh.id)}
+                                    disabled={isWorking}
+                                    className="text-red-400 hover:text-red-600 text-xs font-bold disabled:opacity-50 px-1.5 py-0.5 rounded hover:bg-red-50"
+                                    title="Kaldır"
+                                  >
+                                    ✕
+                                  </button>
                                 </div>
-                                <button
-                                  onClick={() => handleRemoveShareholder(sh.id)}
-                                  disabled={isWorking}
-                                  className="text-red-400 hover:text-red-600 text-xs font-medium disabled:opacity-50"
-                                >
-                                  ✕
-                                </button>
-                              </div>
-                            ))
-                          })}
-                        </div>
-                      )}
+                              );
+                            } else {
+                              const { slotIdx } = slot as any;
+                              return (
+                                <div key={`empty-${index}`} className="flex items-center justify-between bg-slate-50/50 rounded-lg p-3 border border-dashed border-slate-200 text-slate-400 select-none">
+                                  <span className="text-xs font-semibold italic">🐄 {slotIdx}. Hisse (Boş Hisse)</span>
+                                </div>
+                              );
+                            }
+                          });
+                        })()}
+                      </div>
                     </div>
 
                     {(() => {
                       const totalShares = animal.shareholders?.reduce((sum: number, sh: any) => sum + parseShareCount(sh.registration?.share), 0) || 0;
-                      return totalShares < 7;
+                      const maxShares = animal.maxShares || 7;
+                      return totalShares < maxShares;
                     })() && (
                       <div>
                         <div className="flex justify-between items-center mb-3">
@@ -878,7 +922,7 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
                   <label className="block text-sm font-medium text-slate-700 mb-1">Küpe Numarası *</label>
                   <input type="text" name="earTag" defaultValue={editingAnimal.earTag} required className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-4 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-1">Sıra No</label>
                       <input type="number" name="order" min="1" defaultValue={editingAnimal.order || ''} className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none" />
@@ -896,6 +940,14 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
                         )}
                         {GROUP_OPTIONS.map(g => (
                           <option key={g} value={g}>{g}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Hisse Adedi</label>
+                      <select name="maxShares" required defaultValue={editingAnimal.maxShares || 7} className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none bg-white text-slate-900 font-medium">
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                          <option key={n} value={n}>{n} Hisse</option>
                         ))}
                       </select>
                     </div>

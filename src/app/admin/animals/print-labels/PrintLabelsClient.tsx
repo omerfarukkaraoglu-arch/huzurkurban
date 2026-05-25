@@ -112,19 +112,32 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
                         <div className="text-xl font-bold text-slate-900">{animal.weight ? `${animal.weight} KG` : 'TARTILACAK'}</div>
                     </div>
                     <div>
-                       <div className="text-xs font-bold text-slate-400 uppercase mb-2">Hissedarlar ({animal.shareholders?.length || 0}/7)</div>
-                       <div className="grid grid-cols-1 gap-1">
-                          {animal.shareholders?.map((sh: any, i: number) => (
-                            <div key={sh.id} className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-1">
-                              {i+1}. {sh.registration.fullName}
-                            </div>
-                          ))}
-                          {Array.from({ length: 7 - (animal.shareholders?.length || 0) }).map((_, i) => (
-                            <div key={i} className="text-sm text-slate-300 border-b border-slate-50 pb-1 italic">
-                              {animal.shareholders?.length + i + 1}. Boş Hisse
-                            </div>
-                          ))}
-                       </div>
+                       {(() => {
+                         const maxShares = animal.maxShares || 7;
+                         const filledList = animal.shareholders?.flatMap((sh: any) => {
+                           const copyCount = parseShareCount(sh.registration?.share)
+                           return Array.from({ length: copyCount }).map((_, i) => 
+                             `${sh.registration?.fullName || 'Bilinmeyen Hissedar'}${copyCount > 1 ? ` (${i+1}/${copyCount})` : ''}`
+                           )
+                         }) || [];
+                         
+                         const totalShares = filledList.length;
+                         const emptyList = Array.from({ length: Math.max(0, maxShares - totalShares) }).map(() => 'Boş Hisse');
+                         const allList = [...filledList, ...emptyList];
+                         
+                         return (
+                           <>
+                             <div className="text-xs font-bold text-slate-400 uppercase mb-2">Hissedarlar ({totalShares}/{maxShares})</div>
+                             <div className="grid grid-cols-1 gap-1">
+                               {allList.slice(0, maxShares).map((name, i) => (
+                                 <div key={i} className={`text-sm font-bold border-b border-slate-100 pb-1 ${name === 'Boş Hisse' ? 'text-slate-300 italic' : 'text-slate-800'}`}>
+                                   {i+1}. {name}
+                                 </div>
+                               ))}
+                             </div>
+                           </>
+                         );
+                       })()}
                     </div>
                   </div>
                 </div>

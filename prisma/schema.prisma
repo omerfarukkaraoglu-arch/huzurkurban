@@ -79,6 +79,7 @@ model Animal {
   imageUrls   String[] @default([])
   note        String?
   order       Int      @default(0)
+  maxShares   Int      @default(7)
   deliveryStatus String @default("BEKLEMEDE")
   shareholders AnimalShareholder[]
   createdAt   DateTime @default(now())
