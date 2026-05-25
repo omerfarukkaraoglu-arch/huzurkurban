@@ -3,6 +3,27 @@
 import React, { useEffect, useState } from 'react'
 import QRCode from 'qrcode'
 
+function parseShareCount(shareStr: string | null | undefined): number {
+  if (!shareStr) return 1
+  const trimmed = shareStr.trim()
+  
+  // E.g. "2/7" or "2/7 Hisse"
+  const fractionMatch = trimmed.match(/^(\d+)\s*\/\s*\d+/)
+  if (fractionMatch) {
+    const num = parseInt(fractionMatch[1], 10)
+    return isNaN(num) || num <= 0 ? 1 : num
+  }
+
+  // E.g. "3 Hisse" or "3"
+  const digitMatch = trimmed.match(/(\d+)/)
+  if (digitMatch) {
+    const num = parseInt(digitMatch[1], 10)
+    return isNaN(num) || num <= 0 ? 1 : num
+  }
+
+  return 1
+}
+
 export default function PrintLabelsClient({ animals }: { animals: any[] }) {
   const [qrCodes, setQrCodes] = useState<{ [key: string]: string }>({})
   const [labelType, setLabelType] = useState<'animal' | 'shareholder'>('animal')
@@ -33,7 +54,7 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
       <div className="mb-8 no-print flex flex-col md:flex-row justify-between items-center bg-slate-50 p-6 rounded-2xl border border-slate-200 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Etiket Yazdırma Merkezi</h1>
-          <p className="text-sm text-slate-700 font-medium">Yazdırılacak etiket tipini seçin. Toplam {labelType === 'animal' ? animals.length * 4 : animals.reduce((acc, a) => acc + (a.shareholders?.length || 0), 0)} etiket hazırlandı.</p>
+          <p className="text-sm text-slate-700 font-medium">Yazdırılacak etiket tipini seçin. Toplam {labelType === 'animal' ? animals.length * 4 : animals.reduce((acc, a) => acc + a.shareholders.reduce((sum: number, sh: any) => sum + parseShareCount(sh.registration?.share), 0), 0)} etiket hazırlandı.</p>
         </div>
         
         <div className="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
@@ -117,35 +138,40 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
           )
         ) : (
           animals.flatMap((animal, aIdx) => 
-            animal.shareholders.map((sh: any, sIdx: number) => (
-              <div key={sh.id} className="label-card sh-label border border-slate-300 p-4 flex flex-col justify-between relative overflow-hidden">
-                <div className="flex justify-between items-start">
-                   <div>
-                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1">Hissedar</div>
-                      <div className="text-2xl font-black text-slate-900 leading-none mb-1">{sh.registration.fullName}</div>
-                      <div className="text-sm font-bold text-emerald-600">{sh.registration.phone}</div>
-                   </div>
-                   <div className="text-right">
-                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Hayvan No</div>
-                      <div className="text-4xl font-black text-slate-900 leading-none">#{animal.order || aIdx + 1}</div>
-                   </div>
-                </div>
+            animal.shareholders.flatMap((sh: any, sIdx: number) => {
+              const copyCount = parseShareCount(sh.registration?.share)
+              return Array.from({ length: copyCount }).map((_, copyIdx) => (
+                <div key={`${sh.id}-${copyIdx}`} className="label-card sh-label border border-slate-300 p-4 flex flex-col justify-between relative overflow-hidden">
+                  <div className="flex justify-between items-start">
+                     <div>
+                        <div className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1">Hissedar</div>
+                        <div className="text-2xl font-black text-slate-900 leading-none mb-1">{sh.registration?.fullName || 'Bilinmeyen Hissedar'}</div>
+                        <div className="text-sm font-bold text-emerald-600">{sh.registration?.phone}</div>
+                     </div>
+                     <div className="text-right">
+                        <div className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Hayvan No</div>
+                        <div className="text-4xl font-black text-slate-900 leading-none">#{animal.order || aIdx + 1}</div>
+                     </div>
+                  </div>
 
-                <div className="flex items-end justify-between mt-4 border-t border-slate-200 pt-3">
-                   <div className="text-[11px] font-extrabold text-slate-700 uppercase leading-normal">
-                      <span className="text-slate-900 font-black">{animal.earTag}</span><br/>
-                      <span className="text-emerald-700">{animal.groupName || 'GENEL GRUP'}</span>
-                   </div>
-                   <div className="flex flex-col items-center">
-                      <img src={qrCodes[animal.id]} alt="QR" className="w-20 h-20" />
-                      <span className="text-[10px] font-bold text-slate-500 mt-1">#{sIdx + 1}/7 Hisse</span>
-                   </div>
+                  <div className="flex items-end justify-between mt-4 border-t border-slate-200 pt-3">
+                     <div className="text-[11px] font-extrabold text-slate-700 uppercase leading-normal">
+                        <span className="text-slate-900 font-black">{animal.earTag}</span><br/>
+                        <span className="text-emerald-700">{animal.groupName || 'GENEL GRUP'}</span>
+                     </div>
+                     <div className="flex flex-col items-center">
+                        <img src={qrCodes[animal.id]} alt="QR" className="w-20 h-20" />
+                        <span className="text-[10px] font-bold text-slate-500 mt-1">
+                          #{sIdx + 1}/7 Hisse {copyCount > 1 ? `(${copyIdx + 1}/${copyCount})` : ''}
+                        </span>
+                     </div>
+                  </div>
+                  
+                  {/* Kesim Çizgisi Simgesi */}
+                  <div className="absolute top-0 right-0 w-2 h-2 border-r border-b border-slate-100 no-print"></div>
                 </div>
-                
-                {/* Kesim Çizgisi Simgesi */}
-                <div className="absolute top-0 right-0 w-2 h-2 border-r border-b border-slate-100 no-print"></div>
-              </div>
-            ))
+              ))
+            })
           )
         )}
       </div>
