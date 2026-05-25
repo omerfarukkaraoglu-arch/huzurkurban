@@ -10,29 +10,86 @@ interface AnimalData {
   weight: number | null
   groupName: string | null
   note: string | null
-  shareholders: { registration: { fullName: string; phone: string } }[]
+  maxShares?: number
+  shareholders: { 
+    id: string
+    registration: { 
+      fullName: string 
+      phone: string
+      share?: string | null
+    } 
+  }[]
   createdAt: string
+  order?: number
+}
+
+function parseShareCount(shareStr: string | null | undefined): number {
+  if (!shareStr) return 1
+  const trimmed = shareStr.trim()
+  
+  // E.g. "2/7" or "2/7 Hisse"
+  const fractionMatch = trimmed.match(/^(\d+)\s*\/\s*\d+/)
+  if (fractionMatch) {
+    const num = parseInt(fractionMatch[1], 10)
+    return isNaN(num) || num <= 0 ? 1 : num
+  }
+
+  // E.g. "3 Hisse" or "3"
+  const digitMatch = trimmed.match(/(\d+)/)
+  if (digitMatch) {
+    const num = parseInt(digitMatch[1], 10)
+    return isNaN(num) || num <= 0 ? 1 : num
+  }
+
+  return 1
 }
 
 export default function AnimalExportButtons({ data }: { data: AnimalData[] }) {
 
   const handleExcelExport = () => {
-    const rows = data.map((a, i) => ({
-      '#': i + 1,
-      'Küpe No': a.earTag,
-      'Ağırlık (kg)': a.weight || '-',
-      'Grup': a.groupName || '-',
-      'Hissedarlar': a.shareholders.map(s => s.registration.fullName).join(', ') || '-',
-      'Hissedar Sayısı': `${a.shareholders.length}/7`,
-      'Not': a.note || '-',
-      'Kayıt Tarihi': new Date(a.createdAt).toLocaleDateString('tr-TR'),
-    }))
+    // 1. Find the maximum share count among all animals to determine the column count
+    const maxSharesAcrossAll = Math.max(7, ...data.map(a => a.maxShares || 7))
+
+    // 2. Map the data to rows with dynamic shareholder columns
+    const rows = data.map((a, idx) => {
+      const maxShares = a.maxShares || 7
+      
+      // Get the list of filled slots (shareholder names)
+      const filledList = a.shareholders.flatMap((sh: any) => {
+        const copyCount = parseShareCount(sh.registration?.share)
+        return Array.from({ length: copyCount }).map(() => sh.registration?.fullName || 'Bilinmeyen Hissedar')
+      })
+      
+      // Get the empty slots (Yurt Hissesi)
+      const emptyCount = Math.max(0, maxShares - filledList.length)
+      const emptyList = Array.from({ length: emptyCount }).map(() => 'Yurt Hissesi')
+      
+      const allSlots = [...filledList, ...emptyList]
+
+      // Build row object
+      const row: { [key: string]: any } = {
+        'Sıra Numarası': a.order || (idx + 1),
+        'Hisse Adedi': maxShares,
+      }
+
+      // Add shareholder columns dynamically up to the maximum capacity of this sheet
+      for (let i = 0; i < maxSharesAcrossAll; i++) {
+        const header = `${i + 1}. Hissedar`
+        row[header] = allSlots[i] || ''
+      }
+
+      return row
+    })
 
     const ws = XLSX.utils.json_to_sheet(rows)
-    ws['!cols'] = [
-      { wch: 5 }, { wch: 18 }, { wch: 12 }, { wch: 22 },
-      { wch: 45 }, { wch: 14 }, { wch: 25 }, { wch: 14 },
+    
+    // Set custom column widths
+    const colWidths = [
+      { wch: 15 }, // Sıra Numarası
+      { wch: 12 }, // Hisse Adedi
+      ...Array.from({ length: maxSharesAcrossAll }).map(() => ({ wch: 25 })) // Hissedarlar
     ]
+    ws['!cols'] = colWidths
 
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'Hayvanlar')
