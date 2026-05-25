@@ -121,24 +121,24 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
               <div key={sh.id} className="label-card sh-label border border-slate-300 p-4 flex flex-col justify-between relative overflow-hidden">
                 <div className="flex justify-between items-start">
                    <div>
-                      <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Hissedar</div>
-                      <div className="text-xl font-black text-slate-900 leading-tight">{sh.registration.fullName}</div>
-                      <div className="text-sm font-bold text-emerald-600 mt-1">{sh.registration.phone}</div>
+                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1">Hissedar</div>
+                      <div className="text-2xl font-black text-slate-900 leading-none mb-1">{sh.registration.fullName}</div>
+                      <div className="text-sm font-bold text-emerald-600">{sh.registration.phone}</div>
                    </div>
                    <div className="text-right">
-                      <div className="text-[10px] font-bold text-slate-400 uppercase">Hayvan No</div>
-                      <div className="text-2xl font-black text-slate-800">#{animal.order || aIdx + 1}</div>
+                      <div className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-0.5">Hayvan No</div>
+                      <div className="text-4xl font-black text-slate-900 leading-none">#{animal.order || aIdx + 1}</div>
                    </div>
                 </div>
 
-                <div className="flex items-end justify-between mt-4 border-t border-slate-100 pt-3">
-                   <div className="text-[9px] font-bold text-slate-400 uppercase leading-tight">
-                      {animal.earTag}<br/>
-                      {animal.groupName || 'GENEL GRUP'}
+                <div className="flex items-end justify-between mt-4 border-t border-slate-200 pt-3">
+                   <div className="text-[11px] font-extrabold text-slate-700 uppercase leading-normal">
+                      <span className="text-slate-900 font-black">{animal.earTag}</span><br/>
+                      <span className="text-emerald-700">{animal.groupName || 'GENEL GRUP'}</span>
                    </div>
                    <div className="flex flex-col items-center">
-                      <img src={qrCodes[animal.id]} alt="QR" className="w-16 h-16" />
-                      <span className="text-[8px] font-bold text-slate-300">#{sIdx + 1}/7</span>
+                      <img src={qrCodes[animal.id]} alt="QR" className="w-20 h-20" />
+                      <span className="text-[10px] font-bold text-slate-500 mt-1">#{sIdx + 1}/7 Hisse</span>
                    </div>
                 </div>
                 
