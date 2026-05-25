@@ -98,7 +98,13 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
     ? animalsData.filter(a => 
         normalizeSearchString(a.earTag).includes(normalizeSearchString(mainSearchTerm)) ||
         (a.groupName && normalizeSearchString(a.groupName).includes(normalizeSearchString(mainSearchTerm))) ||
-        (a.note && normalizeSearchString(a.note).includes(normalizeSearchString(mainSearchTerm)))
+        (a.note && normalizeSearchString(a.note).includes(normalizeSearchString(mainSearchTerm))) ||
+        (a.shareholders && a.shareholders.some((sh: any) => 
+          sh.registration && (
+            normalizeSearchString(sh.registration.fullName).includes(normalizeSearchString(mainSearchTerm)) ||
+            normalizeSearchString(sh.registration.phone || '').includes(normalizeSearchString(mainSearchTerm))
+          )
+        ))
       )
     : animalsData
 
