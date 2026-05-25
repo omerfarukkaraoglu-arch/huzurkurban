@@ -5,6 +5,27 @@ import { revalidatePath } from 'next/cache'
 import { put } from '@vercel/blob'
 import * as XLSX from 'xlsx'
 
+function parseShareCount(shareStr: string | null | undefined): number {
+  if (!shareStr) return 1
+  const trimmed = shareStr.trim()
+  
+  // E.g. "2/7" or "2/7 Hisse"
+  const fractionMatch = trimmed.match(/^(\d+)\s*\/\s*\d+/)
+  if (fractionMatch) {
+    const num = parseInt(fractionMatch[1], 10)
+    return isNaN(num) || num <= 0 ? 1 : num
+  }
+
+  // E.g. "3 Hisse" or "3"
+  const digitMatch = trimmed.match(/(\d+)/)
+  if (digitMatch) {
+    const num = parseInt(digitMatch[1], 10)
+    return isNaN(num) || num <= 0 ? 1 : num
+  }
+
+  return 1
+}
+
 export async function createAnimal(prevState: any, formData: FormData) {
   try {
     const earTag = formData.get('earTag') as string
@@ -175,10 +196,33 @@ export async function reorderAnimals(updates: { id: string, order: number }[]) {
 
 export async function addShareholder(animalId: string, registrationId: string) {
   try {
-    // Check max 7
-    const count = await prisma.animalShareholder.count({ where: { animalId } })
-    if (count >= 7) {
-      return { success: false, error: 'Bu hayvana en fazla 7 hissedar eklenebilir.', message: '' }
+    const animal = await prisma.animal.findUnique({
+      where: { id: animalId },
+      include: {
+        shareholders: {
+          include: {
+            registration: true
+          }
+        }
+      }
+    })
+    
+    if (!animal) {
+      return { success: false, error: 'Hayvan bulunamadı.', message: '' }
+    }
+
+    const newReg = await prisma.registration.findUnique({
+      where: { id: registrationId }
+    })
+    if (!newReg) {
+      return { success: false, error: 'Hissedar kaydı bulunamadı.', message: '' }
+    }
+
+    const existingShares = animal.shareholders.reduce((sum, s) => sum + parseShareCount(s.registration?.share), 0)
+    const newShares = parseShareCount(newReg.share)
+
+    if (existingShares + newShares > 7) {
+      return { success: false, error: `Bu işlemle toplam hisse sayısı ${existingShares + newShares} olacaktır. Bir hayvana en fazla 7 hisse eklenebilir (Mevcut: ${existingShares}, Eklenen: ${newShares}).`, message: '' }
     }
 
     // Check duplicate
@@ -360,9 +404,25 @@ export async function createRegistrationAndAddAsShareholder(animalId: string, re
 
     await prisma.$transaction(async (tx) => {
       // 1. Kontenjan kontrolü
-      const count = await tx.animalShareholder.count({ where: { animalId } })
-      if (count >= 7) {
-        throw new Error('Bu hayvana en fazla 7 hissedar eklenebilir.')
+      const animal = await tx.animal.findUnique({
+        where: { id: animalId },
+        include: {
+          shareholders: {
+            include: {
+              registration: true
+            }
+          }
+        }
+      })
+      if (!animal) {
+        throw new Error('Hayvan bulunamadı.')
+      }
+
+      const existingShares = animal.shareholders.reduce((sum, s) => sum + parseShareCount(s.registration?.share), 0)
+      const newShares = parseShareCount(registrationData.share)
+
+      if (existingShares + newShares > 7) {
+        throw new Error(`Bu işlemle toplam hisse sayısı ${existingShares + newShares} olacaktır. Bir hayvana en fazla 7 hisse eklenebilir (Mevcut: ${existingShares}, Eklenen: ${newShares}).`)
       }
 
       // 2. Yeni hissedar kaydı oluştur

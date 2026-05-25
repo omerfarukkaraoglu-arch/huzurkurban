@@ -7,6 +7,27 @@ import imageCompression from 'browser-image-compression'
 import { safeLocaleLowerCase, normalizeSearchString } from '@/lib/utils'
 import CameraModal from '@/components/CameraModal'
 
+function parseShareCount(shareStr: string | null | undefined): number {
+  if (!shareStr) return 1
+  const trimmed = shareStr.trim()
+  
+  // E.g. "2/7" or "2/7 Hisse"
+  const fractionMatch = trimmed.match(/^(\d+)\s*\/\s*\d+/)
+  if (fractionMatch) {
+    const num = parseInt(fractionMatch[1], 10)
+    return isNaN(num) || num <= 0 ? 1 : num
+  }
+
+  // E.g. "3 Hisse" or "3"
+  const digitMatch = trimmed.match(/(\d+)/)
+  if (digitMatch) {
+    const num = parseInt(digitMatch[1], 10)
+    return isNaN(num) || num <= 0 ? 1 : num
+  }
+
+  return 1
+}
+
 const initialState = { success: false, message: '', error: '' }
 
 export default function AnimalManager({ initialAnimals, registrations, kurbanGroups = [] }: { initialAnimals: any[], registrations: any[], kurbanGroups?: any[] }) {
@@ -273,12 +294,23 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
   const handleAddAllFiltered = (animalId: string) => {
     const regs = filteredRegistrations(animalId)
     const animal = initialAnimals.find((a: any) => a.id === animalId)
-    const currentCount = animal?.shareholders?.length || 0
-    const maxToAdd = Math.min(regs.length, 7 - currentCount)
-    if (maxToAdd <= 0) return
+    let currentShares = animal?.shareholders?.reduce((sum: number, sh: any) => sum + parseShareCount(sh.registration?.share), 0) || 0
+    
+    const toAdd: string[] = []
+    for (const reg of regs) {
+      const regShares = parseShareCount(reg.share)
+      if (currentShares + regShares <= 7) {
+        toAdd.push(reg.id)
+        currentShares += regShares
+      } else {
+        break
+      }
+    }
+
+    if (toAdd.length === 0) return
     startTransition(async () => {
-      for (let i = 0; i < maxToAdd; i++) {
-        await addShareholder(animalId, regs[i].id)
+      for (const id of toAdd) {
+        await addShareholder(animalId, id)
       }
     })
   }
@@ -577,20 +609,30 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
                     })()}
                     <div className="min-w-0">
                       <div className="font-bold text-slate-800 text-base sm:text-lg truncate">{animal.earTag}</div>
-                      <div className="text-xs sm:text-sm text-slate-700 font-bold flex flex-wrap gap-x-2 gap-y-0.5">
-                        {animal.weight && <span>{animal.weight} kg</span>}
-                        {animal.groupName && <span>• {animal.groupName}</span>}
-                        <span>• {animal.shareholders?.length || 0}/7 Hissedar</span>
-                      </div>
+                      {(() => {
+                        const totalShares = animal.shareholders?.reduce((sum: number, sh: any) => sum + parseShareCount(sh.registration?.share), 0) || 0;
+                        return (
+                          <div className="text-xs sm:text-sm text-slate-700 font-bold flex flex-wrap gap-x-2 gap-y-0.5">
+                            {animal.weight && <span>{animal.weight} kg</span>}
+                            {animal.groupName && <span>• {animal.groupName}</span>}
+                            <span>• {totalShares}/7 Hissedar</span>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                   <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-3 sm:border-t-0 sm:pt-0 w-full sm:w-auto shrink-0 flex-wrap sm:flex-nowrap">
-                    <button
-                      onClick={() => setExpandedAnimal(expandedAnimal === animal.id ? null : animal.id)}
-                      className={`font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg border transition-colors flex-1 sm:flex-initial text-center ${expandedAnimal === animal.id ? 'bg-emerald-600 text-white border-emerald-600' : 'text-emerald-600 hover:bg-emerald-50 border-emerald-200'}`}
-                    >
-                      {expandedAnimal === animal.id ? 'Kapat' : `Hissedar Yönet (${animal.shareholders?.length || 0}/7)`}
-                    </button>
+                    {(() => {
+                      const totalShares = animal.shareholders?.reduce((sum: number, sh: any) => sum + parseShareCount(sh.registration?.share), 0) || 0;
+                      return (
+                        <button
+                          onClick={() => setExpandedAnimal(expandedAnimal === animal.id ? null : animal.id)}
+                          className={`font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg border transition-colors flex-1 sm:flex-initial text-center ${expandedAnimal === animal.id ? 'bg-emerald-600 text-white border-emerald-600' : 'text-emerald-600 hover:bg-emerald-50 border-emerald-200'}`}
+                        >
+                          {expandedAnimal === animal.id ? 'Kapat' : `Hissedar Yönet (${totalShares}/7)`}
+                        </button>
+                      );
+                    })()}
                     <button
                       onClick={() => {
                          setEditingAnimal(animal);
@@ -620,26 +662,34 @@ export default function AnimalManager({ initialAnimals, registrations, kurbanGro
                         <p className="text-sm text-slate-400">Henüz hissedar eklenmemiş.</p>
                       ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                          {animal.shareholders?.map((sh: any) => (
-                            <div key={sh.id} className="flex items-center justify-between bg-white rounded-lg p-3 border border-slate-200">
-                              <div>
-                                <div className="font-medium text-slate-800 text-sm">{sh.registration.fullName}</div>
-                                <div className="text-xs text-slate-500">{sh.registration.phone}</div>
+                          {animal.shareholders?.flatMap((sh: any) => {
+                            const copyCount = parseShareCount(sh.registration?.share)
+                            return Array.from({ length: copyCount }).map((_, i) => (
+                              <div key={`${sh.id}-${i}`} className="flex items-center justify-between bg-white rounded-lg p-3 border border-slate-200">
+                                <div>
+                                  <div className="font-medium text-slate-800 text-sm">
+                                    {sh.registration?.fullName || 'Bilinmeyen Hissedar'} {copyCount > 1 ? `(${i + 1}/${copyCount})` : ''}
+                                  </div>
+                                  <div className="text-xs text-slate-500">{sh.registration?.phone}</div>
+                                </div>
+                                <button
+                                  onClick={() => handleRemoveShareholder(sh.id)}
+                                  disabled={isWorking}
+                                  className="text-red-400 hover:text-red-600 text-xs font-medium disabled:opacity-50"
+                                >
+                                  ✕
+                                </button>
                               </div>
-                              <button
-                                onClick={() => handleRemoveShareholder(sh.id)}
-                                disabled={isWorking}
-                                className="text-red-400 hover:text-red-600 text-xs font-medium disabled:opacity-50"
-                              >
-                                ✕
-                              </button>
-                            </div>
-                          ))}
+                            ))
+                          })}
                         </div>
                       )}
                     </div>
 
-                    {(animal.shareholders?.length || 0) < 7 && (
+                    {(() => {
+                      const totalShares = animal.shareholders?.reduce((sum: number, sh: any) => sum + parseShareCount(sh.registration?.share), 0) || 0;
+                      return totalShares < 7;
+                    })() && (
                       <div>
                         <div className="flex justify-between items-center mb-3">
                           <h4 className="text-sm font-bold text-slate-700">Hissedar Ekle</h4>
