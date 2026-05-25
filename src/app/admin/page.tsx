@@ -16,8 +16,7 @@ export default async function AdminDashboardPage() {
 
   const groups = await prisma.kurbanGroup.findMany({
     where: {
-      isDonation: false,
-      isActive: true
+      isDonation: false
     },
     orderBy: {
       price: 'asc'

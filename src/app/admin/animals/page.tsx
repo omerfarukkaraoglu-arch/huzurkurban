@@ -26,8 +26,7 @@ export default async function AnimalsPage() {
 
   const kurbanGroups = await prisma.kurbanGroup.findMany({
     where: {
-      isDonation: false,
-      isActive: true
+      isDonation: false
     },
     orderBy: {
       price: 'asc'
