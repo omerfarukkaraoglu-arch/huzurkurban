@@ -122,7 +122,7 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
                          }) || [];
                          
                          const totalShares = filledList.length;
-                         const emptyList = Array.from({ length: Math.max(0, maxShares - totalShares) }).map(() => 'Boş Hisse');
+                         const emptyList = Array.from({ length: Math.max(0, maxShares - totalShares) }).map(() => 'Yurt Hissesi');
                          const allList = [...filledList, ...emptyList];
                          
                          return (
@@ -130,7 +130,7 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
                              <div className="text-xs font-bold text-slate-400 uppercase mb-2">Hissedarlar ({totalShares}/{maxShares})</div>
                              <div className="grid grid-cols-1 gap-1">
                                {allList.slice(0, maxShares).map((name, i) => (
-                                 <div key={i} className={`text-sm font-bold border-b border-slate-100 pb-1 ${name === 'Boş Hisse' ? 'text-slate-300 italic' : 'text-slate-800'}`}>
+                                 <div key={i} className={`text-sm font-bold border-b border-slate-100 pb-1 ${name === 'Yurt Hissesi' ? 'text-slate-300 italic' : 'text-slate-800'}`}>
                                    {i+1}. {name}
                                  </div>
                                ))}
@@ -170,7 +170,7 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
             const emptyCount = Math.max(0, maxShares - filledSlots.length);
             const emptySlots = Array.from({ length: emptyCount }).map((_, i) => ({
               type: 'empty',
-              registration: { fullName: 'BOŞ HİSSE', phone: '' },
+              registration: { fullName: 'YURT HİSSESİ', phone: '' },
               shId: `empty-${i}`
             }));
             
@@ -178,7 +178,7 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
             
             return allSlots.map((slot, sIdx) => {
               const isFilled = slot.type === 'filled';
-              const name = slot.registration?.fullName || 'BOŞ HİSSE';
+              const name = slot.registration?.fullName || 'YURT HİSSESİ';
               const phone = slot.registration?.phone || '';
               const key = isFilled ? `${slot.shId}-${slot.copyIdx}` : `${animal.id}-empty-${sIdx}`;
               
@@ -187,7 +187,7 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
                   <div className="flex justify-between items-start">
                      <div>
                         <div className={`text-[10px] font-black uppercase tracking-wider mb-1 ${isFilled ? 'text-slate-500' : 'text-red-500'}`}>
-                          {isFilled ? 'Hissedar' : 'BOŞ HİSSE'}
+                          {isFilled ? 'Hissedar' : 'YURT HİSSESİ'}
                         </div>
                         <div className={`text-2xl font-black leading-none mb-1 ${isFilled ? 'text-slate-900' : 'text-red-600'}`}>{name}</div>
                         {phone && <div className="text-sm font-bold text-emerald-600">{phone}</div>}
