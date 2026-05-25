@@ -2,9 +2,11 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { Html5Qrcode } from 'html5-qrcode'
-import { updateAnimalStatus, getAnimalsByStatus } from '@/app/actions/animals'
+import { updateAnimalStatus, getAnimalsByStatus, getAnimalDetails, updateShareholderStatusOnly } from '@/app/actions/animals'
+import { useSearchParams } from 'next/navigation'
 
 export default function ScanClient({ userStation, stationName }: { userStation: string, stationName: string }) {
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [stationAnimals, setStationAnimals] = useState<any[]>([])
@@ -13,6 +15,14 @@ export default function ScanClient({ userStation, stationName }: { userStation: 
   const [isScanning, setIsScanning] = useState(false)
   const [cameraError, setCameraError] = useState<string | null>(null)
   const scannerRef = useRef<Html5Qrcode | null>(null)
+
+  const [shareholderChoice, setShareholderChoice] = useState<{
+    animalId: string;
+    earTag: string;
+    order: number;
+    regId: string;
+    fullName: string;
+  } | null>(null)
 
   const fetchAnimals = useCallback(async () => {
     const res = await getAnimalsByStatus(userStation)
@@ -75,12 +85,28 @@ export default function ScanClient({ userStation, stationName }: { userStation: 
     }
   }, [startScanner, stopScanner])
 
+  useEffect(() => {
+    const id = searchParams.get('id')
+    const regId = searchParams.get('regId')
+    if (id) {
+      const simulatedUrl = regId ? `${window.location.origin}/admin/scan?id=${id}&regId=${regId}` : id
+      const timer = setTimeout(() => {
+        onScanSuccess(simulatedUrl)
+      }, 800)
+      return () => clearTimeout(timer)
+    }
+  }, [searchParams])
+
   async function onScanSuccess(decodedText: string) {
-    if (loading || showOverlay) return
+    if (loading || showOverlay || shareholderChoice) return
     
     let animalId = decodedText
+    let regId = ''
     if (decodedText.includes('id=')) {
       animalId = decodedText.split('id=')[1].split('&')[0]
+      if (decodedText.includes('regId=')) {
+        regId = decodedText.split('regId=')[1].split('&')[0]
+      }
     } else if (decodedText.startsWith('http')) {
       const parts = decodedText.split('/')
       animalId = parts[parts.length - 1]
@@ -100,7 +126,37 @@ export default function ScanClient({ userStation, stationName }: { userStation: 
       oscillator.stop(audioCtx.currentTime + 0.2)
     } catch (e) {}
 
-    await handleUpdate(animalId)
+    if (regId) {
+      setLoading(true)
+      try {
+        const res = await getAnimalDetails(animalId)
+        if (res.success && res.animal) {
+          const animal = res.animal
+          const sh = animal.shareholders?.find((s: any) => s.registration?.id === regId)
+          if (sh && sh.registration) {
+            setShareholderChoice({
+              animalId: animal.id,
+              earTag: animal.earTag,
+              order: animal.order,
+              regId: regId,
+              fullName: sh.registration.fullName
+            })
+          } else {
+            await handleUpdate(animalId)
+          }
+        } else {
+          setError(res.error || "Hayvan bulunamadı.")
+          setTimeout(() => setError(null), 3000)
+        }
+      } catch (err) {
+        setError("Bilgiler alınırken hata oluştu.")
+        setTimeout(() => setError(null), 3000)
+      } finally {
+        setLoading(false)
+      }
+    } else {
+      await handleUpdate(animalId)
+    }
   }
 
   async function handleUpdate(id: string) {
@@ -127,8 +183,106 @@ export default function ScanClient({ userStation, stationName }: { userStation: 
     }
   }
 
+  async function handleShareholderOnlyUpdate(regId: string) {
+    setLoading(true)
+    setShareholderChoice(null)
+    try {
+      const res = await updateShareholderStatusOnly(regId, userStation)
+      if (res.success) {
+        setLastScannedTag(res.fullName || "Hissedar")
+        setShowOverlay(true)
+        fetchAnimals()
+        
+        setTimeout(() => {
+          setShowOverlay(false)
+        }, 2000)
+      } else {
+        setError(res.error || "Hata oluştu.")
+        setTimeout(() => setError(null), 3000)
+      }
+    } catch (e) {
+      setError("Bağlantı hatası.")
+      setTimeout(() => setError(null), 3000)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const activeStageLabel = (() => {
+    switch (userStation) {
+      case 'KESILDI': return 'Kesildi / Paylanıyor';
+      case 'PARCALAMADA': return 'Parçalanıyor';
+      case 'TARTIDA': return 'Tartılıyor';
+      case 'DAGITIMDA': return 'Dağıtımda';
+      case 'TESLIM_EDILDI': return 'Teslim Edildi';
+      case 'YUKLENDI': return 'Araca Yüklendi';
+      case 'SIRADA': return 'Kesim Sırasında';
+      default: return stationName || 'Güncellendi';
+    }
+  })()
+
   return (
     <div className="space-y-6 relative pb-20">
+      {/* Shareholder specific choice modal */}
+      {shareholderChoice && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
+              <span className="text-3xl">👤</span>
+              <div>
+                <h3 className="text-xl font-bold text-slate-800">Hissedar İşlemi</h3>
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Çalışılan İstasyon: {stationName}</p>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="space-y-2.5">
+                <div className="flex justify-between items-center text-sm border-b border-slate-100 pb-2">
+                  <span className="text-slate-500 font-medium">Hayvan Sıra No</span>
+                  <span className="font-black text-slate-950">#{shareholderChoice.order || 'Genel'}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm border-b border-slate-100 pb-2">
+                  <span className="text-slate-500 font-medium">Küpe Numarası</span>
+                  <span className="font-bold text-slate-800 font-mono">{shareholderChoice.earTag}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm border-b border-slate-100 pb-2">
+                  <span className="text-slate-500 font-medium">Hissedar Adı</span>
+                  <span className="font-black text-emerald-700 text-base">{shareholderChoice.fullName}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-slate-500 font-medium">Güncellenecek Durum</span>
+                  <span className="bg-blue-50 text-blue-700 font-bold text-xs px-2.5 py-1 rounded-full border border-blue-100 uppercase tracking-wider">{activeStageLabel}</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-4">
+                <button
+                  onClick={() => handleShareholderOnlyUpdate(shareholderChoice.regId)}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+                >
+                  ✅ Sadece {shareholderChoice.fullName} Güncelle
+                </button>
+                <button
+                  onClick={() => {
+                    const animalId = shareholderChoice.animalId;
+                    setShareholderChoice(null);
+                    handleUpdate(animalId);
+                  }}
+                  className="w-full bg-slate-800 hover:bg-black text-white font-bold py-3 rounded-2xl shadow-sm transition-all active:scale-[0.98]"
+                >
+                  🐄 Tüm Hayvan ve Hissedarları Güncelle
+                </button>
+                <button
+                  onClick={() => setShareholderChoice(null)}
+                  className="w-full bg-white hover:bg-slate-50 text-slate-500 font-bold py-2 rounded-xl transition-all border border-slate-200"
+                >
+                  Vazgeç
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Success Overlay */}
       {showOverlay && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">

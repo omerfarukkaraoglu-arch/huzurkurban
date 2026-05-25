@@ -32,13 +32,28 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
     const generateQRs = async () => {
       const codes: { [key: string]: string } = {}
       for (const animal of animals) {
+        // Animal label QR code (General QR)
         const url = `${window.location.origin}/admin/scan?id=${animal.id}`
-        const qr = await QRCode.toDataURL(url, {
+        codes[animal.id] = await QRCode.toDataURL(url, {
           width: 200,
           margin: 1,
           color: { dark: '#000000', light: '#ffffff' },
         })
-        codes[animal.id] = qr
+
+        // Shareholder label QR codes (Specific to shareholder registration)
+        if (animal.shareholders) {
+          for (const sh of animal.shareholders) {
+            if (sh.registration?.id) {
+              const shUrl = `${window.location.origin}/admin/scan?id=${animal.id}&regId=${sh.registration.id}`
+              const qrKey = `${animal.id}-${sh.registration.id}`
+              codes[qrKey] = await QRCode.toDataURL(shUrl, {
+                width: 200,
+                margin: 1,
+                color: { dark: '#000000', light: '#ffffff' },
+              })
+            }
+          }
+        }
       }
       setQrCodes(codes)
     }
@@ -203,12 +218,15 @@ export default function PrintLabelsClient({ animals }: { animals: any[] }) {
                         <span className="text-slate-900 font-black">{animal.earTag}</span><br/>
                         <span className="text-emerald-700">{animal.groupName || 'GENEL GRUP'}</span>
                      </div>
-                     <div className="flex flex-col items-center">
-                        {qrCodes[animal.id] ? (
-                          <img src={qrCodes[animal.id]} alt="QR" className="w-20 h-20" />
-                        ) : (
-                          <div className="w-20 h-20 bg-slate-100 animate-pulse rounded"></div>
-                        )}
+                      <div className="flex flex-col items-center">
+                         {(() => {
+                           const qrSrc = isFilled && slot.registration?.id ? qrCodes[`${animal.id}-${slot.registration.id}`] : qrCodes[animal.id];
+                           return qrSrc ? (
+                             <img src={qrSrc} alt="QR" className="w-20 h-20" />
+                           ) : (
+                             <div className="w-20 h-20 bg-slate-100 animate-pulse rounded"></div>
+                           );
+                         })()}
                         <span className="text-[10px] font-bold text-slate-500 mt-1">
                           #{sIdx + 1}/{maxShares} Hisse {isFilled && slot.copyCount > 1 ? `(${slot.copyIdx + 1}/${slot.copyCount})` : ''}
                         </span>

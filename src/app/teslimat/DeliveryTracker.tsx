@@ -70,7 +70,7 @@ export default function DeliveryTracker() {
       {results && results.length > 0 && (
         <div className="space-y-6">
           {results.map((item: any) => {
-             const currentStageIdx = getStageIndex(item.deliveryStatus || 'BEKLEMEDE')
+             const currentStageIdx = getStageIndex(item.registrationStatus || item.deliveryStatus || 'BEKLEMEDE')
              
              return (
               <div key={item.registrationId + '-' + (item.animalId || 'no-animal')} className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">

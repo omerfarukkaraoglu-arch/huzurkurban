@@ -462,3 +462,42 @@ export async function createRegistrationAndAddAsShareholder(animalId: string, re
   }
 }
 
+export async function getAnimalDetails(id: string) {
+  try {
+    const animal = await prisma.animal.findUnique({
+      where: { id },
+      include: {
+        shareholders: {
+          include: {
+            registration: true
+          }
+        }
+      }
+    })
+    if (!animal) return { success: false, error: 'Hayvan bulunamadı.' }
+    return { success: true, animal }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: 'Hayvan bilgileri getirilirken hata oluştu.' }
+  }
+}
+
+export async function updateShareholderStatusOnly(registrationId: string, nextStatus: string) {
+  try {
+    const reg = await prisma.registration.update({
+      where: { id: registrationId },
+      data: { status: nextStatus }
+    })
+    
+    revalidatePath('/admin/animals')
+    revalidatePath('/admin/delivery')
+    revalidatePath('/teslimat')
+    revalidatePath('/')
+    
+    return { success: true, message: `Hissedar durumu '${nextStatus}' olarak güncellendi.`, fullName: reg.fullName }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: 'Hissedar durumu güncellenirken hata oluştu.' }
+  }
+}
+
