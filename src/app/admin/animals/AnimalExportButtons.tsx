@@ -56,6 +56,7 @@ export default function AnimalExportButtons({ data }: { data: AnimalData[] }) {
   const [cols, setCols] = useState({
     order: true,
     earTag: true,
+    maxShares: true,
     weight: true,
     groupName: true,
     deliveryStatus: false,
@@ -103,6 +104,7 @@ export default function AnimalExportButtons({ data }: { data: AnimalData[] }) {
       // Animal Info
       if (cols.order) row['Sıra Numarası'] = a.order || (idx + 1)
       if (cols.earTag) row['Küpe Numarası'] = a.earTag
+      if (cols.maxShares) row['Hisse Adedi'] = a.maxShares || 7
       if (cols.weight) row['Ağırlık (kg)'] = a.weight || '-'
       if (cols.groupName) row['Grup'] = a.groupName || '-'
       if (cols.deliveryStatus) row['Teslimat Durumu'] = a.deliveryStatus || 'BEKLEMEDE'
@@ -148,6 +150,7 @@ export default function AnimalExportButtons({ data }: { data: AnimalData[] }) {
     const colWidths: { wch: number }[] = []
     if (cols.order) colWidths.push({ wch: 15 })
     if (cols.earTag) colWidths.push({ wch: 15 })
+    if (cols.maxShares) colWidths.push({ wch: 12 })
     if (cols.weight) colWidths.push({ wch: 12 })
     if (cols.groupName) colWidths.push({ wch: 15 })
     if (cols.deliveryStatus) colWidths.push({ wch: 18 })
@@ -190,6 +193,7 @@ export default function AnimalExportButtons({ data }: { data: AnimalData[] }) {
     
     if (cols.order) head.push('#')
     if (cols.earTag) head.push('Kupe No')
+    if (cols.maxShares) head.push('Pay Adedi')
     if (cols.weight) head.push('Agirlik')
     if (cols.groupName) head.push('Grup')
     if (cols.deliveryStatus) head.push('Durum')
@@ -212,6 +216,7 @@ export default function AnimalExportButtons({ data }: { data: AnimalData[] }) {
       
       if (cols.order) row.push(a.order || (idx + 1))
       if (cols.earTag) row.push(a.earTag)
+      if (cols.maxShares) row.push(a.maxShares || 7)
       if (cols.weight) row.push(a.weight ? `${a.weight} kg` : '-')
       if (cols.groupName) row.push(safeStr(a.groupName || '-'))
       if (cols.deliveryStatus) row.push(a.deliveryStatus || 'BEKLEMEDE')
@@ -359,6 +364,15 @@ export default function AnimalExportButtons({ data }: { data: AnimalData[] }) {
                         className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
                       />
                       <span className="text-xs font-bold text-slate-700">Küpe Numarası</span>
+                    </label>
+                    <label className="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer shadow-sm">
+                      <input 
+                        type="checkbox" 
+                        checked={cols.maxShares} 
+                        onChange={() => toggleColumn('maxShares')} 
+                        className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                      />
+                      <span className="text-xs font-bold text-slate-700">Hisse Kapasitesi</span>
                     </label>
                     <label className="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer shadow-sm">
                       <input 
